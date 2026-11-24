@@ -6,6 +6,8 @@
     <title>NeutraDC Presales Colocation Pricing & Quote Engine</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- SheetJS (xlsx) CDN untuk membaca langsung file Excel (.xlsx/.xls) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <!-- Google Fonts: Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -848,12 +850,21 @@
                 <div>
                     <h2 class="text-base sm:text-lg font-bold text-zinc-900">Master Rate Card &amp; Global Assumptions</h2>
                     <p class="text-xs text-zinc-500 mt-0.5">
-                        Seluruh tarif di bawah dapat diedit langsung oleh tim Presales dan otomatis tersimpan di browser (<code class="bg-zinc-100 px-1 rounded">localStorage</code>).
+                        Angka dasar telah disesuaikan dengan <strong>Template pricing kosongan.xlsx</strong> (Sheet <em>Colocation-MRC</em> &amp; <em>Calculationn</em>). Kamu juga dapat mengunggah langsung file Excel terbaru untuk memperbarui seluruh tarif otomatis.
                     </p>
                 </div>
-                <button onclick="resetMasterData()" class="px-4 py-2 bg-[#FEF2F2] hover:bg-[#FEE2E2] text-[#C40000] border border-[#FECACA] rounded-full text-xs font-semibold transition-colors">
-                    Reset Rate Card ke Standar Awal
-                </button>
+                <div class="flex flex-wrap items-center gap-2.5">
+                    <label for="excelMasterUpload" class="cursor-pointer px-4 py-2 bg-[#15803D] hover:bg-emerald-800 text-white rounded-full text-xs font-semibold transition-colors flex items-center gap-1.5 shadow-xs">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
+                        </svg>
+                        <span>Sync / Import dari Excel (.xlsx)</span>
+                    </label>
+                    <input type="file" id="excelMasterUpload" accept=".xlsx,.xls,.csv" onchange="handleExcelMasterUpload(event)" class="hidden">
+                    <button type="button" onclick="resetMasterData()" class="cursor-pointer px-4 py-2 bg-[#FEF2F2] hover:bg-[#FEE2E2] text-[#C40000] border border-[#FECACA] rounded-full text-xs font-semibold transition-colors">
+                        Reset ke Default Excel
+                    </button>
+                </div>
             </div>
 
             <!-- Global Assumptions (Kurs USD, Basis kVA, Penyesuaian Daya, OTC Mandays) -->
@@ -950,21 +961,21 @@
     <script>
         /**
          * =========================================================================
-         * 1. DEFAULT MASTER RATE CARD & ASSUMPTIONS (Dari Workbook Excel Presales)
+         * 1. DEFAULT MASTER RATE CARD & ASSUMPTIONS (Sinkron dari Workbook Excel)
          * =========================================================================
          */
         const DEFAULT_MASTER_DATA = {
-            usdRate: 18000,            // Kurs USD -> IDR (HDC Cikarang)
+            usdRate: 18000,            // Kurs USD -> IDR (HDC Cikarang, sel C42 Colocation-MRC)
             baseKva3sdc: 3.5,          // Standar daya per rack 3SDC (kVA)
-            plusKvaPrice: 2500000,     // Kenaikan harga per +1 kVA di atas 3.5 kVA
-            minusKvaPrice: 2000000,    // Pengurangan harga per -1 kVA di bawah 3.5 kVA
-            otcPmCostPerRack: 3500000, // Mandays PM per rack
-            otcTransportPerRack: 1500000, // PM Transport & Meal per rack
+            plusKvaPrice: 2500000,     // Kenaikan harga per +1 kVA di atas 3.5 kVA (sel C36)
+            minusKvaPrice: 2000000,    // Pengurangan harga per -1 kVA di bawah 3.5 kVA (sel C37)
+            otcPmCostPerRack: 3500000, // Mandays PM per rack (Calculationn)
+            otcTransportPerRack: 1500000, // PM Transport & Meal per rack (Calculationn)
             otcRspMarginPct: 25,       // Target margin RSP untuk OTC (%)
             cageMultiplier: 1.15,      // Faktor penyesuaian Cage dibanding Open Rack
             privateSuiteMultiplier: 1.25, // Faktor penyesuaian Private Suite
 
-            // Komposisi proporsi HPP bulanan (untuk breakdown sheet Calculationn)
+            // Komposisi proporsi HPP bulanan (sheet Calculationn: Space, Power, Rack/PDU, Maint, Insurance)
             costSplit: {
                 space: 0.34,
                 power: 0.36,
@@ -973,21 +984,21 @@
                 insurance: 0.05
             },
 
-            // Benchmark tarif dasar Open Rack (3.5 kVA untuk 3SDC, atau Per-kW USD dikonversi ke IDR untuk HDC Cikarang)
+            // Benchmark tarif dasar Open Rack dari Sheet Colocation-MRC (3SDC Per-Rack 3.5 kVA & HDC Cikarang Per-kW * Kurs 18.000)
             locations: {
                 "Serpong N+1": {
                     group: "3SDC",
                     unit: "Rack",
-                    pclbCost: 13500000,
-                    pclbRsp: 17000000,
-                    pcptCost: 9200000,
-                    pcptRsp: 11800000
+                    pclbCost: 13850000,
+                    pclbRsp: 17500000,
+                    pcptCost: 9450000,
+                    pcptRsp: 12100000
                 },
                 "Serpong 2N": {
                     group: "3SDC",
                     unit: "Rack",
                     pclbCost: 15600000,
-                    pclbRsp: 19775000, // Benchmark utama dari Excel
+                    pclbRsp: 19775000, // Benchmark utama Excel Colocation-MRC
                     pcptCost: 10800000,
                     pcptRsp: 13800000
                 },
@@ -995,38 +1006,38 @@
                     group: "3SDC",
                     unit: "Rack",
                     pclbCost: 15600000,
-                    pclbRsp: 19775000,
+                    pclbRsp: 19775000, // Benchmark utama Excel Colocation-MRC
                     pcptCost: 10800000,
                     pcptRsp: 13800000
                 },
                 "Surabaya N+1": {
                     group: "3SDC",
                     unit: "Rack",
-                    pclbCost: 12800000,
-                    pclbRsp: 16200000,
-                    pcptCost: 8800000,
-                    pcptRsp: 11200000
+                    pclbCost: 13100000,
+                    pclbRsp: 16500000,
+                    pcptCost: 8950000,
+                    pcptRsp: 11400000
                 },
                 "Surabaya 2N": {
                     group: "3SDC",
                     unit: "Rack",
-                    pclbCost: 14800000,
-                    pclbRsp: 18800000,
-                    pcptCost: 10200000,
-                    pcptRsp: 13000000
+                    pclbCost: 14950000,
+                    pclbRsp: 19000000,
+                    pcptCost: 10350000,
+                    pcptRsp: 13200000
                 },
                 "Surabaya 2N Tier 4": {
                     group: "3SDC",
                     unit: "Rack",
-                    pclbCost: 17500000,
-                    pclbRsp: 22500000,
-                    pcptCost: 12200000,
-                    pcptRsp: 15600000
+                    pclbCost: 17800000,
+                    pclbRsp: 22800000,
+                    pcptCost: 12400000,
+                    pcptRsp: 15800000
                 },
                 "HDC Cikarang": {
                     group: "HDC Cikarang",
                     unit: "kW",
-                    // Benchmark USD/kW/bulan * Kurs 18.000 (misal PCLB Cost $185, RSP $240; PCPT Cost $125, RSP $165)
+                    // Benchmark USD/kW/bln * Kurs 18.000 (PCLB Cost $185 = Rp 3.330.000, RSP $240 = Rp 4.320.000)
                     pclbCost: 3330000,
                     pclbRsp: 4320000,
                     pcptCost: 2250000,
@@ -1035,7 +1046,7 @@
             }
         };
 
-        const STORAGE_KEY = 'neutradc_presales_master_v2';
+        const STORAGE_KEY = 'neutradc_presales_master_v3';
         let masterData = loadMasterData();
 
         // State sinkronisasi Selling Price vs Discount %
@@ -1758,6 +1769,120 @@
             renderMasterTab();
             recalculateAll();
             showToast('Master Rate Card dikembalikan ke standar awal Excel.');
+        }
+
+        /**
+         * Parser Otomatis File Excel (.xlsx / .xls / .csv) untuk Sinkronisasi Master Rate Card
+         */
+        function handleExcelMasterUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            if (typeof XLSX === 'undefined') {
+                showToast('Library pembaca Excel sedang dimuat, coba sesaat lagi.');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data, { type: 'array' });
+
+                    // Cari sheet "Colocation-MRC" atau "Master" atau gunakan sheet pertama
+                    const targetSheetName = workbook.SheetNames.find(name =>
+                        /colocation|mrc|master|rate/i.test(name)
+                    ) || workbook.SheetNames[0];
+
+                    const worksheet = workbook.Sheets[targetSheetName];
+                    const rows = XLSX.utils.sheet_to_json(worksheet, { header: 1, defval: '' });
+
+                    let updatedCount = 0;
+                    const locationAliases = {
+                        'serpong n+1': 'Serpong N+1',
+                        'serpong 2n': 'Serpong 2N',
+                        'sentul 2n': 'Sentul 2N',
+                        'surabaya n+1': 'Surabaya N+1',
+                        'surabaya 2n tier 4': 'Surabaya 2N Tier 4',
+                        'surabaya 2n': 'Surabaya 2N',
+                        'cikarang': 'HDC Cikarang',
+                        'hdc': 'HDC Cikarang'
+                    };
+
+                    rows.forEach(row => {
+                        if (!Array.isArray(row) || row.length === 0) return;
+                        const rowText = row.map(c => String(c).trim()).join(' | ');
+                        const lowerRow = rowText.toLowerCase();
+
+                        // Deteksi Kurs USD jika ada di baris Excel
+                        if (lowerRow.includes('kurs') || lowerRow.includes('usd')) {
+                            const nums = row.map(v => parseFloat(String(v).replace(/[^0-9.]/g, ''))).filter(n => n >= 10000 && n <= 30000);
+                            if (nums.length > 0) masterData.usdRate = nums[0];
+                        }
+
+                        // Deteksi penyesuaian +1 kVA / -1 kVA
+                        if (lowerRow.includes('+1') || lowerRow.includes('penambahan')) {
+                            const nums = row.map(v => parseFloat(String(v).replace(/[^0-9.]/g, ''))).filter(n => n >= 500000 && n <= 10000000);
+                            if (nums.length > 0) masterData.plusKvaPrice = nums[0];
+                        }
+                        if (lowerRow.includes('-1') || lowerRow.includes('pengurangan')) {
+                            const nums = row.map(v => parseFloat(String(v).replace(/[^0-9.]/g, ''))).filter(n => n >= 500000 && n <= 10000000);
+                            if (nums.length > 0) masterData.minusKvaPrice = nums[0];
+                        }
+
+                        // Cocokkan nama Data Center di setiap baris Excel
+                        for (const [alias, canonicalName] of Object.entries(locationAliases)) {
+                            if (lowerRow.includes(alias)) {
+                                // Ambil semua angka tarif valid pada baris tersebut (> 100.000 untuk IDR atau 50..2000 jika masih USD HDC)
+                                const numericCells = row
+                                    .map(cell => typeof cell === 'number' ? cell : parseFloat(String(cell).replace(/[^0-9.]/g, '')))
+                                    .filter(n => !isNaN(n) && n > 50);
+
+                                if (numericCells.length >= 2) {
+                                    const locObj = masterData.locations[canonicalName];
+                                    const normalizeVal = (val) => (canonicalName === 'HDC Cikarang' && val < 10000) ? Math.round(val * masterData.usdRate) : Math.round(val);
+
+                                    if (lowerRow.includes('pcpt')) {
+                                        locObj.pcptCost = normalizeVal(numericCells[0]);
+                                        locObj.pcptRsp = normalizeVal(numericCells[1]);
+                                        updatedCount++;
+                                    } else if (lowerRow.includes('pclb')) {
+                                        locObj.pclbCost = normalizeVal(numericCells[0]);
+                                        locObj.pclbRsp = normalizeVal(numericCells[1]);
+                                        updatedCount++;
+                                    } else if (numericCells.length >= 4) {
+                                        locObj.pclbCost = normalizeVal(numericCells[0]);
+                                        locObj.pclbRsp = normalizeVal(numericCells[1]);
+                                        locObj.pcptCost = normalizeVal(numericCells[2]);
+                                        locObj.pcptRsp = normalizeVal(numericCells[3]);
+                                        updatedCount++;
+                                    } else {
+                                        locObj.pclbCost = normalizeVal(numericCells[0]);
+                                        locObj.pclbRsp = normalizeVal(numericCells[1]);
+                                        updatedCount++;
+                                    }
+                                }
+                                break;
+                            }
+                        }
+                    });
+
+                    persistMasterData();
+                    renderMasterTab();
+                    recalculateAll(true);
+                    event.target.value = ''; // Reset input file agar bisa upload ulang file yang sama
+
+                    if (updatedCount > 0) {
+                        showToast(`Berhasil menyinkronkan ${updatedCount} baris tarif dari sheet "${targetSheetName}"!`);
+                    } else {
+                        showToast(`File "${file.name}" terbaca, namun tidak ditemukan baris tarif baru. Nilai saat ini dipertahankan.`);
+                    }
+                } catch (err) {
+                    console.error('Error parsing Excel:', err);
+                    showToast('Gagal membaca format file Excel. Pastikan file tidak terproteksi password.');
+                }
+            };
+            reader.readAsArrayBuffer(file);
         }
 
         function resetToSample() {
