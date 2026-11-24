@@ -138,7 +138,7 @@
     </div>
 
     <!-- Top Corporate Navigation Bar (White Clean Theme sesuai Referensi NeutraDC) -->
-    <header class="bg-white/95 backdrop-blur-md text-zinc-900 border-b border-zinc-200 sticky top-0 z-40 shadow-xs no-print">
+    <header class="bg-white/95 backdrop-blur-md text-zinc-900 border-b border-zinc-200 sticky top-0 z-50 shadow-xs no-print">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="h-18 py-2.5 flex items-center justify-between gap-4">
                 
@@ -195,33 +195,33 @@
                 </div>
 
                 <!-- Portal Navigation Links (Bergaya Portal Resmi NeutraDC) -->
-                <nav class="hidden lg:flex items-center gap-1" aria-label="Tabs">
-                    <button onclick="switchTab('request')" id="tab-btn-request" class="tab-btn active px-4 py-2 text-sm font-semibold text-[#C40000] border-b-2 border-[#C40000] transition-all flex items-center gap-2">
-                        <span>Pricing Engine</span>
+                <nav class="hidden lg:flex items-center gap-1 relative z-30" aria-label="Tabs">
+                    <button type="button" onclick="switchTab('request')" id="tab-btn-request" class="tab-btn active cursor-pointer px-4 py-2 rounded-t-lg text-sm font-semibold text-[#C40000] bg-[#FEF2F2]/60 border-b-2 border-[#C40000] transition-all flex items-center gap-2">
+                        <span>Request &amp; Quote Form</span>
                     </button>
-                    <button onclick="switchTab('calculation')" id="tab-btn-calculation" class="tab-btn px-4 py-2 text-sm font-medium text-zinc-600 hover:text-[#C40000] border-b-2 border-transparent transition-all flex items-center gap-2">
-                        <span>Multi-Year Cashflow (Y1–Y10)</span>
+                    <button type="button" onclick="switchTab('calculation')" id="tab-btn-calculation" class="tab-btn cursor-pointer px-4 py-2 rounded-t-lg text-sm font-medium text-zinc-600 hover:text-[#C40000] hover:bg-zinc-50 border-b-2 border-transparent transition-all flex items-center gap-2">
+                        <span>Calculation Multi-Year (Y1–Y10)</span>
                     </button>
-                    <button onclick="switchTab('master')" id="tab-btn-master" class="tab-btn px-4 py-2 text-sm font-medium text-zinc-600 hover:text-[#C40000] border-b-2 border-transparent transition-all flex items-center gap-2">
-                        <span>Master Rate Card</span>
+                    <button type="button" onclick="switchTab('master')" id="tab-btn-master" class="tab-btn cursor-pointer px-4 py-2 rounded-t-lg text-sm font-medium text-zinc-600 hover:text-[#C40000] hover:bg-zinc-50 border-b-2 border-transparent transition-all flex items-center gap-2">
+                        <span>Master Rate Card &amp; Assumptions</span>
                     </button>
                 </nav>
 
                 <!-- Corporate Pill Action Buttons -->
-                <div class="flex items-center gap-2">
-                    <button onclick="exportCSV()" class="px-3.5 py-2 text-xs font-semibold text-zinc-700 bg-zinc-100 hover:bg-zinc-200 border border-zinc-200 rounded-full transition-colors flex items-center gap-1.5" title="Unduh Proyeksi Multi-Tahun ke CSV">
+                <div class="flex items-center gap-2 relative z-30">
+                    <button type="button" onclick="exportCSV()" class="cursor-pointer px-3.5 py-2 text-xs font-semibold text-zinc-700 bg-zinc-100 hover:bg-zinc-200 border border-zinc-200 rounded-full transition-colors flex items-center gap-1.5" title="Unduh Proyeksi Multi-Tahun ke CSV">
                         <svg class="w-3.5 h-3.5 text-[#15803D]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
                         </svg>
                         <span class="hidden md:inline">Export CSV</span>
                     </button>
-                    <button onclick="window.print()" class="px-4 py-2 text-xs font-semibold text-[#C40000] bg-[#FEF2F2] hover:bg-[#FEE2E2] border border-[#FECACA] rounded-full transition-colors flex items-center gap-1.5" title="Cetak atau Simpan Proposal sebagai PDF">
+                    <button type="button" onclick="window.print()" class="cursor-pointer px-4 py-2 text-xs font-semibold text-[#C40000] bg-[#FEF2F2] hover:bg-[#FEE2E2] border border-[#FECACA] rounded-full transition-colors flex items-center gap-1.5" title="Cetak atau Simpan Proposal sebagai PDF">
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
                         </svg>
                         <span class="hidden sm:inline">Export PDF</span>
                     </button>
-                    <button onclick="copyQuoteSummary()" class="px-4 py-2 text-xs font-semibold text-white bg-[#C40000] hover:bg-[#990000] rounded-full shadow-sm transition-all flex items-center gap-1.5">
+                    <button type="button" onclick="copyQuoteSummary()" class="cursor-pointer px-4 py-2 text-xs font-semibold text-white bg-[#C40000] hover:bg-[#990000] rounded-full shadow-sm transition-all flex items-center gap-1.5">
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path>
                         </svg>
@@ -231,14 +231,14 @@
             </div>
 
             <!-- Mobile / Tablet Tab Strip -->
-            <div class="flex lg:hidden space-x-1 overflow-x-auto pb-0 -mb-px border-t border-zinc-100">
-                <button onclick="switchTab('request')" id="tab-btn-mobile-request" class="tab-btn-mobile active px-3.5 py-2.5 text-xs font-semibold border-b-2 border-[#C40000] text-[#C40000] whitespace-nowrap">
-                    1. Pricing Engine
+            <div class="flex lg:hidden space-x-1 overflow-x-auto pb-0 -mb-px border-t border-zinc-100 relative z-30">
+                <button type="button" onclick="switchTab('request')" id="tab-btn-mobile-request" class="tab-btn-mobile active cursor-pointer px-3.5 py-2.5 text-xs font-semibold border-b-2 border-[#C40000] text-[#C40000] bg-[#FEF2F2]/60 whitespace-nowrap">
+                    1. Request &amp; Quote
                 </button>
-                <button onclick="switchTab('calculation')" id="tab-btn-mobile-calculation" class="tab-btn-mobile px-3.5 py-2.5 text-xs font-medium border-b-2 border-transparent text-zinc-500 hover:text-[#C40000] whitespace-nowrap">
-                    2. Multi-Year Cashflow
+                <button type="button" onclick="switchTab('calculation')" id="tab-btn-mobile-calculation" class="tab-btn-mobile cursor-pointer px-3.5 py-2.5 text-xs font-medium border-b-2 border-transparent text-zinc-500 hover:text-[#C40000] whitespace-nowrap">
+                    2. Calculation Multi-Year
                 </button>
-                <button onclick="switchTab('master')" id="tab-btn-mobile-master" class="tab-btn-mobile px-3.5 py-2.5 text-xs font-medium border-b-2 border-transparent text-zinc-500 hover:text-[#C40000] whitespace-nowrap">
+                <button type="button" onclick="switchTab('master')" id="tab-btn-mobile-master" class="tab-btn-mobile cursor-pointer px-3.5 py-2.5 text-xs font-medium border-b-2 border-transparent text-zinc-500 hover:text-[#C40000] whitespace-nowrap">
                     3. Master Rate Card
                 </button>
             </div>
@@ -822,7 +822,7 @@
             <!-- Tabel 2: Proyeksi Bulanan & Tahunan MRC (Y1 - Yn) -->
             <section class="bg-white rounded-2xl shadow-xs border border-zinc-200 overflow-hidden">
                 <div class="px-5 py-3.5 bg-zinc-900 text-white flex items-center justify-between">
-                    <h3 class="text-xs sm:text-sm font-bold uppercase tracking-wider">2. Proyeksi Cost, RSP &amp; Revenue Tahunan (Y1 – Y<span id="calcMaxYearHeader">3</span>)</h3>
+                    <h3 class="text-xs sm:text-sm font-bold uppercase tracking-wider">2. Proyeksi Cost, RSP &amp; Revenue Multi-Tahun (Y1 – Y10 | Kontrak Aktif: <span id="calcMaxYearHeader">3</span> Tahun)</h3>
                     <span class="text-xs text-red-300">Geser tabel ke samping untuk melihat seluruh tahun &rarr;</span>
                 </div>
                 <div class="overflow-x-auto">
@@ -1128,31 +1128,44 @@
          * Navigasi Antar Tab (Request, Calculation, Master)
          */
         function switchTab(tabName) {
-            document.querySelectorAll('.tab-panel').forEach(panel => panel.classList.add('hidden'));
-            document.getElementById(`panel-${tabName}`).classList.remove('hidden');
+            document.querySelectorAll('.tab-panel').forEach(panel => {
+                panel.classList.add('hidden');
+                panel.classList.remove('block');
+            });
+            const targetPanel = document.getElementById(`panel-${tabName}`);
+            if (targetPanel) {
+                targetPanel.classList.remove('hidden');
+                targetPanel.classList.add('block');
+            }
 
             // Desktop nav links
             document.querySelectorAll('.tab-btn').forEach(btn => {
-                btn.classList.remove('border-[#C40000]', 'text-[#C40000]', 'font-semibold');
+                btn.classList.remove('border-[#C40000]', 'text-[#C40000]', 'font-semibold', 'bg-[#FEF2F2]/60');
                 btn.classList.add('border-transparent', 'text-zinc-600', 'font-medium');
             });
 
             const activeBtn = document.getElementById(`tab-btn-${tabName}`);
             if (activeBtn) {
                 activeBtn.classList.remove('border-transparent', 'text-zinc-600', 'font-medium');
-                activeBtn.classList.add('border-[#C40000]', 'text-[#C40000]', 'font-semibold');
+                activeBtn.classList.add('border-[#C40000]', 'text-[#C40000]', 'font-semibold', 'bg-[#FEF2F2]/60');
             }
 
             // Mobile nav links
             document.querySelectorAll('.tab-btn-mobile').forEach(btn => {
-                btn.classList.remove('border-[#C40000]', 'text-[#C40000]', 'font-semibold');
+                btn.classList.remove('border-[#C40000]', 'text-[#C40000]', 'font-semibold', 'bg-[#FEF2F2]/60');
                 btn.classList.add('border-transparent', 'text-zinc-500', 'font-medium');
             });
 
             const activeMobileBtn = document.getElementById(`tab-btn-mobile-${tabName}`);
             if (activeMobileBtn) {
                 activeMobileBtn.classList.remove('border-transparent', 'text-zinc-500', 'font-medium');
-                activeMobileBtn.classList.add('border-[#C40000]', 'text-[#C40000]', 'font-semibold');
+                activeMobileBtn.classList.add('border-[#C40000]', 'text-[#C40000]', 'font-semibold', 'bg-[#FEF2F2]/60');
+            }
+
+            if (tabName === 'calculation') {
+                renderCalculationTab();
+            } else if (tabName === 'master') {
+                renderMasterTab();
             }
         }
 
@@ -1230,53 +1243,43 @@
          */
         function recalculateAll(syncSellingFromDiscount = true) {
             try {
-                // 1. Ambil input metadata & teknis
-                const reqDate = document.getElementById('reqDate').value;
-                const reqRev = document.getElementById('reqRev').value.trim() || 'Rev-01';
-                const customerName = document.getElementById('customerName').value.trim() || 'Customer';
-                const salesName = document.getElementById('salesName').value.trim() || 'Sales';
+                // 1. Ambil seluruh input dari Form Request
+                const reqDate = document.getElementById('reqDate').value || new Date().toISOString().split('T')[0];
+                const reqRev = document.getElementById('reqRev').value || 'Rev-01';
+                const customerName = document.getElementById('customerName').value || 'Prospective Client';
+                const salesName = document.getElementById('salesName').value || 'Presales Team';
                 const orderType = document.getElementById('orderType').value;
                 const configType = document.getElementById('configType').value;
-                const customBoqCost = configType === 'Custom' ? (parseFloat(document.getElementById('customBoqCost').value) || 0) : 0;
+                const customBoqCost = configType === 'Custom' ? Math.max(0, parseFloat(document.getElementById('customBoqCost').value) || 0) : 0;
 
                 const locationName = document.getElementById('dcLocation').value;
                 const coloType = document.getElementById('coloType').value;
                 const powerSpec = document.getElementById('powerSpec').value;
-                const totalRack = Math.max(1, parseInt(document.getElementById('totalRack').value, 10) || 1);
+                const totalRack = Math.max(1, parseInt(document.getElementById('totalRack').value) || 1);
                 const powerPerRack = Math.max(0.5, parseFloat(document.getElementById('powerPerRack').value) || 3.5);
-                const contractYears = Math.min(10, Math.max(1, parseInt(document.getElementById('contractYears').value, 10) || 3));
+                const contractYears = Math.max(1, parseInt(document.getElementById('contractYears').value) || 3);
                 const yoyRate = Math.max(0, parseFloat(document.getElementById('yoyEscalation').value) || 0) / 100;
                 const includePpn = document.getElementById('togglePpn').checked;
 
                 const locData = masterData.locations[locationName] || masterData.locations["Sentul 2N"];
-                const isHdc = locData.group === "HDC Cikarang";
+                const isHdc = locData.group === 'HDC Cikarang';
                 const totalPower = totalRack * powerPerRack;
 
-                // Update Badge DC Group & Label Satuan Daya
-                const dcGroupBadge = document.getElementById('dcGroupBadge');
-                const powerPerRackLabel = document.getElementById('powerPerRackLabel');
-                const totalPowerDisplay = document.getElementById('totalPowerDisplay');
-                const powerAdjustmentNote = document.getElementById('powerAdjustmentNote');
+                // Update label unit daya (kVA untuk 3SDC, kW untuk HDC Cikarang)
+                document.getElementById('dcGroupBadge').textContent = isHdc ? 'HDC Cikarang (Per-kW)' : '3SDC (Per-Rack)';
+                document.getElementById('powerPerRackLabel').textContent = isHdc ? 'Power per Rack (kW)' : 'Power per Rack (kVA)';
+                document.getElementById('totalPowerDisplay').textContent = `${totalPower.toFixed(1)} ${isHdc ? 'kW' : 'kVA'}`;
 
                 if (isHdc) {
-                    dcGroupBadge.textContent = 'HDC Cikarang (Per-kW)';
-                    dcGroupBadge.className = 'px-2.5 py-1 text-xs font-bold rounded-full bg-zinc-900 text-white';
-                    powerPerRackLabel.textContent = 'Power per Rack (kW)';
-                    totalPowerDisplay.textContent = `${totalPower.toFixed(1)} kW`;
-                    powerAdjustmentNote.textContent = `Tarif HDC dihitung berbasis total ${totalPower.toFixed(1)} kW (Kurs Rp ${masterData.usdRate.toLocaleString('id-ID')}/USD)`;
+                    document.getElementById('powerAdjustmentNote').textContent = `Tarif HDC dihitung per kW (Kurs: ${formatIDR(masterData.usdRate)}/USD)`;
                 } else {
-                    dcGroupBadge.textContent = '3SDC (Per-Rack)';
-                    dcGroupBadge.className = 'px-2.5 py-1 text-xs font-bold rounded-full bg-[#FEF2F2] text-[#C40000] border border-[#FECACA]';
-                    powerPerRackLabel.textContent = 'Power per Rack (kVA)';
-                    totalPowerDisplay.textContent = `${totalPower.toFixed(1)} kVA`;
-
-                    const diffKva = powerPerRack - masterData.baseKva3sdc;
-                    if (Math.abs(diffKva) < 0.01) {
-                        powerAdjustmentNote.textContent = `Sesuai basis standar ${masterData.baseKva3sdc} kVA/rack`;
-                    } else if (diffKva > 0) {
-                        powerAdjustmentNote.textContent = `Penambahan +${diffKva.toFixed(1)} kVA/rack (+${formatIDR(diffKva * masterData.plusKvaPrice)}/rack)`;
+                    const diff = powerPerRack - masterData.baseKva3sdc;
+                    if (Math.abs(diff) < 0.01) {
+                        document.getElementById('powerAdjustmentNote').textContent = `Sesuai basis standar ${masterData.baseKva3sdc} kVA/rack`;
+                    } else if (diff > 0) {
+                        document.getElementById('powerAdjustmentNote').textContent = `+${diff.toFixed(1)} kVA di atas basis (+${formatIDR(diff * masterData.plusKvaPrice)}/rack)`;
                     } else {
-                        powerAdjustmentNote.textContent = `Pengurangan ${diffKva.toFixed(1)} kVA/rack (${formatIDR(diffKva * masterData.minusKvaPrice)}/rack)`;
+                        document.getElementById('powerAdjustmentNote').textContent = `${diff.toFixed(1)} kVA di bawah basis (${formatIDR(diff * masterData.minusKvaPrice)}/rack)`;
                     }
                 }
 
@@ -1352,15 +1355,15 @@
                 const otcActMarginPct = otcSelling > 0 ? ((otcSelling - otcCost) / otcSelling) * 100 : 0;
                 const mrcActMarginPct = mrcSellingY1 > 0 ? ((mrcSellingY1 - mrcCostY1) / mrcSellingY1) * 100 : 0;
 
-                // 5. Proyeksi Multi-Tahun (Y1 hingga contractYears)
-                // Catatan presales standar: Cost naik sesuai YoY Escalation, sedangkan RSP & Contract Selling mengikuti eskalasi tahunan atau flat sesuai kebijakan;
-                // Di sheet Calculationn Excel, Cost & Revenue bulanan diproyeksikan per tahun Y1..Yn dengan faktor eskalasi YoY.
+                // 5. Proyeksi Multi-Tahun (Y1 hingga Y10, menandai tahun aktif sesuai contractYears)
                 const yearlyProjection = [];
+                const fullTenYearProjection = [];
                 let totalMultiYearMrcCost = 0;
                 let totalMultiYearMrcRsp = 0;
                 let totalMultiYearMrcSelling = 0;
 
-                for (let y = 1; y <= contractYears; y++) {
+                for (let y = 1; y <= 10; y++) {
+                    const isWithinContract = y <= contractYears;
                     const escFactor = Math.pow(1 + yoyRate, y - 1);
                     const mCost = mrcCostY1 * escFactor;
                     const mRsp = mrcRspY1 * escFactor;
@@ -1371,12 +1374,15 @@
                     const ySell = mSell * 12;
                     const yMargin = ySell > 0 ? ((ySell - yCost) / ySell) * 100 : 0;
 
-                    totalMultiYearMrcCost += yCost;
-                    totalMultiYearMrcRsp += yRsp;
-                    totalMultiYearMrcSelling += ySell;
+                    if (isWithinContract) {
+                        totalMultiYearMrcCost += yCost;
+                        totalMultiYearMrcRsp += yRsp;
+                        totalMultiYearMrcSelling += ySell;
+                    }
 
-                    yearlyProjection.push({
+                    const rowData = {
                         year: y,
+                        isWithinContract,
                         escFactor,
                         monthlyCost: mCost,
                         monthlyRsp: mRsp,
@@ -1391,7 +1397,12 @@
                         rackPduCable: mCost * masterData.costSplit.rackPduCable,
                         maintenance: mCost * masterData.costSplit.maintenance,
                         insurance: mCost * masterData.costSplit.insurance
-                    });
+                    };
+
+                    fullTenYearProjection.push(rowData);
+                    if (isWithinContract) {
+                        yearlyProjection.push(rowData);
+                    }
                 }
 
                 // 6. Total Contract Valuation (TCO & TCV)
@@ -1420,7 +1431,7 @@
                     contractYears, yoyRate, includePpn,
                     pmCostTotal, transportCostTotal, otcCost, otcRsp, otcRspMarginPct, otcSelling, otcDiscountPct, otcActMarginPct,
                     mrcCostY1, mrcRspY1, mrcRspMarginPct, mrcSellingY1, mrcDiscountPct, mrcActMarginPct,
-                    yearlyProjection, tco, tcvRsp, tcvSelling, tcvSellingWithPpn,
+                    yearlyProjection, fullTenYearProjection, tco, tcvRsp, tcvSelling, tcvSellingWithPpn,
                     totalRspMarginPct, totalActMarginPct, totalDiscountPct, grossProfit,
                     simOtcPrice, simMrcPrice
                 };
@@ -1597,44 +1608,39 @@
             `;
             otcBody.innerHTML = otcRows;
 
-            // 2. Render Tabel Multi-Year (Y1 .. Yn + Total)
+            // 2. Render Tabel Multi-Year (Y1 .. Y10 + Total Masa Kontrak Aktif)
             const thead = document.getElementById('multiYearThead');
             const tbody = document.getElementById('multiYearTbody');
+            const tenYears = s.fullTenYearProjection || s.yearlyProjection;
 
-            let yearHeaders = s.yearlyProjection.map(p => `<th class="py-3 px-3 font-semibold text-right min-w-[130px]">Year ${p.year} (Y${p.year})</th>`).join('');
+            let yearHeaders = tenYears.map(p => {
+                if (p.isWithinContract) {
+                    return `<th class="py-3 px-3 font-semibold text-right min-w-[130px] bg-zinc-100 text-zinc-800">Year ${p.year} (Y${p.year})<span class="block text-[9px] font-bold text-[#15803D] uppercase">Active Contract</span></th>`;
+                } else {
+                    return `<th class="py-3 px-3 font-medium text-right min-w-[130px] bg-zinc-50 text-zinc-400">Year ${p.year} (Y${p.year})<span class="block text-[9px] font-normal text-zinc-400 uppercase">Out of Contract</span></th>`;
+                }
+            }).join('');
+
             thead.innerHTML = `
                 <tr class="bg-zinc-100 text-zinc-700 border-b border-zinc-300">
-                    <th class="py-3 px-4 font-bold sticky left-0 bg-zinc-100 z-10 min-w-[220px]">Komponen Biaya &amp; Revenue</th>
+                    <th class="py-3 px-4 font-bold sticky left-0 bg-zinc-100 z-10 min-w-[230px]">Komponen Biaya &amp; Revenue</th>
                     ${yearHeaders}
-                    <th class="py-3 px-4 font-extrabold text-right bg-zinc-200 text-zinc-900 min-w-[150px]">TOTAL (${s.contractYears} Thn)</th>
-                </tr>
-            `;
-            otcBody.innerHTML = otcRows;
-
-            // 2. Render Tabel Multi-Year (Y1 .. Yn + Total)
-            const thead = document.getElementById('multiYearThead');
-            const tbody = document.getElementById('multiYearTbody');
-
-            let yearHeaders = s.yearlyProjection.map(p => `<th class="py-3 px-3 font-semibold text-right min-w-[130px]">Year ${p.year} (Y${p.year})</th>`).join('');
-            thead.innerHTML = `
-                <tr class="bg-slate-100 text-slate-700 border-b border-slate-300">
-                    <th class="py-3 px-4 font-bold sticky left-0 bg-slate-100 z-10 min-w-[220px]">Komponen Biaya &amp; Revenue</th>
-                    ${yearHeaders}
-                    <th class="py-3 px-4 font-extrabold text-right bg-slate-200 text-slate-900 min-w-[150px]">TOTAL (${s.contractYears} Thn)</th>
+                    <th class="py-3 px-4 font-extrabold text-right bg-[#FEF2F2] text-[#C40000] min-w-[160px] border-l border-[#FECACA]">TOTAL (${s.contractYears} Thn Kontrak)</th>
                 </tr>
             `;
 
             const buildRow = (label, getterFn, totalVal, rowClass = '', isPercent = false) => {
-                const cells = s.yearlyProjection.map(p => {
+                const cells = tenYears.map(p => {
                     const v = getterFn(p);
-                    return `<td class="py-2.5 px-3 text-right">${isPercent ? v.toFixed(1) + '%' : formatIDR(v)}</td>`;
+                    const cellOpacity = p.isWithinContract ? '' : 'text-zinc-400 bg-zinc-50/50';
+                    return `<td class="py-2.5 px-3 text-right ${cellOpacity}">${isPercent ? v.toFixed(1) + '%' : formatIDR(v)}</td>`;
                 }).join('');
                 const totalCell = isPercent ? `${totalVal.toFixed(1)}%` : formatIDR(totalVal);
                 return `
                     <tr class="${rowClass}">
                         <td class="py-2.5 px-4 sticky left-0 bg-inherit z-10">${label}</td>
                         ${cells}
-                        <td class="py-2.5 px-4 text-right font-bold bg-slate-50/80">${totalCell}</td>
+                        <td class="py-2.5 px-4 text-right font-bold bg-[#FEF2F2]/40 border-l border-[#FECACA]">${totalCell}</td>
                     </tr>
                 `;
             };
@@ -1644,21 +1650,21 @@
             let bodyHtml = '';
             // Sub-header: Monthly Cost Breakdown
             bodyHtml += `
-                <tr class="bg-slate-50 text-[11px] font-bold uppercase tracking-wider text-slate-500">
-                    <td class="py-2 px-4 sticky left-0 bg-slate-50" colspan="${s.contractYears + 2}">A. Breakdown HPP Bulanan (Monthly Cost / Bulan)</td>
+                <tr class="bg-zinc-50 text-[11px] font-bold uppercase tracking-wider text-zinc-500">
+                    <td class="py-2 px-4 sticky left-0 bg-zinc-50" colspan="${tenYears.length + 2}">A. Breakdown HPP Bulanan (Monthly Cost / Bulan)</td>
                 </tr>
             `;
-            bodyHtml += buildRow('1. Space / Floor Area', p => p.space, sumField(p => p.space) / s.contractYears, 'bg-white text-slate-600');
-            bodyHtml += buildRow('2. Power &amp; Cooling', p => p.power, sumField(p => p.power) / s.contractYears, 'bg-white text-slate-600');
-            bodyHtml += buildRow('3. Rack, PDU &amp; Power Cable', p => p.rackPduCable, sumField(p => p.rackPduCable) / s.contractYears, 'bg-white text-slate-600');
-            bodyHtml += buildRow('4. Preventive &amp; Corrective Maint.', p => p.maintenance, sumField(p => p.maintenance) / s.contractYears, 'bg-white text-slate-600');
-            bodyHtml += buildRow('5. Facility Insurance', p => p.insurance, sumField(p => p.insurance) / s.contractYears, 'bg-white text-slate-600');
-            bodyHtml += buildRow('Total Monthly Cost (MRC HPP)', p => p.monthlyCost, sumField(p => p.monthlyCost) / s.contractYears, 'bg-slate-100 font-bold text-slate-900');
+            bodyHtml += buildRow('1. Space / Floor Area', p => p.space, sumField(p => p.space) / s.contractYears, 'bg-white text-zinc-600');
+            bodyHtml += buildRow('2. Power &amp; Cooling', p => p.power, sumField(p => p.power) / s.contractYears, 'bg-white text-zinc-600');
+            bodyHtml += buildRow('3. Rack, PDU &amp; Power Cable', p => p.rackPduCable, sumField(p => p.rackPduCable) / s.contractYears, 'bg-white text-zinc-600');
+            bodyHtml += buildRow('4. Preventive &amp; Corrective Maint.', p => p.maintenance, sumField(p => p.maintenance) / s.contractYears, 'bg-white text-zinc-600');
+            bodyHtml += buildRow('5. Facility Insurance', p => p.insurance, sumField(p => p.insurance) / s.contractYears, 'bg-white text-zinc-600');
+            bodyHtml += buildRow('Total Monthly Cost (MRC HPP)', p => p.monthlyCost, sumField(p => p.monthlyCost) / s.contractYears, 'bg-zinc-100 font-bold text-zinc-900');
 
             // Sub-header: Annual Cashflow (12 Months)
             bodyHtml += `
-                <tr class="bg-slate-50 text-[11px] font-bold uppercase tracking-wider text-slate-500 border-t-2 border-slate-300">
-                    <td class="py-2 px-4 sticky left-0 bg-slate-50" colspan="${s.contractYears + 2}">B. Proyeksi Tahunan (Annualized &times; 12 Bulan)</td>
+                <tr class="bg-zinc-50 text-[11px] font-bold uppercase tracking-wider text-zinc-500 border-t-2 border-zinc-300">
+                    <td class="py-2 px-4 sticky left-0 bg-zinc-50" colspan="${tenYears.length + 2}">B. Proyeksi Tahunan (Annualized &times; 12 Bulan)</td>
                 </tr>
             `;
             bodyHtml += buildRow('Annual MRC Cost (HPP / Tahun)', p => p.annualCost, sumField(p => p.annualCost), 'bg-white font-medium text-zinc-800');
