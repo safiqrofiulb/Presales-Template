@@ -861,6 +861,12 @@
                         <span>Sync / Import dari Excel (.xlsx)</span>
                     </label>
                     <input type="file" id="excelMasterUpload" accept=".xlsx,.xls,.csv" onchange="handleExcelMasterUpload(event)" class="hidden">
+                    <button type="button" onclick="downloadSampleMasterExcel()" class="cursor-pointer px-4 py-2 bg-zinc-100 hover:bg-zinc-200 text-zinc-800 border border-zinc-300 rounded-full text-xs font-semibold transition-colors flex items-center gap-1.5">
+                        <svg class="w-3.5 h-3.5 text-[#15803D]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                        </svg>
+                        <span>Download Template Excel</span>
+                    </button>
                     <button type="button" onclick="resetMasterData()" class="cursor-pointer px-4 py-2 bg-[#FEF2F2] hover:bg-[#FEE2E2] text-[#C40000] border border-[#FECACA] rounded-full text-xs font-semibold transition-colors">
                         Reset ke Default Excel
                     </button>
@@ -1295,20 +1301,27 @@
                 }
 
                 // 2. Kalkulasi OTC Cost & RSP
-                const pmCostTotal = masterData.otcPmCostPerRack * totalRack;
-                const transportCostTotal = masterData.otcTransportPerRack * totalRack;
+                const otcConfig = isHdc ? (masterData.otcHdc || { pmCost: 5400000, transportCost: 2700000 }) : {
+                    pmCost: masterData.otcPmCostPerRack,
+                    transportCost: masterData.otcTransportPerRack
+                };
+                const pmCostTotal = otcConfig.pmCost * totalRack;
+                const transportCostTotal = otcConfig.transportCost * totalRack;
                 const otcCost = pmCostTotal + transportCostTotal + customBoqCost;
                 const otcMarginFactor = 1 - (masterData.otcRspMarginPct / 100);
                 const otcRsp = excelRoundUp100k(otcCost / Math.max(0.1, otcMarginFactor));
                 const otcRspMarginPct = otcRsp > 0 ? ((otcRsp - otcCost) / otcRsp) * 100 : 0;
 
-                // 3. Kalkulasi MRC Tahun ke-1 (Cost & RSP)
-                const baseUnitCost = powerSpec === 'PCLB' ? locData.pclbCost : locData.pcptCost;
-                const baseUnitRsp = powerSpec === 'PCLB' ? locData.pclbRsp : locData.pcptRsp;
+                // 3. Kalkulasi MRC Tahun ke-1 (Cost & RSP) - mendukung override spesifik Cage / Private Suite dari Excel
+                const serviceOverride = (locData.byService && locData.byService[coloType] && locData.byService[coloType][powerSpec]) || null;
+                const baseUnitCost = serviceOverride ? serviceOverride.cost : (powerSpec === 'PCLB' ? locData.pclbCost : locData.pcptCost);
+                const baseUnitRsp = serviceOverride ? serviceOverride.rsp : (powerSpec === 'PCLB' ? locData.pclbRsp : locData.pcptRsp);
 
                 let typeMultiplier = 1.0;
-                if (coloType === 'Cage') typeMultiplier = masterData.cageMultiplier;
-                if (coloType === 'Private Suite') typeMultiplier = masterData.privateSuiteMultiplier;
+                if (!serviceOverride) {
+                    if (coloType === 'Cage') typeMultiplier = masterData.cageMultiplier;
+                    if (coloType === 'Private Suite') typeMultiplier = masterData.privateSuiteMultiplier;
+                }
 
                 let mrcCostY1 = 0;
                 let mrcRspY1 = 0;
@@ -1773,6 +1786,8 @@
 
         /**
          * Parser Otomatis File Excel (.xlsx / .xls / .csv) untuk Sinkronisasi Master Rate Card
+         * Mendukung penuh struktur Sheet Colocation-MRC (Jenis Layanan, Tipe/Spesifikasi, Lokasi, Data Center, Space..Insurance, Cost, Selling Price (RSP))
+         * serta Sheet Master Harga OTC (Jenis Layanan, Lokasi, Description, Mata Uang, Total Cost, Margin, Cost (IDR), Selling Price (RSP))
          */
         function handleExcelMasterUpload(event) {
             const file = event.target.files[0];
@@ -1789,15 +1804,9 @@
                     const data = new Uint8Array(e.target.result);
                     const workbook = XLSX.read(data, { type: 'array' });
 
-                    // Cari sheet "Colocation-MRC" atau "Master" atau gunakan sheet pertama
-                    const targetSheetName = workbook.SheetNames.find(name =>
-                        /colocation|mrc|master|rate/i.test(name)
-                    ) || workbook.SheetNames[0];
+                    let updatedMrcCount = 0;
+                    let updatedOtcCount = 0;
 
-                    const worksheet = workbook.Sheets[targetSheetName];
-                    const rows = XLSX.utils.sheet_to_json(worksheet, { header: 1, defval: '' });
-
-                    let updatedCount = 0;
                     const locationAliases = {
                         'serpong n+1': 'Serpong N+1',
                         'serpong 2n': 'Serpong 2N',
@@ -1805,64 +1814,158 @@
                         'surabaya n+1': 'Surabaya N+1',
                         'surabaya 2n tier 4': 'Surabaya 2N Tier 4',
                         'surabaya 2n': 'Surabaya 2N',
-                        'cikarang': 'HDC Cikarang',
-                        'hdc': 'HDC Cikarang'
+                        'hdc cikarang': 'HDC Cikarang',
+                        'cikarang': 'HDC Cikarang'
                     };
 
-                    rows.forEach(row => {
-                        if (!Array.isArray(row) || row.length === 0) return;
-                        const rowText = row.map(c => String(c).trim()).join(' | ');
-                        const lowerRow = rowText.toLowerCase();
-
-                        // Deteksi Kurs USD jika ada di baris Excel
-                        if (lowerRow.includes('kurs') || lowerRow.includes('usd')) {
-                            const nums = row.map(v => parseFloat(String(v).replace(/[^0-9.]/g, ''))).filter(n => n >= 10000 && n <= 30000);
-                            if (nums.length > 0) masterData.usdRate = nums[0];
+                    const parseNum = (val) => {
+                        if (typeof val === 'number') return val;
+                        if (!val) return NaN;
+                        let str = String(val).trim();
+                        // Tangani format angka Indonesia (misal 18.000 atau 15.600.000) vs desimal (3.5)
+                        if (/^\d{1,3}(\.\d{3})+$/.test(str)) {
+                            str = str.replace(/\./g, '');
+                        } else {
+                            str = str.replace(/,/g, '');
                         }
+                        const num = parseFloat(str.replace(/[^0-9.-]/g, ''));
+                        return isNaN(num) ? NaN : num;
+                    };
 
-                        // Deteksi penyesuaian +1 kVA / -1 kVA
-                        if (lowerRow.includes('+1') || lowerRow.includes('penambahan')) {
-                            const nums = row.map(v => parseFloat(String(v).replace(/[^0-9.]/g, ''))).filter(n => n >= 500000 && n <= 10000000);
-                            if (nums.length > 0) masterData.plusKvaPrice = nums[0];
-                        }
-                        if (lowerRow.includes('-1') || lowerRow.includes('pengurangan')) {
-                            const nums = row.map(v => parseFloat(String(v).replace(/[^0-9.]/g, ''))).filter(n => n >= 500000 && n <= 10000000);
-                            if (nums.length > 0) masterData.minusKvaPrice = nums[0];
-                        }
+                    // Loop seluruh sheet pada file Excel agar Colocation-MRC & Master Harga OTC terbaca sekaligus
+                    workbook.SheetNames.forEach(sheetName => {
+                        const worksheet = workbook.Sheets[sheetName];
+                        const rows = XLSX.utils.sheet_to_json(worksheet, { header: 1, defval: '' });
+                        if (!rows || rows.length === 0) return;
 
-                        // Cocokkan nama Data Center di setiap baris Excel
-                        for (const [alias, canonicalName] of Object.entries(locationAliases)) {
-                            if (lowerRow.includes(alias)) {
-                                // Ambil semua angka tarif valid pada baris tersebut (> 100.000 untuk IDR atau 50..2000 jika masih USD HDC)
-                                const numericCells = row
-                                    .map(cell => typeof cell === 'number' ? cell : parseFloat(String(cell).replace(/[^0-9.]/g, '')))
-                                    .filter(n => !isNaN(n) && n > 50);
-
-                                if (numericCells.length >= 2) {
-                                    const locObj = masterData.locations[canonicalName];
-                                    const normalizeVal = (val) => (canonicalName === 'HDC Cikarang' && val < 10000) ? Math.round(val * masterData.usdRate) : Math.round(val);
-
-                                    if (lowerRow.includes('pcpt')) {
-                                        locObj.pcptCost = normalizeVal(numericCells[0]);
-                                        locObj.pcptRsp = normalizeVal(numericCells[1]);
-                                        updatedCount++;
-                                    } else if (lowerRow.includes('pclb')) {
-                                        locObj.pclbCost = normalizeVal(numericCells[0]);
-                                        locObj.pclbRsp = normalizeVal(numericCells[1]);
-                                        updatedCount++;
-                                    } else if (numericCells.length >= 4) {
-                                        locObj.pclbCost = normalizeVal(numericCells[0]);
-                                        locObj.pclbRsp = normalizeVal(numericCells[1]);
-                                        locObj.pcptCost = normalizeVal(numericCells[2]);
-                                        locObj.pcptRsp = normalizeVal(numericCells[3]);
-                                        updatedCount++;
-                                    } else {
-                                        locObj.pclbCost = normalizeVal(numericCells[0]);
-                                        locObj.pclbRsp = normalizeVal(numericCells[1]);
-                                        updatedCount++;
+                        // 1. Cek Kurs USD ke IDR di 15 baris pertama
+                        for (let r = 0; r < Math.min(15, rows.length); r++) {
+                            const rowStr = rows[r].map(c => String(c).toLowerCase()).join(' ');
+                            if (rowStr.includes('kurs') || rowStr.includes('usd ke idr')) {
+                                for (let c = 0; c < rows[r].length; c++) {
+                                    const n = parseNum(rows[r][c]);
+                                    if (!isNaN(n) && n >= 10000 && n <= 35000) {
+                                        masterData.usdRate = n;
                                     }
                                 }
+                            }
+                        }
+
+                        // 2. Deteksi baris Header Tabel (cari baris yang memiliki "Jenis Layanan" dan "Cost" / "Selling Price")
+                        let headerRowIdx = -1;
+                        let colMap = {};
+
+                        for (let r = 0; r < Math.min(25, rows.length); r++) {
+                            const cells = rows[r].map(c => String(c).trim().toLowerCase());
+                            const hasJenis = cells.findIndex(c => c.includes('jenis layanan'));
+                            const hasLokasi = cells.findIndex(c => c === 'lokasi' || c.includes('lokasi'));
+                            if (hasJenis !== -1 && hasLokasi !== -1) {
+                                headerRowIdx = r;
+                                colMap.jenis = hasJenis;
+                                colMap.lokasi = hasLokasi;
+                                colMap.tipe = cells.findIndex(c => c.includes('tipe') || c.includes('spesifikasi'));
+                                colMap.desc = cells.findIndex(c => c.includes('description') || c.includes('deskripsi'));
+                                colMap.currency = cells.findIndex(c => c.includes('mata uang') || c.includes('currency'));
+
+                                // Cari kolom Cost (utamakan "cost (idr)" lalu "cost" pertama sebelum "selling price")
+                                const costIdrIdx = cells.findIndex(c => c === 'cost (idr)' || c.includes('cost (idr)'));
+                                const firstCostIdx = cells.findIndex(c => c === 'cost' || c === 'total cost');
+                                colMap.cost = costIdrIdx !== -1 ? costIdrIdx : firstCostIdx;
+
+                                // Cari kolom Selling Price (RSP) pertama (bukan Adjusted)
+                                colMap.rsp = cells.findIndex(c => c.includes('selling price') && !c.includes('adjust'));
+                                colMap.margin = cells.findIndex(c => c === 'margin');
                                 break;
+                            }
+                        }
+
+                        // 3. Jika Header Terstruktur Ditemukan (Sesuai Template Excel NeutraDC)
+                        if (headerRowIdx !== -1) {
+                            const isOtcSheet = colMap.desc !== -1 || /otc/i.test(sheetName);
+
+                            for (let r = headerRowIdx + 1; r < rows.length; r++) {
+                                const row = rows[r];
+                                if (!row || row.length === 0) continue;
+
+                                const jenisVal = String(row[colMap.jenis] || '').trim();
+                                const lokasiVal = String(row[colMap.lokasi] || '').trim();
+                                if (!jenisVal && !lokasiVal) continue;
+
+                                const costRaw = colMap.cost !== -1 ? parseNum(row[colMap.cost]) : NaN;
+                                const rspRaw = colMap.rsp !== -1 ? parseNum(row[colMap.rsp]) : NaN;
+
+                                if (isOtcSheet) {
+                                    // Proses baris Master Harga OTC
+                                    const descVal = String(row[colMap.desc] || '').toLowerCase();
+                                    const currVal = colMap.currency !== -1 ? String(row[colMap.currency] || '').trim().toUpperCase() : 'IDR';
+                                    const isHdcRow = lokasiVal.toLowerCase().includes('cikarang') || lokasiVal.toLowerCase().includes('hdc');
+
+                                    if (!isNaN(costRaw) && costRaw > 0) {
+                                        const costIdr = (currVal === 'USD' && colMap.cost !== rows[headerRowIdx].findIndex(c => String(c).toLowerCase().includes('idr')))
+                                            ? Math.round(costRaw * masterData.usdRate)
+                                            : Math.round(costRaw);
+
+                                        if (descVal.includes('mandays')) {
+                                            if (isHdcRow) {
+                                                masterData.otcHdc = masterData.otcHdc || { pmCost: 5400000, transportCost: 2700000 };
+                                                masterData.otcHdc.pmCost = costIdr;
+                                            } else if (jenisVal.toLowerCase().includes('open rack')) {
+                                                masterData.otcPmCostPerRack = costIdr;
+                                            }
+                                            updatedOtcCount++;
+                                        } else if (descVal.includes('transport')) {
+                                            if (isHdcRow) {
+                                                masterData.otcHdc = masterData.otcHdc || { pmCost: 5400000, transportCost: 2700000 };
+                                                masterData.otcHdc.transportCost = costIdr;
+                                            } else if (jenisVal.toLowerCase().includes('open rack')) {
+                                                masterData.otcTransportPerRack = costIdr;
+                                            }
+                                            updatedOtcCount++;
+                                        }
+                                    }
+                                } else {
+                                    // Proses baris Colocation-MRC
+                                    const lowerLoc = lokasiVal.toLowerCase();
+                                    let canonicalLoc = null;
+                                    for (const [alias, name] of Object.entries(locationAliases)) {
+                                        if (lowerLoc.includes(alias)) {
+                                            canonicalLoc = name;
+                                            break;
+                                        }
+                                    }
+                                    if (!canonicalLoc || !masterData.locations[canonicalLoc]) continue;
+
+                                    // Abaikan baris yang kolom Cost & RSP-nya masih kosong
+                                    if ((isNaN(costRaw) || costRaw <= 0) && (isNaN(rspRaw) || rspRaw <= 0)) continue;
+
+                                    const tipeSpec = colMap.tipe !== -1 ? String(row[colMap.tipe] || 'PCLB').trim().toUpperCase() : 'PCLB';
+                                    const specKey = tipeSpec.includes('PCPT') ? 'PCPT' : 'PCLB';
+                                    const serviceKey = /cage/i.test(jenisVal) ? 'Cage' : (/private/i.test(jenisVal) ? 'Private Suite' : 'Open Rack');
+
+                                    const normalizeVal = (val) => (canonicalLoc === 'HDC Cikarang' && val < 10000)
+                                        ? Math.round(val * masterData.usdRate)
+                                        : Math.round(val);
+
+                                    const finalCost = !isNaN(costRaw) && costRaw > 0 ? normalizeVal(costRaw) : 0;
+                                    const finalRsp = !isNaN(rspRaw) && rspRaw > 0 ? normalizeVal(rspRaw) : excelRoundUp100k(finalCost / 0.78);
+
+                                    const locObj = masterData.locations[canonicalLoc];
+                                    locObj.byService = locObj.byService || {};
+                                    locObj.byService[serviceKey] = locObj.byService[serviceKey] || {};
+                                    locObj.byService[serviceKey][specKey] = { cost: finalCost, rsp: finalRsp };
+
+                                    // Jadikan Open Rack sebagai tarif dasar utama lokasi tersebut
+                                    if (serviceKey === 'Open Rack') {
+                                        if (specKey === 'PCLB') {
+                                            if (finalCost > 0) locObj.pclbCost = finalCost;
+                                            if (finalRsp > 0) locObj.pclbRsp = finalRsp;
+                                        } else {
+                                            if (finalCost > 0) locObj.pcptCost = finalCost;
+                                            if (finalRsp > 0) locObj.pcptRsp = finalRsp;
+                                        }
+                                    }
+                                    updatedMrcCount++;
+                                }
                             }
                         }
                     });
@@ -1870,12 +1973,12 @@
                     persistMasterData();
                     renderMasterTab();
                     recalculateAll(true);
-                    event.target.value = ''; // Reset input file agar bisa upload ulang file yang sama
+                    event.target.value = '';
 
-                    if (updatedCount > 0) {
-                        showToast(`Berhasil menyinkronkan ${updatedCount} baris tarif dari sheet "${targetSheetName}"!`);
+                    if (updatedMrcCount > 0 || updatedOtcCount > 0) {
+                        showToast(`Berhasil sync ${updatedMrcCount} tarif MRC & ${updatedOtcCount} tarif OTC dari Excel!`);
                     } else {
-                        showToast(`File "${file.name}" terbaca, namun tidak ditemukan baris tarif baru. Nilai saat ini dipertahankan.`);
+                        showToast(`File "${file.name}" terbaca, namun kolom Cost / Selling Price (RSP) masih kosong.`);
                     }
                 } catch (err) {
                     console.error('Error parsing Excel:', err);
@@ -1883,6 +1986,63 @@
                 }
             };
             reader.readAsArrayBuffer(file);
+        }
+
+        /**
+         * Mengunduh contoh template Excel (.xlsx) yang sudah terisi lengkap sesuai struktur sheet asli
+         */
+        function downloadSampleMasterExcel() {
+            if (typeof XLSX === 'undefined') {
+                showToast('Library Excel sedang dimuat, coba sesaat lagi.');
+                return;
+            }
+
+            const wb = XLSX.utils.book_new();
+
+            // Sheet 1: Colocation-MRC (struktur kolom persis seperti gambar 1)
+            const mrcHeaders = [
+                'Jenis Layanan', 'Tipe / Spesifikasi', 'Lokasi', 'Data Center',
+                'Space', 'Power', 'Rack, PDU, Cable power', 'Maintenance', 'Insurance',
+                'Cost', 'Selling Price (RSP)', 'Margin'
+            ];
+            const mrcRows = [mrcHeaders];
+            const services = ['Open Rack', 'Cage', 'Private Suite'];
+            services.forEach(srv => {
+                const mult = srv === 'Cage' ? masterData.cageMultiplier : (srv === 'Private Suite' ? masterData.privateSuiteMultiplier : 1);
+                Object.entries(masterData.locations).forEach(([locName, d]) => {
+                    ['PCLB', 'PCPT'].forEach(spec => {
+                        const baseC = spec === 'PCLB' ? d.pclbCost : d.pcptCost;
+                        const baseR = spec === 'PCLB' ? d.pclbRsp : d.pcptRsp;
+                        const c = Math.round(baseC * mult);
+                        const r = Math.round(baseR * mult);
+                        const margin = r > 0 ? ((r - c) / r) : 0;
+                        mrcRows.push([
+                            srv, spec, locName, d.group,
+                            Math.round(c * 0.34), Math.round(c * 0.36), Math.round(c * 0.14), Math.round(c * 0.11), Math.round(c * 0.05),
+                            c, r, Number(margin.toFixed(4))
+                        ]);
+                    });
+                });
+            });
+            const wsMrc = XLSX.utils.aoa_to_sheet(mrcRows);
+            XLSX.utils.book_append_sheet(wb, wsMrc, 'Colocation-MRC');
+
+            // Sheet 2: Master Harga OTC (struktur kolom persis seperti gambar 2)
+            const otcRows = [
+                ['Master Harga OTC'],
+                ['Kurs USD ke IDR', masterData.usdRate],
+                [],
+                ['Jenis Layanan', 'Lokasi', 'Description', 'Mata Uang', 'Total Cost', 'Margin', 'Cost (IDR)', 'Selling Price (RSP)'],
+                ['Open Rack', '3SDC', 'Mandays PM', 'IDR', masterData.otcPmCostPerRack, 0.25, masterData.otcPmCostPerRack, excelRoundUp100k(masterData.otcPmCostPerRack / 0.75)],
+                ['Open Rack', '3SDC', 'PM Transport and Meal', 'IDR', masterData.otcTransportPerRack, 0.25, masterData.otcTransportPerRack, excelRoundUp100k(masterData.otcTransportPerRack / 0.75)],
+                ['Open Rack', 'HDC Cikarang', 'Mandays PM', 'USD', 300, 0.25, 300 * masterData.usdRate, excelRoundUp100k((300 * masterData.usdRate) / 0.75)],
+                ['Open Rack', 'HDC Cikarang', 'PM Transport and Meal', 'USD', 150, 0.25, 150 * masterData.usdRate, excelRoundUp100k((150 * masterData.usdRate) / 0.75)]
+            ];
+            const wsOtc = XLSX.utils.aoa_to_sheet(otcRows);
+            XLSX.utils.book_append_sheet(wb, wsOtc, 'Master Harga OTC');
+
+            XLSX.writeFile(wb, 'NeutraDC_Master_RateCard_Template.xlsx');
+            showToast('Template Excel siap isi berhasil diunduh!');
         }
 
         function resetToSample() {
