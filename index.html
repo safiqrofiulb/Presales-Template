@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Presales Pricing Calculator - Enterprise Infrastructure</title>
+    <title>NeutraDC Presales Colocation Pricing & Quote Engine</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts: Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
     <script>
         tailwind.config = {
@@ -19,8 +19,11 @@
                         sans: ['Inter', 'sans-serif'],
                     },
                     colors: {
-                        navy: {
-                            800: '#1e293b',
+                        brand: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
                             900: '#0f172a',
                             950: '#020617',
                         }
@@ -31,30 +34,8 @@
     </script>
 
     <style>
-        /* Custom styling untuk print/cetak penawaran agar rapi */
-        @media print {
-            body {
-                background-color: white !important;
-                color: #0f172a !important;
-            }
-            .no-print {
-                display: none !important;
-            }
-            .print-full-width {
-                width: 100% !important;
-                max-width: 100% !important;
-                grid-column: span 12 / span 12 !important;
-            }
-            .shadow-lg, .shadow-sm, .shadow-md {
-                box-shadow: none !important;
-                border: 1px solid #cbd5e1 !important;
-            }
-            input, select {
-                border: none !important;
-                background: transparent !important;
-                padding: 0 !important;
-                font-weight: 600 !important;
-            }
+        .tabular-nums {
+            font-variant-numeric: tabular-nums;
         }
 
         /* Hilangkan panah default pada input number */
@@ -66,353 +47,905 @@
         input[type=number] {
             -moz-appearance: textfield;
         }
+
+        /* Custom Scrollbar untuk tabel proyeksi multi-tahun */
+        ::-webkit-scrollbar {
+            height: 8px;
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        /* Styling khusus saat Cetak / Export PDF */
+        @media print {
+            body {
+                background-color: white !important;
+                color: #0f172a !important;
+                font-size: 11px !important;
+            }
+            .no-print {
+                display: none !important;
+            }
+            .print-only {
+                display: block !important;
+            }
+            .print-full-width {
+                width: 100% !important;
+                max-width: 100% !important;
+                grid-column: span 12 / span 12 !important;
+            }
+            .shadow-lg, .shadow-sm, .shadow-md, .shadow-xl {
+                box-shadow: none !important;
+                border: 1px solid #cbd5e1 !important;
+            }
+            input, select {
+                border: none !important;
+                background: transparent !important;
+                padding: 0 !important;
+                font-weight: 600 !important;
+                color: #0f172a !important;
+            }
+            .tab-panel {
+                display: block !important;
+                margin-bottom: 24px;
+                page-break-inside: avoid;
+            }
+        }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-800 font-sans antialiased min-h-screen flex flex-col">
 
-    <!-- Notifikasi Toast (Pengganti alert) -->
+    <!-- Notifikasi Toast -->
     <div id="toast" class="fixed bottom-5 right-5 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none no-print">
         <div class="bg-slate-900 text-white px-5 py-3.5 rounded-xl shadow-xl border border-slate-700 flex items-center gap-3">
             <svg class="w-5 h-5 text-emerald-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
             </svg>
-            <span id="toastMessage" class="text-sm font-medium">Ringkasan berhasil disalin!</span>
+            <span id="toastMessage" class="text-sm font-medium">Aksi berhasil dilakukan!</span>
         </div>
     </div>
 
-    <!-- Header / Navbar -->
-    <header class="bg-slate-900 text-white border-b border-slate-800 sticky top-0 z-30 shadow-sm">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-            <div class="flex items-center gap-3">
-                <div class="bg-blue-600 p-2 rounded-lg shadow-inner">
-                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01"></path>
-                    </svg>
+    <!-- Top Navigation Bar -->
+    <header class="bg-slate-900 text-white border-b border-slate-800 sticky top-0 z-40 shadow-md no-print">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="h-16 flex items-center justify-between gap-4">
+                <!-- Brand Logo & Title -->
+                <div class="flex items-center gap-3">
+                    <div class="bg-gradient-to-br from-blue-500 to-indigo-600 p-2 rounded-xl shadow-inner">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <h1 class="font-bold text-base sm:text-lg tracking-tight leading-none">NeutraDC Presales Engine</h1>
+                            <span class="hidden md:inline-flex items-center px-2 py-0.5 rounded text-[10px] font-semibold bg-blue-500/20 text-blue-300 border border-blue-500/30">v2.0 Colocation</span>
+                        </div>
+                        <p class="text-xs text-slate-400 mt-1 hidden sm:block">3SDC &amp; HDC Cikarang Commercial Pricing, Margin &amp; TCV Calculator</p>
+                    </div>
                 </div>
-                <div>
-                    <h1 class="font-bold text-lg tracking-tight leading-none">Presales Quote Engine</h1>
-                    <p class="text-xs text-slate-400 mt-1">Data Center Colocation & Managed Services</p>
+
+                <!-- Action Buttons -->
+                <div class="flex items-center gap-2">
+                    <button onclick="exportCSV()" class="px-3 py-2 text-xs font-medium text-slate-200 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-lg transition-colors flex items-center gap-1.5" title="Unduh Proyeksi Multi-Tahun ke CSV">
+                        <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                        </svg>
+                        <span class="hidden md:inline">Export CSV</span>
+                    </button>
+                    <button onclick="window.print()" class="px-3 py-2 text-xs font-medium text-slate-200 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-lg transition-colors flex items-center gap-1.5" title="Cetak atau Simpan sebagai PDF">
+                        <svg class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
+                        </svg>
+                        <span class="hidden sm:inline">Print / PDF</span>
+                    </button>
+                    <button onclick="copyQuoteSummary()" class="px-3.5 py-2 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-500 rounded-lg shadow-sm transition-colors flex items-center gap-1.5">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path>
+                        </svg>
+                        <span>Copy Quote</span>
+                    </button>
                 </div>
             </div>
-            <div class="flex items-center gap-2 sm:gap-3 no-print">
-                <button onclick="resetCalculator()" class="px-3 py-2 text-xs sm:text-sm font-medium text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg transition-colors flex items-center gap-1.5">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
-                    </svg>
-                    <span class="hidden sm:inline">Reset</span>
+
+            <!-- Excel-style Sheet Tabs -->
+            <nav class="flex space-x-1 overflow-x-auto pb-0 -mb-px" aria-label="Tabs">
+                <button onclick="switchTab('request')" id="tab-btn-request" class="tab-btn active px-4 py-2.5 text-xs sm:text-sm font-semibold border-b-2 border-blue-500 text-white bg-slate-800/60 rounded-t-lg transition-all whitespace-nowrap flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-blue-400"></span>
+                    <span>1. Request &amp; Quote Form</span>
                 </button>
-                <button onclick="window.print()" class="px-3.5 py-2 text-xs sm:text-sm font-medium bg-slate-800 hover:bg-slate-700 text-white border border-slate-700 rounded-lg transition-colors flex items-center gap-1.5">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
-                    </svg>
-                    <span>Cetak / PDF</span>
+                <button onclick="switchTab('calculation')" id="tab-btn-calculation" class="tab-btn px-4 py-2.5 text-xs sm:text-sm font-medium border-b-2 border-transparent text-slate-400 hover:text-slate-200 hover:bg-slate-800/40 rounded-t-lg transition-all whitespace-nowrap flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-slate-600"></span>
+                    <span>2. Calculation (Multi-Year Y1–Y10)</span>
                 </button>
-            </div>
+                <button onclick="switchTab('master')" id="tab-btn-master" class="tab-btn px-4 py-2.5 text-xs sm:text-sm font-medium border-b-2 border-transparent text-slate-400 hover:text-slate-200 hover:bg-slate-800/40 rounded-t-lg transition-all whitespace-nowrap flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-slate-600"></span>
+                    <span>3. Master Rate Card &amp; Assumptions</span>
+                </button>
+            </nav>
         </div>
     </header>
 
-    <!-- Main Content -->
-    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
-        
-        <!-- Header Khusus saat Print -->
-        <div class="hidden print:block mb-6 pb-4 border-b-2 border-slate-900">
+    <!-- Main Workspace -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+        <!-- Header Khusus Print -->
+        <div class="hidden print-only mb-6 pb-4 border-b-2 border-slate-900">
             <div class="flex justify-between items-end">
                 <div>
-                    <h2 class="text-2xl font-bold text-slate-900">ESTIMASI PENAWARAN HARGA (BUDGETARY QUOTE)</h2>
-                    <p class="text-sm text-slate-600">Enterprise Data Center & Managed Infrastructure Services</p>
+                    <h2 class="text-xl font-extrabold text-slate-900 uppercase tracking-tight">NeutraDC — Presales Colocation Commercial Proposal</h2>
+                    <p class="text-xs text-slate-600">Internal Costing, Recommended Selling Price (RSP) &amp; Contract Valuation Summary</p>
                 </div>
-                <div class="text-right text-xs text-slate-500">
-                    <p id="printDate"></p>
-                    <p>Validitas: 14 Hari Kerja</p>
+                <div class="text-right text-xs text-slate-600">
+                    <p id="printTimestamp"></p>
+                    <p>Confidential — Presales Division</p>
                 </div>
             </div>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        <!-- ===================================================================== -->
+        <!-- TAB 1: REQUEST & QUOTE FORM (Sheet: Request)                          -->
+        <!-- ===================================================================== -->
+        <div id="panel-request" class="tab-panel space-y-6">
             
-            <!-- Kolom Kiri (Input Klien & Konfigurasi Layanan) -->
-            <div class="lg:col-span-8 space-y-6 print-full-width">
-                
-                <!-- Card 1: Informasi Klien & Proyek -->
-                <section class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 sm:p-6">
-                    <div class="flex items-center gap-2.5 mb-5 pb-3 border-b border-slate-100">
-                        <span class="w-7 h-7 rounded-lg bg-blue-50 text-blue-700 font-bold text-sm flex items-center justify-center">1</span>
-                        <h2 class="text-base sm:text-lg font-semibold text-slate-900">Informasi Klien & Durasi Kontrak</h2>
+            <!-- Top Executive KPI Cards (TCO, TCV RSP, TCV Contract, Overall Margin) -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <!-- TCO -->
+                <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-xs font-semibold uppercase tracking-wider text-slate-500">TCO (Total Cost)</span>
+                        <span id="kpiYearsBadge1" class="px-2 py-0.5 text-[11px] font-semibold bg-slate-100 text-slate-600 rounded-md">3 Tahun</span>
                     </div>
+                    <div id="kpiTco" class="text-xl sm:text-2xl font-bold text-slate-900 tabular-nums">Rp 0</div>
+                    <p class="text-[11px] text-slate-500 mt-1">OTC Cost + Multi-Year MRC Cost</p>
+                </div>
 
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                        <div>
-                            <label for="clientName" class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1.5">Nama Perusahaan / Klien</label>
-                            <input type="text" id="clientName" placeholder="Contoh: PT Nusantara Digital Tbk" oninput="calculateTotals()"
-                                class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white transition-all">
+                <!-- TCV Based on RSP -->
+                <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-xs font-semibold uppercase tracking-wider text-blue-600">TCV (Based on RSP)</span>
+                        <span id="kpiRspMarginBadge" class="px-2 py-0.5 text-[11px] font-semibold bg-blue-50 text-blue-700 rounded-md">Margin 0%</span>
+                    </div>
+                    <div id="kpiTcvRsp" class="text-xl sm:text-2xl font-bold text-slate-900 tabular-nums">Rp 0</div>
+                    <p class="text-[11px] text-slate-500 mt-1">Harga Rekomendasi Standar (Excl. PPN)</p>
+                </div>
+
+                <!-- TCV Based on Contract / Selling -->
+                <div class="bg-slate-900 text-white rounded-2xl p-5 border border-slate-800 shadow-md">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-xs font-semibold uppercase tracking-wider text-blue-400">TCV (Contract / Selling)</span>
+                        <span id="kpiTaxLabel" class="px-2 py-0.5 text-[10px] font-semibold bg-slate-800 text-slate-300 border border-slate-700 rounded-md">Excl. PPN</span>
+                    </div>
+                    <div id="kpiTcvSelling" class="text-xl sm:text-2xl font-extrabold text-white tabular-nums">Rp 0</div>
+                    <p id="kpiTcvWithPpnSub" class="text-[11px] text-slate-400 mt-1">Incl. PPN 11%: Rp 0</p>
+                </div>
+
+                <!-- Overall Margin & Approval Tier -->
+                <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-xs font-semibold uppercase tracking-wider text-slate-500">Contract Margin</span>
+                            <span id="kpiOverallApprovalBadge" class="px-2.5 py-0.5 text-xs font-bold rounded-full bg-emerald-100 text-emerald-800">AM</span>
+                        </div>
+                        <div class="flex items-baseline gap-2">
+                            <span id="kpiOverallMargin" class="text-2xl font-extrabold text-slate-900 tabular-nums">0.0%</span>
+                            <span id="kpiOverallDiscount" class="text-xs font-medium text-slate-500">(Disc: 0.0%)</span>
+                        </div>
+                    </div>
+                    <p id="kpiNetProfitAmount" class="text-[11px] font-medium text-emerald-600 mt-1">Est. Gross Profit: Rp 0</p>
+                </div>
+            </div>
+
+            <!-- Main 12-Column Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+                
+                <!-- Left Column (7 cols): Metadata & Technical Colocation Specs -->
+                <div class="lg:col-span-5 space-y-6 print-full-width">
+                    
+                    <!-- Section A: Project & Order Metadata -->
+                    <section class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
+                        <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-100">
+                            <div class="flex items-center gap-2">
+                                <span class="w-6 h-6 rounded-lg bg-blue-600 text-white font-bold text-xs flex items-center justify-center">A</span>
+                                <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wide">Project &amp; Sales Metadata</h2>
+                            </div>
+                            <button onclick="resetToSample()" class="no-print text-xs font-medium text-slate-500 hover:text-blue-600 transition-colors">Reset Default</button>
                         </div>
 
-                        <div>
-                            <label for="projectName" class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1.5">Nama Proyek / Solusi</label>
-                            <input type="text" id="projectName" placeholder="Contoh: DRC Colocation Tier-3" oninput="calculateTotals()"
-                                class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white transition-all">
-                        </div>
-
-                        <div class="sm:col-span-2 lg:col-span-1">
-                            <label for="contractDuration" class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1.5">Durasi Kontrak</label>
-                            <div class="flex gap-2">
-                                <input type="number" id="contractDuration" value="12" min="1" max="120" oninput="calculateTotals()"
-                                    class="w-1/2 px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm font-semibold text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white transition-all">
-                                <select id="durationUnit" onchange="calculateTotals()"
-                                    class="w-1/2 px-3 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white transition-all">
-                                    <option value="months" selected>Bulan</option>
-                                    <option value="years">Tahun</option>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                            <div>
+                                <label class="block text-[11px] font-semibold text-slate-500 uppercase mb-1">Request Date</label>
+                                <input type="date" id="reqDate" onchange="recalculateAll()"
+                                    class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs sm:text-sm font-medium text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-semibold text-slate-500 uppercase mb-1">Revision (Rev)</label>
+                                <input type="text" id="reqRev" value="Rev-01" oninput="recalculateAll()"
+                                    class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs sm:text-sm font-semibold text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-semibold text-slate-500 uppercase mb-1">Customer Name</label>
+                                <input type="text" id="customerName" value="MUFG Bank" placeholder="Contoh: MUFG Bank" oninput="recalculateAll()"
+                                    class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs sm:text-sm font-semibold text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-semibold text-slate-500 uppercase mb-1">Sales Name</label>
+                                <input type="text" id="salesName" value="Enterprise Sales Team" placeholder="Nama Account Manager" oninput="recalculateAll()"
+                                    class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs sm:text-sm font-medium text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-semibold text-slate-500 uppercase mb-1">Order Type</label>
+                                <select id="orderType" onchange="recalculateAll()"
+                                    class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs sm:text-sm font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white">
+                                    <option value="New" selected>New Order</option>
+                                    <option value="Renewal">Renewal</option>
                                 </select>
                             </div>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- Card 2: Konfigurasi Item Layanan (Bill of Quantities) -->
-                <section class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 sm:p-6">
-                    <div class="flex flex-wrap items-center justify-between gap-3 mb-5 pb-3 border-b border-slate-100">
-                        <div class="flex items-center gap-2.5">
-                            <span class="w-7 h-7 rounded-lg bg-blue-50 text-blue-700 font-bold text-sm flex items-center justify-center">2</span>
                             <div>
-                                <h2 class="text-base sm:text-lg font-semibold text-slate-900">Konfigurasi Item Layanan (BoQ)</h2>
-                                <p class="text-xs text-slate-500">Pilih kategori untuk memuat tarif standar atau sesuaikan harga secara manual</p>
+                                <label class="block text-[11px] font-semibold text-slate-500 uppercase mb-1">Configuration Type</label>
+                                <select id="configType" onchange="handleConfigTypeChange()"
+                                    class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs sm:text-sm font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white">
+                                    <option value="Standard" selected>Standard</option>
+                                    <option value="Custom">Custom (BoQ Tambahan)</option>
+                                </select>
+                            </div>
+
+                            <!-- Input Custom BoQ OTC jika Custom dipilih -->
+                            <div id="customBoqContainer" class="hidden sm:col-span-2 p-3 bg-amber-50 border border-amber-200 rounded-xl">
+                                <label class="block text-[11px] font-bold text-amber-800 uppercase mb-1">BoQ Customization Cost (OTC - Rp)</label>
+                                <input type="number" id="customBoqCost" value="15000000" min="0" step="500000" oninput="recalculateAll()"
+                                    class="w-full px-3 py-2 bg-white border border-amber-300 rounded-lg text-sm font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-amber-500 tabular-nums">
+                                <p class="text-[11px] text-amber-700 mt-1">Biaya instalasi khusus/material tambahan ditambahkan ke komponen OTC.</p>
                             </div>
                         </div>
-                        <button onclick="addServiceRow()" class="no-print px-3.5 py-2 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white text-xs sm:text-sm font-medium rounded-xl shadow-sm transition-all flex items-center gap-1.5">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-                            </svg>
-                            <span>Tambah Layanan</span>
-                        </button>
-                    </div>
+                    </section>
 
-                    <!-- Container Daftar Item -->
-                    <div id="serviceItemsContainer" class="space-y-4">
-                        <!-- Baris layanan akan di-render oleh JavaScript di sini -->
-                    </div>
-
-                    <!-- Empty State jika semua item dihapus -->
-                    <div id="emptyState" class="hidden text-center py-10 px-4 border-2 border-dashed border-slate-200 rounded-xl">
-                        <p class="text-sm text-slate-500 mb-3">Belum ada item layanan yang ditambahkan ke dalam kalkulasi.</p>
-                        <button onclick="addServiceRow()" class="px-4 py-2 bg-slate-900 text-white text-xs font-medium rounded-lg hover:bg-slate-800 transition-colors">
-                            + Tambah Item Pertama
-                        </button>
-                    </div>
-                </section>
-
-                <!-- Card 3: Parameter Komersial (Diskon & Pajak) -->
-                <section class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 sm:p-6">
-                    <div class="flex items-center gap-2.5 mb-5 pb-3 border-b border-slate-100">
-                        <span class="w-7 h-7 rounded-lg bg-blue-50 text-blue-700 font-bold text-sm flex items-center justify-center">3</span>
-                        <h2 class="text-base sm:text-lg font-semibold text-slate-900">Parameter Komersial & Pajak</h2>
-                    </div>
-
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 items-center">
-                        <div>
-                            <label for="discountPercent" class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1.5">Diskon Komersial (%)</label>
-                            <div class="relative">
-                                <input type="number" id="discountPercent" value="0" min="0" max="100" step="0.5" oninput="calculateTotals()"
-                                    class="w-full pl-3.5 pr-9 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm font-semibold text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white transition-all">
-                                <span class="absolute right-3.5 top-2.5 text-sm font-semibold text-slate-400">%</span>
+                    <!-- Section B: Colocation Technical Specifications -->
+                    <section class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
+                        <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-100">
+                            <div class="flex items-center gap-2">
+                                <span class="w-6 h-6 rounded-lg bg-blue-600 text-white font-bold text-xs flex items-center justify-center">B</span>
+                                <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wide">Colocation Specifications</h2>
                             </div>
+                            <span id="dcGroupBadge" class="px-2.5 py-1 text-xs font-bold rounded-lg bg-indigo-50 text-indigo-700 border border-indigo-200">
+                                3SDC (Per-Rack)
+                            </span>
                         </div>
 
-                        <div>
-                            <label for="discountScope" class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1.5">Berlaku Untuk</label>
-                            <select id="discountScope" onchange="calculateTotals()"
-                                class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white transition-all">
-                                <option value="mrc_only" selected>Hanya Biaya Bulanan (MRC)</option>
-                                <option value="all">MRC & Biaya Setup (NRC)</option>
-                            </select>
-                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                            <div class="sm:col-span-2">
+                                <label class="block text-[11px] font-semibold text-slate-500 uppercase mb-1">Data Center Location</label>
+                                <select id="dcLocation" onchange="recalculateAll()"
+                                    class="w-full px-3 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm font-semibold text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white">
+                                    <option value="Serpong N+1">Serpong N+1 (3SDC)</option>
+                                    <option value="Serpong 2N">Serpong 2N (3SDC)</option>
+                                    <option value="Sentul 2N" selected>Sentul 2N (3SDC)</option>
+                                    <option value="Surabaya N+1">Surabaya N+1 (3SDC)</option>
+                                    <option value="Surabaya 2N">Surabaya 2N (3SDC)</option>
+                                    <option value="Surabaya 2N Tier 4">Surabaya 2N Tier 4 (3SDC)</option>
+                                    <option value="HDC Cikarang">HDC Cikarang (Hyperscale Per-kW)</option>
+                                </select>
+                            </div>
 
-                        <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200 flex items-center justify-between">
                             <div>
-                                <span class="block text-xs font-semibold text-slate-700">PPN (11%)</span>
-                                <span class="text-[11px] text-slate-500">Pajak Pertambahan Nilai</span>
-                            </div>
-                            <label class="relative inline-flex items-center cursor-pointer">
-                                <input type="checkbox" id="includePpn" checked onchange="calculateTotals()" class="sr-only peer">
-                                <div class="w-11 h-6 bg-slate-300 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-                            </label>
-                        </div>
-                    </div>
-                </section>
-            </div>
-
-            <!-- Kolom Kanan (Ringkasan Biaya Real-Time Sticky) -->
-            <div class="lg:col-span-4 lg:sticky lg:top-24 print-full-width">
-                <section class="bg-slate-900 text-white rounded-2xl shadow-lg border border-slate-800 overflow-hidden">
-                    <!-- Header Summary -->
-                    <div class="p-5 sm:p-6 bg-gradient-to-br from-slate-900 via-slate-900 to-blue-950 border-b border-slate-800">
-                        <div class="flex items-center justify-between mb-1">
-                            <span class="text-xs font-semibold uppercase tracking-wider text-blue-400">Executive Summary</span>
-                            <span id="summaryDurationBadge" class="px-2.5 py-0.5 text-xs font-medium bg-blue-950 text-blue-300 border border-blue-800 rounded-full">12 Bulan</span>
-                        </div>
-                        <h3 id="summaryProjectTitle" class="text-lg font-bold text-white truncate">Estimasi Biaya Infrastruktur</h3>
-                        <p id="summaryClientSubtitle" class="text-xs text-slate-400 truncate mt-0.5">Klien: Belum ditentukan</p>
-                    </div>
-
-                    <!-- Rincian Angka -->
-                    <div class="p-5 sm:p-6 space-y-4">
-                        
-                        <!-- Breakdown MRC -->
-                        <div class="space-y-2 pb-4 border-b border-slate-800">
-                            <div class="flex justify-between text-xs text-slate-400">
-                                <span>Subtotal MRC (Bulanan)</span>
-                                <span id="valSubtotalMrc" class="font-medium text-slate-200">Rp 0</span>
-                            </div>
-                            <div id="rowDiscountMrc" class="hidden flex justify-between text-xs text-emerald-400">
-                                <span>Diskon MRC (<span id="labelDiscountMrcPct">0</span>%)</span>
-                                <span id="valDiscountMrc">- Rp 0</span>
-                            </div>
-                            <div class="flex justify-between items-baseline pt-1">
-                                <span class="text-sm font-medium text-slate-300">Net MRC / Bulan</span>
-                                <span id="valNetMrc" class="text-base font-bold text-white">Rp 0</span>
-                            </div>
-                        </div>
-
-                        <!-- Breakdown NRC -->
-                        <div class="space-y-2 pb-4 border-b border-slate-800">
-                            <div class="flex justify-between text-xs text-slate-400">
-                                <span>Subtotal NRC (Setup Fee)</span>
-                                <span id="valSubtotalNrc" class="font-medium text-slate-200">Rp 0</span>
-                            </div>
-                            <div id="rowDiscountNrc" class="hidden flex justify-between text-xs text-emerald-400">
-                                <span>Diskon NRC (<span id="labelDiscountNrcPct">0</span>%)</span>
-                                <span id="valDiscountNrc">- Rp 0</span>
-                            </div>
-                            <div class="flex justify-between items-baseline pt-1">
-                                <span class="text-sm font-medium text-slate-300">Net NRC (Sekali Bayar)</span>
-                                <span id="valNetNrc" class="text-base font-bold text-white">Rp 0</span>
-                            </div>
-                        </div>
-
-                        <!-- Total Kontrak Sebelum & Sesudah Pajak -->
-                        <div class="space-y-2.5">
-                            <div class="flex justify-between text-xs text-slate-400">
-                                <span>Total Kontrak (Excl. PPN)</span>
-                                <span id="valTotalExclTax" class="font-medium text-slate-200">Rp 0</span>
-                            </div>
-                            <div class="flex justify-between text-xs text-slate-400">
-                                <span id="labelPpn">PPN (11%)</span>
-                                <span id="valPpn" class="font-medium text-slate-200">Rp 0</span>
+                                <label class="block text-[11px] font-semibold text-slate-500 uppercase mb-1">Type of Colo</label>
+                                <select id="coloType" onchange="recalculateAll()"
+                                    class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs sm:text-sm font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white">
+                                    <option value="Open Rack" selected>Open Rack</option>
+                                    <option value="Cage">Cage</option>
+                                    <option value="Private Suite">Private Suite</option>
+                                </select>
                             </div>
 
-                            <!-- Highlight TCV -->
-                            <div class="mt-4 p-4 rounded-xl bg-slate-800/80 border border-slate-700">
-                                <div class="flex justify-between items-center mb-1">
-                                    <span class="text-xs font-semibold uppercase tracking-wider text-blue-400">Total Contract Value (TCV)</span>
-                                    <span class="text-[10px] text-slate-400">Incl. PPN</span>
+                            <div>
+                                <label class="block text-[11px] font-semibold text-slate-500 uppercase mb-1">Spesifikasi Power</label>
+                                <select id="powerSpec" onchange="recalculateAll()"
+                                    class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs sm:text-sm font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white">
+                                    <option value="PCLB" selected>PCLB (Power Included)</option>
+                                    <option value="PCPT">PCPT (Power Pass-Through)</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label class="block text-[11px] font-semibold text-slate-500 uppercase mb-1">Total Rack (Qty)</label>
+                                <input type="number" id="totalRack" value="2" min="1" max="500" oninput="recalculateAll()"
+                                    class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-sm font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white tabular-nums">
+                            </div>
+
+                            <div>
+                                <label id="powerPerRackLabel" class="block text-[11px] font-semibold text-slate-500 uppercase mb-1">Power per Rack (kVA)</label>
+                                <input type="number" id="powerPerRack" value="3.5" min="0.5" max="50" step="0.5" oninput="recalculateAll()"
+                                    class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-sm font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white tabular-nums">
+                            </div>
+
+                            <!-- Auto-Calculated Total Power Box -->
+                            <div class="sm:col-span-2 bg-slate-50 border border-slate-200 rounded-xl p-3 flex items-center justify-between">
+                                <div>
+                                    <span class="block text-[11px] font-semibold text-slate-500 uppercase">Total Power Capacity</span>
+                                    <span id="powerAdjustmentNote" class="text-[11px] text-slate-500">Sesuai basis standar 3.5 kVA/rack</span>
                                 </div>
-                                <div id="valTcv" class="text-2xl sm:text-3xl font-bold text-white tracking-tight break-words">
-                                    Rp 0
+                                <div class="text-right">
+                                    <span id="totalPowerDisplay" class="text-base font-extrabold text-blue-700 tabular-nums">7.0 kVA</span>
                                 </div>
-                                <p id="valFirstMonthPayment" class="text-[11px] text-slate-400 mt-2 pt-2 border-t border-slate-700/80">
-                                    Estimasi Tagihan Bulan ke-1 (MRC + NRC + PPN): <strong class="text-slate-200">Rp 0</strong>
-                                </p>
+                            </div>
+
+                            <div>
+                                <label class="block text-[11px] font-semibold text-slate-500 uppercase mb-1">Contract Period (Years)</label>
+                                <select id="contractYears" onchange="recalculateAll()"
+                                    class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-sm font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white">
+                                    <option value="1">1 Tahun (12 Bulan)</option>
+                                    <option value="2">2 Tahun (24 Bulan)</option>
+                                    <option value="3" selected>3 Tahun (36 Bulan)</option>
+                                    <option value="4">4 Tahun (48 Bulan)</option>
+                                    <option value="5">5 Tahun (60 Bulan)</option>
+                                    <option value="6">6 Tahun (72 Bulan)</option>
+                                    <option value="7">7 Tahun (84 Bulan)</option>
+                                    <option value="8">8 Tahun (96 Bulan)</option>
+                                    <option value="9">9 Tahun (108 Bulan)</option>
+                                    <option value="10">10 Tahun (120 Bulan)</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label class="block text-[11px] font-semibold text-slate-500 uppercase mb-1">YoY Cost Escalation (%)</label>
+                                <div class="relative">
+                                    <input type="number" id="yoyEscalation" value="3" min="0" max="25" step="0.5" oninput="recalculateAll()"
+                                        class="w-full pl-3 pr-8 py-2 bg-slate-50 border border-slate-300 rounded-xl text-sm font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white tabular-nums">
+                                    <span class="absolute right-3 top-2 text-sm font-semibold text-slate-400">%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+
+                <!-- Right Column (7 cols): Commercial Quote Table & Target Margin Widget -->
+                <div class="lg:col-span-7 space-y-6 print-full-width">
+                    
+                    <!-- Section C: Commercial Quote Table (OTC & MRC) -->
+                    <section class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                        <div class="p-5 border-b border-slate-100 flex flex-wrap items-center justify-between gap-3">
+                            <div class="flex items-center gap-2">
+                                <span class="w-6 h-6 rounded-lg bg-blue-600 text-white font-bold text-xs flex items-center justify-center">C</span>
+                                <div>
+                                    <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wide">Commercial Quote &amp; Approval Matrix</h2>
+                                    <p class="text-xs text-slate-500">Edit <strong>Selling Price</strong> atau <strong>Discount %</strong> — keduanya tersinkronisasi otomatis</p>
+                                </div>
+                            </div>
+
+                            <!-- Toggle PPN 11% -->
+                            <div class="flex items-center gap-2.5 bg-slate-50 px-3 py-1.5 rounded-xl border border-slate-200 no-print">
+                                <span class="text-xs font-semibold text-slate-700">Include PPN 11%</span>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" id="togglePpn" onchange="recalculateAll()" class="sr-only peer">
+                                    <div class="w-9 h-5 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-blue-600"></div>
+                                </label>
                             </div>
                         </div>
 
-                        <!-- Tombol Aksi -->
-                        <div class="pt-2 space-y-2.5 no-print">
-                            <button onclick="copyQuoteSummary()" class="w-full py-3 px-4 bg-blue-600 hover:bg-blue-500 active:bg-blue-700 text-white font-semibold text-sm rounded-xl shadow-md transition-all flex items-center justify-center gap-2">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path>
-                                </svg>
-                                <span>Copy Quote Summary</span>
-                            </button>
-                            <p class="text-[11px] text-center text-slate-400">
-                                Format teks siap tempel ke WhatsApp, Email, atau CRM Sales.
-                            </p>
+                        <!-- Responsive Commercial Table -->
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse">
+                                <thead>
+                                    <tr class="bg-slate-900 text-white text-[11px] uppercase tracking-wider">
+                                        <th class="py-3 px-4 font-semibold">Item / Komponen</th>
+                                        <th class="py-3 px-3 font-semibold text-right">Total Cost (Y1)</th>
+                                        <th class="py-3 px-3 font-semibold text-right">RSP (Price &amp; Margin)</th>
+                                        <th class="py-3 px-3 font-semibold text-right w-44">Selling Price (IDR)</th>
+                                        <th class="py-3 px-3 font-semibold text-center w-24">Disc %</th>
+                                        <th class="py-3 px-3 font-semibold text-right">Act. Margin</th>
+                                        <th class="py-3 px-4 font-semibold text-center">Approval</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-200 text-xs sm:text-sm">
+                                    
+                                    <!-- BARIS 1: ONE-TIME CHARGE (OTC) -->
+                                    <tr class="hover:bg-slate-50/80 transition-colors">
+                                        <td class="py-4 px-4 align-top">
+                                            <div class="font-bold text-slate-900">One-Time Charge (OTC)</div>
+                                            <div class="text-[11px] text-slate-500 mt-0.5">Setup, PM Mandays &amp; Instalasi</div>
+                                            <div id="otcPerUnitHint" class="text-[11px] font-medium text-blue-600 mt-1 tabular-nums">Rp 0 / rack</div>
+                                        </td>
+                                        <td class="py-4 px-3 text-right align-top font-medium text-slate-700 tabular-nums">
+                                            <div id="tblOtcCost">Rp 0</div>
+                                        </td>
+                                        <td class="py-4 px-3 text-right align-top tabular-nums">
+                                            <div id="tblOtcRsp" class="font-semibold text-slate-900">Rp 0</div>
+                                            <span id="tblOtcRspMargin" class="inline-block mt-1 px-1.5 py-0.5 text-[10px] font-semibold bg-slate-100 text-slate-600 rounded">0.0%</span>
+                                        </td>
+                                        <td class="py-4 px-3 text-right align-top">
+                                            <input type="number" id="inputOtcSelling" step="100000" oninput="handleSellingInput('otc')"
+                                                class="w-full text-right px-2.5 py-1.5 bg-blue-50/60 border border-blue-300 rounded-lg font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white tabular-nums">
+                                            <div id="otcSellingPerUnit" class="text-[10px] text-slate-500 mt-1 tabular-nums">Rp 0 / unit</div>
+                                        </td>
+                                        <td class="py-4 px-3 text-center align-top">
+                                            <div class="relative">
+                                                <input type="number" id="inputOtcDiscount" step="0.5" value="0" oninput="handleDiscountInput('otc')"
+                                                    class="w-full text-center pr-5 pl-1.5 py-1.5 bg-slate-50 border border-slate-300 rounded-lg font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white tabular-nums">
+                                                <span class="absolute right-2 top-1.5 text-xs text-slate-400">%</span>
+                                            </div>
+                                        </td>
+                                        <td class="py-4 px-3 text-right align-top font-bold tabular-nums">
+                                            <span id="tblOtcActMargin" class="text-slate-900">0.0%</span>
+                                        </td>
+                                        <td class="py-4 px-4 text-center align-top">
+                                            <span id="badgeOtcApproval" class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800">AM</span>
+                                        </td>
+                                    </tr>
+
+                                    <!-- BARIS 2: MONTHLY RECURRING CHARGE (MRC) -->
+                                    <tr class="hover:bg-slate-50/80 transition-colors">
+                                        <td class="py-4 px-4 align-top">
+                                            <div class="font-bold text-slate-900">Monthly Recurring (MRC)</div>
+                                            <div class="text-[11px] text-slate-500 mt-0.5">Sewa Bulanan (Tahun ke-1)</div>
+                                            <div id="mrcPerUnitHint" class="text-[11px] font-medium text-blue-600 mt-1 tabular-nums">Rp 0 / rack / bln</div>
+                                        </td>
+                                        <td class="py-4 px-3 text-right align-top font-medium text-slate-700 tabular-nums">
+                                            <div id="tblMrcCost">Rp 0</div>
+                                            <div class="text-[10px] text-slate-400 mt-0.5">/ bulan</div>
+                                        </td>
+                                        <td class="py-4 px-3 text-right align-top tabular-nums">
+                                            <div id="tblMrcRsp" class="font-semibold text-slate-900">Rp 0</div>
+                                            <span id="tblMrcRspMargin" class="inline-block mt-1 px-1.5 py-0.5 text-[10px] font-semibold bg-slate-100 text-slate-600 rounded">0.0%</span>
+                                        </td>
+                                        <td class="py-4 px-3 text-right align-top">
+                                            <input type="number" id="inputMrcSelling" step="100000" oninput="handleSellingInput('mrc')"
+                                                class="w-full text-right px-2.5 py-1.5 bg-blue-50/60 border border-blue-300 rounded-lg font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white tabular-nums">
+                                            <div id="mrcSellingPerUnit" class="text-[10px] text-slate-500 mt-1 tabular-nums">Rp 0 / unit / bln</div>
+                                        </td>
+                                        <td class="py-4 px-3 text-center align-top">
+                                            <div class="relative">
+                                                <input type="number" id="inputMrcDiscount" step="0.5" value="0" oninput="handleDiscountInput('mrc')"
+                                                    class="w-full text-center pr-5 pl-1.5 py-1.5 bg-slate-50 border border-slate-300 rounded-lg font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white tabular-nums">
+                                                <span class="absolute right-2 top-1.5 text-xs text-slate-400">%</span>
+                                            </div>
+                                        </td>
+                                        <td class="py-4 px-3 text-right align-top font-bold tabular-nums">
+                                            <span id="tblMrcActMargin" class="text-slate-900">0.0%</span>
+                                        </td>
+                                        <td class="py-4 px-4 text-center align-top">
+                                            <span id="badgeMrcApproval" class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800">AM</span>
+                                        </td>
+                                    </tr>
+
+                                    <!-- BARIS 3: TOTAL CONTRACT VALUE (TCV MULTI-YEAR) -->
+                                    <tr class="bg-slate-100/90 font-semibold border-t-2 border-slate-300">
+                                        <td class="py-4 px-4 align-middle">
+                                            <div class="font-extrabold text-slate-900">Total Contract (<span id="tblContractYearsLabel">3</span> Tahun)</div>
+                                            <div class="text-[11px] text-slate-600 font-normal">OTC + Akumulasi MRC Multi-Tahun</div>
+                                        </td>
+                                        <td class="py-4 px-3 text-right align-middle text-slate-800 tabular-nums">
+                                            <div class="text-[10px] text-slate-500 font-normal">TCO</div>
+                                            <div id="tblTotalCost" class="font-bold">Rp 0</div>
+                                        </td>
+                                        <td class="py-4 px-3 text-right align-middle text-slate-800 tabular-nums">
+                                            <div id="tblTotalRsp" class="font-bold">Rp 0</div>
+                                            <span id="tblTotalRspMargin" class="inline-block mt-0.5 px-1.5 py-0.5 text-[10px] font-semibold bg-white text-slate-700 border border-slate-200 rounded">0.0%</span>
+                                        </td>
+                                        <td class="py-4 px-3 text-right align-middle text-blue-700 tabular-nums">
+                                            <div class="text-[10px] text-slate-500 font-normal">TCV Selling</div>
+                                            <div id="tblTotalSelling" class="text-sm sm:text-base font-extrabold">Rp 0</div>
+                                        </td>
+                                        <td class="py-4 px-3 text-center align-middle tabular-nums">
+                                            <span id="tblTotalDiscount" class="text-xs font-bold text-slate-700">0.0%</span>
+                                        </td>
+                                        <td class="py-4 px-3 text-right align-middle tabular-nums">
+                                            <span id="tblTotalActMargin" class="text-sm font-extrabold text-slate-900">0.0%</span>
+                                        </td>
+                                        <td class="py-4 px-4 text-center align-middle">
+                                            <span id="badgeTotalApproval" class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800">AM</span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
 
-                    </div>
-                </section>
+                        <!-- Legend Matrix Approval Level (Rumus Excel IF Discount) -->
+                        <div class="px-5 py-3 bg-slate-50 border-t border-slate-200 flex flex-wrap items-center justify-between gap-2 text-[11px] text-slate-600">
+                            <span class="font-semibold text-slate-700">Matrix Approval Diskon:</span>
+                            <div class="flex flex-wrap items-center gap-2">
+                                <span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 font-semibold">&le; 10%: AM</span>
+                                <span class="px-2 py-0.5 rounded bg-blue-100 text-blue-800 font-semibold">10.1% – 15%: VP</span>
+                                <span class="px-2 py-0.5 rounded bg-amber-100 text-amber-800 font-semibold">15.1% – 20%: EVP / CCO</span>
+                                <span class="px-2 py-0.5 rounded bg-rose-100 text-rose-800 font-semibold">&gt; 20%: CEO</span>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Section D: Target Margin Reverse Calculator (Cell F34:H36 Excel) -->
+                    <section class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 no-print">
+                        <div class="flex flex-wrap items-center justify-between gap-2 mb-4 pb-3 border-b border-slate-100">
+                            <div class="flex items-center gap-2">
+                                <span class="w-6 h-6 rounded-lg bg-indigo-600 text-white font-bold text-xs flex items-center justify-center">D</span>
+                                <div>
+                                    <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wide">Target Margin Simulator (Reverse Pricing)</h2>
+                                    <p class="text-xs text-slate-500">Hitung harga jual minimum menggunakan rumus <code class="bg-slate-100 px-1 py-0.5 rounded text-slate-700">ROUNDUP(Cost / (1 - Target%), -5)</code></p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <label for="targetMarginInput" class="text-xs font-semibold text-slate-600">Target Margin:</label>
+                                <div class="relative w-24">
+                                    <input type="number" id="targetMarginInput" value="20" min="1" max="90" step="1" oninput="recalculateAll()"
+                                        class="w-full pl-3 pr-7 py-1.5 bg-indigo-50 border border-indigo-300 rounded-lg text-sm font-bold text-indigo-900 focus:outline-none focus:ring-2 focus:ring-indigo-600 tabular-nums">
+                                    <span class="absolute right-2.5 top-1.5 text-xs font-bold text-indigo-500">%</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <!-- Simulasi OTC -->
+                            <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between gap-3">
+                                <div>
+                                    <span class="block text-[11px] font-semibold text-slate-500 uppercase">Min. OTC Selling Price</span>
+                                    <span id="simOtcPrice" class="text-base font-extrabold text-slate-900 tabular-nums">Rp 0</span>
+                                    <span id="simOtcActualMargin" class="block text-[11px] text-emerald-600 font-medium">Actual Margin: 0.0%</span>
+                                </div>
+                                <button onclick="applySimulatedPrice('otc')" class="px-3 py-1.5 bg-white hover:bg-indigo-600 text-indigo-700 hover:text-white border border-indigo-300 rounded-lg text-xs font-semibold transition-colors shrink-0">
+                                    Terapkan ke OTC
+                                </button>
+                            </div>
+
+                            <!-- Simulasi MRC -->
+                            <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between gap-3">
+                                <div>
+                                    <span class="block text-[11px] font-semibold text-slate-500 uppercase">Min. MRC Selling Price / Bln</span>
+                                    <span id="simMrcPrice" class="text-base font-extrabold text-slate-900 tabular-nums">Rp 0</span>
+                                    <span id="simMrcActualMargin" class="block text-[11px] text-emerald-600 font-medium">Actual Margin: 0.0%</span>
+                                </div>
+                                <button onclick="applySimulatedPrice('mrc')" class="px-3 py-1.5 bg-white hover:bg-indigo-600 text-indigo-700 hover:text-white border border-indigo-300 rounded-lg text-xs font-semibold transition-colors shrink-0">
+                                    Terapkan ke MRC
+                                </button>
+                            </div>
+                        </div>
+                    </section>
+
+                </div>
             </div>
         </div>
+
+        <!-- ===================================================================== -->
+        <!-- TAB 2: CALCULATION MULTI-YEAR PROJECTION (Sheet: Calculationn)        -->
+        <!-- ===================================================================== -->
+        <div id="panel-calculation" class="tab-panel hidden space-y-6">
+            
+            <!-- Ringkasan Parameter Proyeksi -->
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 flex flex-wrap items-center justify-between gap-4">
+                <div>
+                    <h2 class="text-base sm:text-lg font-bold text-slate-900">Proyeksi Biaya &amp; Cashflow Multi-Tahun (Sheet: Calculation)</h2>
+                    <p class="text-xs text-slate-500 mt-0.5">
+                        Rincian komponen HPP (Space, Power, Rack/PDU, Maintenance, Insurance) dengan eskalasi majemuk 
+                        <strong id="calcEscalationInfo" class="text-slate-800">3% YoY</strong> selama <strong id="calcYearsInfo" class="text-slate-800">3 Tahun</strong>.
+                    </p>
+                </div>
+                <div class="flex items-center gap-3 text-xs">
+                    <div class="px-3 py-2 rounded-xl bg-slate-100 border border-slate-200">
+                        <span class="text-slate-500">Lokasi:</span> <strong id="calcLocBadge" class="text-slate-900">Sentul 2N</strong>
+                    </div>
+                    <div class="px-3 py-2 rounded-xl bg-slate-100 border border-slate-200">
+                        <span class="text-slate-500">Kapasitas:</span> <strong id="calcCapBadge" class="text-slate-900">2 Rack / 7.0 kVA</strong>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tabel 1: Breakdown One-Time Charge (OTC) -->
+            <section class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="px-5 py-3.5 bg-slate-900 text-white flex items-center justify-between">
+                    <h3 class="text-xs sm:text-sm font-bold uppercase tracking-wider">1. Rincian Biaya One-Time Charge (OTC — Tahun ke-1)</h3>
+                    <span class="text-xs text-slate-400">Sekali Bayar di Awal Kontrak</span>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse text-xs sm:text-sm">
+                        <thead>
+                            <tr class="bg-slate-100 text-slate-700 border-b border-slate-200">
+                                <th class="py-2.5 px-4 font-semibold">Komponen OTC</th>
+                                <th class="py-2.5 px-4 font-semibold text-right">Satuan / Basis</th>
+                                <th class="py-2.5 px-4 font-semibold text-right">Total Cost (HPP)</th>
+                                <th class="py-2.5 px-4 font-semibold text-right">Total RSP</th>
+                                <th class="py-2.5 px-4 font-semibold text-right">Contract Selling</th>
+                            </tr>
+                        </thead>
+                        <tbody id="otcBreakdownBody" class="divide-y divide-slate-200 tabular-nums">
+                            <!-- Diisi via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Tabel 2: Proyeksi Bulanan & Tahunan MRC (Y1 - Yn) -->
+            <section class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="px-5 py-3.5 bg-slate-900 text-white flex items-center justify-between">
+                    <h3 class="text-xs sm:text-sm font-bold uppercase tracking-wider">2. Proyeksi Cost, RSP &amp; Revenue Tahunan (Y1 – Y<span id="calcMaxYearHeader">3</span>)</h3>
+                    <span class="text-xs text-blue-300">Geser tabel ke samping untuk melihat seluruh tahun &rarr;</span>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse text-xs tabular-nums">
+                        <thead id="multiYearThead">
+                            <!-- Header Y1..Yn di-render via JS -->
+                        </thead>
+                        <tbody id="multiYearTbody" class="divide-y divide-slate-200">
+                            <!-- Baris komponen & cashflow di-render via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
+
+        <!-- ===================================================================== -->
+        <!-- TAB 3: MASTER RATE CARD & ASSUMPTIONS (Colocation-MRC / Master)       -->
+        <!-- ===================================================================== -->
+        <div id="panel-master" class="tab-panel hidden space-y-6">
+            
+            <!-- Header Master Data -->
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 flex flex-wrap items-center justify-between gap-4">
+                <div>
+                    <h2 class="text-base sm:text-lg font-bold text-slate-900">Master Rate Card &amp; Global Assumptions</h2>
+                    <p class="text-xs text-slate-500 mt-0.5">
+                        Seluruh angka di bawah ini dapat diedit langsung oleh tim Presales dan otomatis tersimpan di browser (<code class="bg-slate-100 px-1 rounded">localStorage</code>).
+                    </p>
+                </div>
+                <button onclick="resetMasterData()" class="px-4 py-2 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 rounded-xl text-xs font-semibold transition-colors">
+                    Reset Rate Card ke Standar Awal
+                </button>
+            </div>
+
+            <!-- Global Assumptions (Kurs USD, Basis kVA, Penyesuaian Daya, OTC Mandays) -->
+            <section class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
+                <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wide mb-4 pb-2 border-b border-slate-100">A. Parameter Global &amp; Formula Daya / OTC</h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div>
+                        <label class="block text-[11px] font-semibold text-slate-500 uppercase mb-1">Kurs USD ke IDR (HDC Cikarang)</label>
+                        <input type="number" id="masterUsdRate" step="100" onchange="saveMasterFromInputs()"
+                            class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-sm font-bold text-slate-900 tabular-nums">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-semibold text-slate-500 uppercase mb-1">Basis Daya Standar 3SDC (kVA)</label>
+                        <input type="number" id="masterBaseKva" step="0.5" onchange="saveMasterFromInputs()"
+                            class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-sm font-bold text-slate-900 tabular-nums">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-semibold text-slate-500 uppercase mb-1">Kenaikan Harga per +1 kVA (Rp)</label>
+                        <input type="number" id="masterPlusKvaPrice" step="100000" onchange="saveMasterFromInputs()"
+                            class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-sm font-bold text-slate-900 tabular-nums">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-semibold text-slate-500 uppercase mb-1">Pengurangan per -1 kVA (Rp)</label>
+                        <input type="number" id="masterMinusKvaPrice" step="100000" onchange="saveMasterFromInputs()"
+                            class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-sm font-bold text-slate-900 tabular-nums">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-semibold text-slate-500 uppercase mb-1">OTC Mandays PM / Rack (Rp)</label>
+                        <input type="number" id="masterOtcPmCost" step="100000" onchange="saveMasterFromInputs()"
+                            class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-sm font-bold text-slate-900 tabular-nums">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-semibold text-slate-500 uppercase mb-1">OTC Transport &amp; Meal / Rack (Rp)</label>
+                        <input type="number" id="masterOtcTransportCost" step="100000" onchange="saveMasterFromInputs()"
+                            class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-sm font-bold text-slate-900 tabular-nums">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-semibold text-slate-500 uppercase mb-1">Target Margin RSP OTC (%)</label>
+                        <input type="number" id="masterOtcRspMargin" step="1" onchange="saveMasterFromInputs()"
+                            class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-sm font-bold text-slate-900 tabular-nums">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-semibold text-slate-500 uppercase mb-1">Multiplier Cage vs Open Rack</label>
+                        <input type="number" id="masterCageMultiplier" step="0.05" onchange="saveMasterFromInputs()"
+                            class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-sm font-bold text-slate-900 tabular-nums">
+                    </div>
+                </div>
+            </section>
+
+            <!-- Tabel Master Rate Card Colocation-MRC -->
+            <section class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="px-5 py-3.5 bg-slate-900 text-white">
+                    <h3 class="text-xs sm:text-sm font-bold uppercase tracking-wider">B. Master Rate Card Colocation MRC (3SDC Per-Rack &amp; HDC Cikarang Per-kW)</h3>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse text-xs">
+                        <thead>
+                            <tr class="bg-slate-100 text-slate-700 border-b border-slate-200">
+                                <th class="py-3 px-4 font-semibold">Lokasi Data Center</th>
+                                <th class="py-3 px-3 font-semibold">Grup / Satuan</th>
+                                <th class="py-3 px-3 font-semibold text-right">PCLB Cost (IDR)</th>
+                                <th class="py-3 px-3 font-semibold text-right">PCLB RSP (IDR)</th>
+                                <th class="py-3 px-3 font-semibold text-right">PCPT Cost (IDR)</th>
+                                <th class="py-3 px-3 font-semibold text-right">PCPT RSP (IDR)</th>
+                                <th class="py-3 px-4 font-semibold text-center">Margin RSP (PCLB)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="masterRateTableBody" class="divide-y divide-slate-200 tabular-nums">
+                            <!-- Di-render via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+        </div>
+
     </main>
 
-    <!-- Textarea tersembunyi untuk fallback copy clipboard yang aman di iFrame -->
+    <!-- Textarea tersembunyi untuk Copy Clipboard aman di iFrame -->
     <textarea id="clipboardHelper" class="sr-only" aria-hidden="true"></textarea>
 
     <script>
         /**
-         * Katalog Layanan Presales Standar (Data Center & Managed Services)
-         * Memuat harga default MRC (Bulanan) dan NRC (Setup Fee) dalam Rupiah
+         * =========================================================================
+         * 1. DEFAULT MASTER RATE CARD & ASSUMPTIONS (Dari Workbook Excel Presales)
+         * =========================================================================
          */
-        const SERVICE_CATALOG = {
-            colocation_full: {
-                name: "Colocation Full Rack (42U) - Tier III",
-                unit: "Rack",
-                defaultMrc: 12500000,
-                defaultNrc: 3500000
+        const DEFAULT_MASTER_DATA = {
+            usdRate: 18000,            // Kurs USD -> IDR (HDC Cikarang)
+            baseKva3sdc: 3.5,          // Standar daya per rack 3SDC (kVA)
+            plusKvaPrice: 2500000,     // Kenaikan harga per +1 kVA di atas 3.5 kVA
+            minusKvaPrice: 2000000,    // Pengurangan harga per -1 kVA di bawah 3.5 kVA
+            otcPmCostPerRack: 3500000, // Mandays PM per rack
+            otcTransportPerRack: 1500000, // PM Transport & Meal per rack
+            otcRspMarginPct: 25,       // Target margin RSP untuk OTC (%)
+            cageMultiplier: 1.15,      // Faktor penyesuaian Cage dibanding Open Rack
+            privateSuiteMultiplier: 1.25, // Faktor penyesuaian Private Suite
+
+            // Komposisi proporsi HPP bulanan (untuk breakdown sheet Calculationn)
+            costSplit: {
+                space: 0.34,
+                power: 0.36,
+                rackPduCable: 0.14,
+                maintenance: 0.11,
+                insurance: 0.05
             },
-            colocation_half: {
-                name: "Colocation Half Rack (20U) - Tier III",
-                unit: "Rack",
-                defaultMrc: 7500000,
-                defaultNrc: 2500000
-            },
-            dedicated_power: {
-                name: "Dedicated Power (kVA) - Redundant A+B",
-                unit: "kVA",
-                defaultMrc: 2800000,
-                defaultNrc: 1000000
-            },
-            cross_connect: {
-                name: "Cross Connect (Single Mode Fiber)",
-                unit: "Link",
-                defaultMrc: 1500000,
-                defaultNrc: 2000000
-            },
-            ip_transit: {
-                name: "Dedicated Bandwidth / IP Transit (100 Mbps)",
-                unit: "Paket",
-                defaultMrc: 6000000,
-                defaultNrc: 1500000
-            },
-            managed_services: {
-                name: "Managed Services & Smart Hands 24/7",
-                unit: "Paket",
-                defaultMrc: 4500000,
-                defaultNrc: 0
-            },
-            custom: {
-                name: "Custom Infrastructure / Add-on",
-                unit: "Unit",
-                defaultMrc: 1000000,
-                defaultNrc: 500000
+
+            // Benchmark tarif dasar Open Rack (3.5 kVA untuk 3SDC, atau Per-kW USD dikonversi ke IDR untuk HDC Cikarang)
+            locations: {
+                "Serpong N+1": {
+                    group: "3SDC",
+                    unit: "Rack",
+                    pclbCost: 13500000,
+                    pclbRsp: 17000000,
+                    pcptCost: 9200000,
+                    pcptRsp: 11800000
+                },
+                "Serpong 2N": {
+                    group: "3SDC",
+                    unit: "Rack",
+                    pclbCost: 15600000,
+                    pclbRsp: 19775000, // Benchmark utama dari Excel
+                    pcptCost: 10800000,
+                    pcptRsp: 13800000
+                },
+                "Sentul 2N": {
+                    group: "3SDC",
+                    unit: "Rack",
+                    pclbCost: 15600000,
+                    pclbRsp: 19775000,
+                    pcptCost: 10800000,
+                    pcptRsp: 13800000
+                },
+                "Surabaya N+1": {
+                    group: "3SDC",
+                    unit: "Rack",
+                    pclbCost: 12800000,
+                    pclbRsp: 16200000,
+                    pcptCost: 8800000,
+                    pcptRsp: 11200000
+                },
+                "Surabaya 2N": {
+                    group: "3SDC",
+                    unit: "Rack",
+                    pclbCost: 14800000,
+                    pclbRsp: 18800000,
+                    pcptCost: 10200000,
+                    pcptRsp: 13000000
+                },
+                "Surabaya 2N Tier 4": {
+                    group: "3SDC",
+                    unit: "Rack",
+                    pclbCost: 17500000,
+                    pclbRsp: 22500000,
+                    pcptCost: 12200000,
+                    pcptRsp: 15600000
+                },
+                "HDC Cikarang": {
+                    group: "HDC Cikarang",
+                    unit: "kW",
+                    // Benchmark USD/kW/bulan * Kurs 18.000 (misal PCLB Cost $185, RSP $240; PCPT Cost $125, RSP $165)
+                    pclbCost: 3330000,
+                    pclbRsp: 4320000,
+                    pcptCost: 2250000,
+                    pcptRsp: 2970000
+                }
             }
         };
 
-        // State daftar item layanan aktif
-        let serviceItems = [];
-        let rowIdCounter = 1;
+        const STORAGE_KEY = 'neutradc_presales_master_v2';
+        let masterData = loadMasterData();
 
-        // State hasil kalkulasi terakhir untuk keperluan fitur Copy Summary
-        let latestCalculation = {};
+        // State sinkronisasi Selling Price vs Discount %
+        let userEditedSelling = {
+            otc: false,
+            mrc: false
+        };
+
+        // Menyimpan hasil kalkulasi global terakhir untuk Export CSV & Copy Summary
+        let currentState = {};
 
         /**
-         * Format angka ke mata uang Rupiah (IDR)
+         * Memuat Master Data dari localStorage atau fallback ke DEFAULT_MASTER_DATA
          */
-        function formatRupiah(amount) {
+        function loadMasterData() {
+            try {
+                const saved = localStorage.getItem(STORAGE_KEY);
+                if (saved) {
+                    return JSON.parse(saved);
+                }
+            } catch (e) {
+                console.warn("Gagal membaca localStorage:", e);
+            }
+            return JSON.parse(JSON.stringify(DEFAULT_MASTER_DATA));
+        }
+
+        /**
+         * Menyimpan Master Data ke localStorage
+         */
+        function persistMasterData() {
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(masterData));
+            } catch (e) {
+                console.warn("Gagal menyimpan ke localStorage:", e);
+            }
+        }
+
+        /**
+         * Format Rupiah Indonesia (tanpa desimal)
+         */
+        function formatIDR(val) {
+            if (isNaN(val) || !isFinite(val)) return 'Rp 0';
             return new Intl.NumberFormat('id-ID', {
                 style: 'currency',
                 currency: 'IDR',
                 minimumFractionDigits: 0,
                 maximumFractionDigits: 0
-            }).format(Math.round(amount));
+            }).format(Math.round(val));
         }
 
         /**
-         * Menampilkan notifikasi toast elegan
+         * Rumus Excel ROUNDUP(number, -5) -> pembulatan ke atas ke kelipatan Rp 100.000 terdekat
          */
-        function showToast(message) {
+        function excelRoundUp100k(num) {
+            if (num <= 0) return 0;
+            return Math.ceil(num / 100000) * 100000;
+        }
+
+        /**
+         * Rumus Excel Matrix Approval Diskon:
+         * <= 10%: AM | <= 15%: VP | <= 20%: EVP/CCO | > 20%: CEO
+         */
+        function getApprovalTier(discountPct) {
+            // Toleransi floating point kecil (misal 10.0001%)
+            const d = Math.round(discountPct * 100) / 100;
+            if (d <= 10) {
+                return { label: 'AM', classes: 'bg-emerald-100 text-emerald-800 border border-emerald-200' };
+            } else if (d <= 15) {
+                return { label: 'VP', classes: 'bg-blue-100 text-blue-800 border border-blue-200' };
+            } else if (d <= 20) {
+                return { label: 'EVP / CCO', classes: 'bg-amber-100 text-amber-800 border border-amber-200' };
+            } else {
+                return { label: 'CEO', classes: 'bg-rose-100 text-rose-800 border border-rose-200' };
+            }
+        }
+
+        /**
+         * Menampilkan Toast Notifikasi
+         */
+        function showToast(msg) {
             const toast = document.getElementById('toast');
-            const toastMsg = document.getElementById('toastMessage');
-            toastMsg.textContent = message;
-            
+            document.getElementById('toastMessage').textContent = msg;
             toast.classList.remove('translate-y-20', 'opacity-0');
             setTimeout(() => {
                 toast.classList.add('translate-y-20', 'opacity-0');
@@ -420,362 +953,712 @@
         }
 
         /**
-         * Menambahkan baris layanan baru ke state dan merender ulang daftar
+         * Navigasi Antar Tab (Request, Calculation, Master)
          */
-        function addServiceRow(presetKey = 'colocation_full', customQty = 1) {
-            const preset = SERVICE_CATALOG[presetKey] || SERVICE_CATALOG.colocation_full;
-            const newItem = {
-                id: rowIdCounter++,
-                category: presetKey,
-                description: preset.name,
-                qty: customQty,
-                mrcUnit: preset.defaultMrc,
-                nrcUnit: preset.defaultNrc
-            };
-            serviceItems.push(newItem);
-            renderServiceRows();
-            calculateTotals();
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-panel').forEach(panel => panel.classList.add('hidden'));
+            document.getElementById(`panel-${tabName}`).classList.remove('hidden');
+
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('border-blue-500', 'text-white', 'bg-slate-800/60', 'font-semibold');
+                btn.classList.add('border-transparent', 'text-slate-400', 'font-medium');
+                const dot = btn.querySelector('span:first-child');
+                if (dot) {
+                    dot.classList.remove('bg-blue-400');
+                    dot.classList.add('bg-slate-600');
+                }
+            });
+
+            const activeBtn = document.getElementById(`tab-btn-${tabName}`);
+            activeBtn.classList.remove('border-transparent', 'text-slate-400', 'font-medium');
+            activeBtn.classList.add('border-blue-500', 'text-white', 'bg-slate-800/60', 'font-semibold');
+            const activeDot = activeBtn.querySelector('span:first-child');
+            if (activeDot) {
+                activeDot.classList.remove('bg-slate-600');
+                activeDot.classList.add('bg-blue-400');
+            }
         }
 
         /**
-         * Menghapus baris layanan berdasarkan ID
+         * Toggle tampilan input Custom BoQ jika user memilih "Custom"
          */
-        function removeServiceRow(id) {
-            serviceItems = serviceItems.filter(item => item.id !== id);
-            renderServiceRows();
-            calculateTotals();
-        }
-
-        /**
-         * Menangani perubahan kategori layanan pada baris tertentu
-         */
-        function handleCategoryChange(id, newCategory) {
-            const item = serviceItems.find(i => i.id === id);
-            if (!item) return;
-
-            const preset = SERVICE_CATALOG[newCategory];
-            item.category = newCategory;
-            item.description = preset.name;
-            item.mrcUnit = preset.defaultMrc;
-            item.nrcUnit = preset.defaultNrc;
-
-            renderServiceRows();
-            calculateTotals();
-        }
-
-        /**
-         * Menangani perubahan input teks/angka pada baris layanan secara langsung
-         */
-        function updateItemField(id, field, value) {
-            const item = serviceItems.find(i => i.id === id);
-            if (!item) return;
-
-            if (field === 'description') {
-                item.description = value;
+        function handleConfigTypeChange() {
+            const cfg = document.getElementById('configType').value;
+            const box = document.getElementById('customBoqContainer');
+            if (cfg === 'Custom') {
+                box.classList.remove('hidden');
             } else {
-                const parsed = parseFloat(value);
-                item[field] = isNaN(parsed) || parsed < 0 ? 0 : parsed;
+                box.classList.add('hidden');
             }
-
-            // Perbarui subtotal per baris di DOM tanpa re-render penuh agar fokus input tidak hilang
-            const rowSubtotalEl = document.getElementById(`row-subtotal-${id}`);
-            if (rowSubtotalEl) {
-                const rowMrc = item.qty * item.mrcUnit;
-                const rowNrc = item.qty * item.nrcUnit;
-                rowSubtotalEl.innerHTML = `MRC: <strong>${formatRupiah(rowMrc)}</strong> &bull; NRC: <strong>${formatRupiah(rowNrc)}</strong>`;
-            }
-
-            calculateTotals();
+            recalculateAll();
         }
 
         /**
-         * Merender seluruh baris layanan ke dalam container
+         * Handler saat user mengetik langsung di kolom Selling Price (OTC atau MRC)
          */
-        function renderServiceRows() {
-            const container = document.getElementById('serviceItemsContainer');
-            const emptyState = document.getElementById('emptyState');
+        function handleSellingInput(type) {
+            userEditedSelling[type] = true;
+            const rsp = type === 'otc' ? currentState.otcRsp : currentState.mrcRspY1;
+            const inputEl = document.getElementById(type === 'otc' ? 'inputOtcSelling' : 'inputMrcSelling');
+            const discEl = document.getElementById(type === 'otc' ? 'inputOtcDiscount' : 'inputMrcDiscount');
 
-            if (serviceItems.length === 0) {
-                container.innerHTML = '';
-                emptyState.classList.remove('hidden');
-                return;
+            const sellingVal = parseFloat(inputEl.value) || 0;
+            const discountPct = rsp > 0 ? ((rsp - sellingVal) / rsp) * 100 : 0;
+            discEl.value = (Math.round(discountPct * 10) / 10).toFixed(1);
+
+            recalculateAll(false);
+        }
+
+        /**
+         * Handler saat user mengetik langsung di kolom Discount % (OTC atau MRC)
+         */
+        function handleDiscountInput(type) {
+            userEditedSelling[type] = true;
+            const rsp = type === 'otc' ? currentState.otcRsp : currentState.mrcRspY1;
+            const inputEl = document.getElementById(type === 'otc' ? 'inputOtcSelling' : 'inputMrcSelling');
+            const discEl = document.getElementById(type === 'otc' ? 'inputOtcDiscount' : 'inputMrcDiscount');
+
+            const discPct = parseFloat(discEl.value) || 0;
+            const newSelling = Math.max(0, Math.round(rsp * (1 - discPct / 100)));
+            inputEl.value = newSelling;
+
+            recalculateAll(false);
+        }
+
+        /**
+         * Terapkan hasil Target Margin Simulator ke input Selling Price
+         */
+        function applySimulatedPrice(type) {
+            userEditedSelling[type] = true;
+            if (type === 'otc') {
+                const simPrice = currentState.simOtcPrice || 0;
+                document.getElementById('inputOtcSelling').value = simPrice;
+                const disc = currentState.otcRsp > 0 ? ((currentState.otcRsp - simPrice) / currentState.otcRsp) * 100 : 0;
+                document.getElementById('inputOtcDiscount').value = (Math.round(disc * 10) / 10).toFixed(1);
+                showToast('Target Margin OTC berhasil diterapkan!');
+            } else {
+                const simPrice = currentState.simMrcPrice || 0;
+                document.getElementById('inputMrcSelling').value = simPrice;
+                const disc = currentState.mrcRspY1 > 0 ? ((currentState.mrcRspY1 - simPrice) / currentState.mrcRspY1) * 100 : 0;
+                document.getElementById('inputMrcDiscount').value = (Math.round(disc * 10) / 10).toFixed(1);
+                showToast('Target Margin MRC berhasil diterapkan!');
+            }
+            recalculateAll(false);
+        }
+
+        /**
+         * =========================================================================
+         * 2. CORE ENGINE: PERHITUNGAN COLOCATION, MULTI-YEAR & APPROVAL MATRIX
+         * =========================================================================
+         */
+        function recalculateAll(syncSellingFromDiscount = true) {
+            try {
+                // 1. Ambil input metadata & teknis
+                const reqDate = document.getElementById('reqDate').value;
+                const reqRev = document.getElementById('reqRev').value.trim() || 'Rev-01';
+                const customerName = document.getElementById('customerName').value.trim() || 'Customer';
+                const salesName = document.getElementById('salesName').value.trim() || 'Sales';
+                const orderType = document.getElementById('orderType').value;
+                const configType = document.getElementById('configType').value;
+                const customBoqCost = configType === 'Custom' ? (parseFloat(document.getElementById('customBoqCost').value) || 0) : 0;
+
+                const locationName = document.getElementById('dcLocation').value;
+                const coloType = document.getElementById('coloType').value;
+                const powerSpec = document.getElementById('powerSpec').value;
+                const totalRack = Math.max(1, parseInt(document.getElementById('totalRack').value, 10) || 1);
+                const powerPerRack = Math.max(0.5, parseFloat(document.getElementById('powerPerRack').value) || 3.5);
+                const contractYears = Math.min(10, Math.max(1, parseInt(document.getElementById('contractYears').value, 10) || 3));
+                const yoyRate = Math.max(0, parseFloat(document.getElementById('yoyEscalation').value) || 0) / 100;
+                const includePpn = document.getElementById('togglePpn').checked;
+
+                const locData = masterData.locations[locationName] || masterData.locations["Sentul 2N"];
+                const isHdc = locData.group === "HDC Cikarang";
+                const totalPower = totalRack * powerPerRack;
+
+                // Update Badge DC Group & Label Satuan Daya
+                const dcGroupBadge = document.getElementById('dcGroupBadge');
+                const powerPerRackLabel = document.getElementById('powerPerRackLabel');
+                const totalPowerDisplay = document.getElementById('totalPowerDisplay');
+                const powerAdjustmentNote = document.getElementById('powerAdjustmentNote');
+
+                if (isHdc) {
+                    dcGroupBadge.textContent = 'HDC Cikarang (Per-kW)';
+                    dcGroupBadge.className = 'px-2.5 py-1 text-xs font-bold rounded-lg bg-purple-50 text-purple-700 border border-purple-200';
+                    powerPerRackLabel.textContent = 'Power per Rack (kW)';
+                    totalPowerDisplay.textContent = `${totalPower.toFixed(1)} kW`;
+                    powerAdjustmentNote.textContent = `Tarif HDC dihitung berbasis total ${totalPower.toFixed(1)} kW (Kurs Rp ${masterData.usdRate.toLocaleString('id-ID')}/USD)`;
+                } else {
+                    dcGroupBadge.textContent = '3SDC (Per-Rack)';
+                    dcGroupBadge.className = 'px-2.5 py-1 text-xs font-bold rounded-lg bg-indigo-50 text-indigo-700 border border-indigo-200';
+                    powerPerRackLabel.textContent = 'Power per Rack (kVA)';
+                    totalPowerDisplay.textContent = `${totalPower.toFixed(1)} kVA`;
+
+                    const diffKva = powerPerRack - masterData.baseKva3sdc;
+                    if (Math.abs(diffKva) < 0.01) {
+                        powerAdjustmentNote.textContent = `Sesuai basis standar ${masterData.baseKva3sdc} kVA/rack`;
+                    } else if (diffKva > 0) {
+                        powerAdjustmentNote.textContent = `Penambahan +${diffKva.toFixed(1)} kVA/rack (+${formatIDR(diffKva * masterData.plusKvaPrice)}/rack)`;
+                    } else {
+                        powerAdjustmentNote.textContent = `Pengurangan ${diffKva.toFixed(1)} kVA/rack (${formatIDR(diffKva * masterData.minusKvaPrice)}/rack)`;
+                    }
+                }
+
+                // 2. Kalkulasi OTC Cost & RSP
+                const pmCostTotal = masterData.otcPmCostPerRack * totalRack;
+                const transportCostTotal = masterData.otcTransportPerRack * totalRack;
+                const otcCost = pmCostTotal + transportCostTotal + customBoqCost;
+                const otcMarginFactor = 1 - (masterData.otcRspMarginPct / 100);
+                const otcRsp = excelRoundUp100k(otcCost / Math.max(0.1, otcMarginFactor));
+                const otcRspMarginPct = otcRsp > 0 ? ((otcRsp - otcCost) / otcRsp) * 100 : 0;
+
+                // 3. Kalkulasi MRC Tahun ke-1 (Cost & RSP)
+                const baseUnitCost = powerSpec === 'PCLB' ? locData.pclbCost : locData.pcptCost;
+                const baseUnitRsp = powerSpec === 'PCLB' ? locData.pclbRsp : locData.pcptRsp;
+
+                let typeMultiplier = 1.0;
+                if (coloType === 'Cage') typeMultiplier = masterData.cageMultiplier;
+                if (coloType === 'Private Suite') typeMultiplier = masterData.privateSuiteMultiplier;
+
+                let mrcCostY1 = 0;
+                let mrcRspY1 = 0;
+
+                if (isHdc) {
+                    // HDC Cikarang dihitung per total kW
+                    mrcCostY1 = baseUnitCost * totalPower * typeMultiplier;
+                    mrcRspY1 = baseUnitRsp * totalPower * typeMultiplier;
+                } else {
+                    // 3SDC dihitung per Rack + penyesuaian selisih kVA dari basis 3.5 kVA
+                    const diffKva = powerPerRack - masterData.baseKva3sdc;
+                    let kvaPriceAdj = 0;
+                    if (diffKva > 0) {
+                        kvaPriceAdj = diffKva * masterData.plusKvaPrice;
+                    } else if (diffKva < 0) {
+                        kvaPriceAdj = diffKva * masterData.minusKvaPrice; // bernilai negatif
+                    }
+
+                    // Penyesuaian biaya daya proporsional (~75% dari selisih tarif masuk ke komponen HPP daya)
+                    const kvaCostAdj = kvaPriceAdj * 0.75;
+
+                    const perRackCost = Math.max(1000000, (baseUnitCost * typeMultiplier) + kvaCostAdj);
+                    const perRackRsp = Math.max(1500000, (baseUnitRsp * typeMultiplier) + kvaPriceAdj);
+
+                    mrcCostY1 = perRackCost * totalRack;
+                    mrcRspY1 = perRackRsp * totalRack;
+                }
+
+                const mrcRspMarginPct = mrcRspY1 > 0 ? ((mrcRspY1 - mrcCostY1) / mrcRspY1) * 100 : 0;
+
+                // 4. Sinkronisasi Selling Price & Discount %
+                const otcSellingInput = document.getElementById('inputOtcSelling');
+                const mrcSellingInput = document.getElementById('inputMrcSelling');
+                const otcDiscInput = document.getElementById('inputOtcDiscount');
+                const mrcDiscInput = document.getElementById('inputMrcDiscount');
+
+                let otcSelling = 0;
+                let mrcSellingY1 = 0;
+
+                if (syncSellingFromDiscount) {
+                    const otcDisc = parseFloat(otcDiscInput.value) || 0;
+                    const mrcDisc = parseFloat(mrcDiscInput.value) || 0;
+                    otcSelling = Math.max(0, Math.round(otcRsp * (1 - otcDisc / 100)));
+                    mrcSellingY1 = Math.max(0, Math.round(mrcRspY1 * (1 - mrcDisc / 100)));
+                    otcSellingInput.value = otcSelling;
+                    mrcSellingInput.value = mrcSellingY1;
+                } else {
+                    otcSelling = Math.max(0, parseFloat(otcSellingInput.value) || 0);
+                    mrcSellingY1 = Math.max(0, parseFloat(mrcSellingInput.value) || 0);
+                }
+
+                const otcDiscountPct = otcRsp > 0 ? ((otcRsp - otcSelling) / otcRsp) * 100 : 0;
+                const mrcDiscountPct = mrcRspY1 > 0 ? ((mrcRspY1 - mrcSellingY1) / mrcRspY1) * 100 : 0;
+
+                const otcActMarginPct = otcSelling > 0 ? ((otcSelling - otcCost) / otcSelling) * 100 : 0;
+                const mrcActMarginPct = mrcSellingY1 > 0 ? ((mrcSellingY1 - mrcCostY1) / mrcSellingY1) * 100 : 0;
+
+                // 5. Proyeksi Multi-Tahun (Y1 hingga contractYears)
+                // Catatan presales standar: Cost naik sesuai YoY Escalation, sedangkan RSP & Contract Selling mengikuti eskalasi tahunan atau flat sesuai kebijakan;
+                // Di sheet Calculationn Excel, Cost & Revenue bulanan diproyeksikan per tahun Y1..Yn dengan faktor eskalasi YoY.
+                const yearlyProjection = [];
+                let totalMultiYearMrcCost = 0;
+                let totalMultiYearMrcRsp = 0;
+                let totalMultiYearMrcSelling = 0;
+
+                for (let y = 1; y <= contractYears; y++) {
+                    const escFactor = Math.pow(1 + yoyRate, y - 1);
+                    const mCost = mrcCostY1 * escFactor;
+                    const mRsp = mrcRspY1 * escFactor;
+                    const mSell = mrcSellingY1 * escFactor;
+
+                    const yCost = mCost * 12;
+                    const yRsp = mRsp * 12;
+                    const ySell = mSell * 12;
+                    const yMargin = ySell > 0 ? ((ySell - yCost) / ySell) * 100 : 0;
+
+                    totalMultiYearMrcCost += yCost;
+                    totalMultiYearMrcRsp += yRsp;
+                    totalMultiYearMrcSelling += ySell;
+
+                    yearlyProjection.push({
+                        year: y,
+                        escFactor,
+                        monthlyCost: mCost,
+                        monthlyRsp: mRsp,
+                        monthlySelling: mSell,
+                        annualCost: yCost,
+                        annualRsp: yRsp,
+                        annualSelling: ySell,
+                        annualMargin: yMargin,
+                        // Komponen detail HPP bulanan
+                        space: mCost * masterData.costSplit.space,
+                        power: mCost * masterData.costSplit.power,
+                        rackPduCable: mCost * masterData.costSplit.rackPduCable,
+                        maintenance: mCost * masterData.costSplit.maintenance,
+                        insurance: mCost * masterData.costSplit.insurance
+                    });
+                }
+
+                // 6. Total Contract Valuation (TCO & TCV)
+                const tco = otcCost + totalMultiYearMrcCost;
+                const tcvRsp = otcRsp + totalMultiYearMrcRsp;
+                const tcvSelling = otcSelling + totalMultiYearMrcSelling;
+                const tcvSellingWithPpn = tcvSelling * 1.11;
+
+                const totalRspMarginPct = tcvRsp > 0 ? ((tcvRsp - tco) / tcvRsp) * 100 : 0;
+                const totalActMarginPct = tcvSelling > 0 ? ((tcvSelling - tco) / tcvSelling) * 100 : 0;
+                const totalDiscountPct = tcvRsp > 0 ? ((tcvRsp - tcvSelling) / tcvRsp) * 100 : 0;
+                const grossProfit = tcvSelling - tco;
+
+                // 7. Target Margin Simulator (ROUNDUP(Cost / (1 - Target%), -5))
+                const targetMarginPct = Math.min(95, Math.max(1, parseFloat(document.getElementById('targetMarginInput').value) || 20));
+                const simDenominator = 1 - (targetMarginPct / 100);
+                const simOtcPrice = excelRoundUp100k(otcCost / simDenominator);
+                const simMrcPrice = excelRoundUp100k(mrcCostY1 / simDenominator);
+                const simOtcActMargin = simOtcPrice > 0 ? ((simOtcPrice - otcCost) / simOtcPrice) * 100 : 0;
+                const simMrcActMargin = simMrcPrice > 0 ? ((simMrcPrice - mrcCostY1) / simMrcPrice) * 100 : 0;
+
+                // Simpan seluruh hasil ke currentState
+                currentState = {
+                    reqDate, reqRev, customerName, salesName, orderType, configType, customBoqCost,
+                    locationName, coloType, powerSpec, totalRack, powerPerRack, totalPower, isHdc,
+                    contractYears, yoyRate, includePpn,
+                    pmCostTotal, transportCostTotal, otcCost, otcRsp, otcRspMarginPct, otcSelling, otcDiscountPct, otcActMarginPct,
+                    mrcCostY1, mrcRspY1, mrcRspMarginPct, mrcSellingY1, mrcDiscountPct, mrcActMarginPct,
+                    yearlyProjection, tco, tcvRsp, tcvSelling, tcvSellingWithPpn,
+                    totalRspMarginPct, totalActMarginPct, totalDiscountPct, grossProfit,
+                    simOtcPrice, simMrcPrice
+                };
+
+                // =====================================================================
+                // UPDATE DOM: KPI CARDS & COMMERCIAL TABLE
+                // =====================================================================
+                document.getElementById('kpiYearsBadge1').textContent = `${contractYears} Tahun`;
+                document.getElementById('kpiTco').textContent = formatIDR(tco);
+                document.getElementById('kpiTcvRsp').textContent = formatIDR(tcvRsp);
+                document.getElementById('kpiRspMarginBadge').textContent = `Margin ${totalRspMarginPct.toFixed(1)}%`;
+
+                if (includePpn) {
+                    document.getElementById('kpiTaxLabel').textContent = 'Incl. PPN 11%';
+                    document.getElementById('kpiTcvSelling').textContent = formatIDR(tcvSellingWithPpn);
+                    document.getElementById('kpiTcvWithPpnSub').textContent = `Excl. PPN: ${formatIDR(tcvSelling)}`;
+                } else {
+                    document.getElementById('kpiTaxLabel').textContent = 'Excl. PPN';
+                    document.getElementById('kpiTcvSelling').textContent = formatIDR(tcvSelling);
+                    document.getElementById('kpiTcvWithPpnSub').textContent = `Incl. PPN 11%: ${formatIDR(tcvSellingWithPpn)}`;
+                }
+
+                document.getElementById('kpiOverallMargin').textContent = `${totalActMarginPct.toFixed(1)}%`;
+                document.getElementById('kpiOverallMargin').className = `text-2xl font-extrabold tabular-nums ${totalActMarginPct < 10 ? 'text-rose-600' : 'text-slate-900'}`;
+                document.getElementById('kpiOverallDiscount').textContent = `(Disc: ${totalDiscountPct.toFixed(1)}%)`;
+                document.getElementById('kpiNetProfitAmount').textContent = `Est. Gross Profit: ${formatIDR(grossProfit)}`;
+
+                // Approval Badges
+                const otcTier = getApprovalTier(otcDiscountPct);
+                const mrcTier = getApprovalTier(mrcDiscountPct);
+                const totalTier = getApprovalTier(totalDiscountPct);
+
+                const applyBadge = (elId, tier) => {
+                    const el = document.getElementById(elId);
+                    el.textContent = tier.label;
+                    el.className = `inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold ${tier.classes}`;
+                };
+                applyBadge('kpiOverallApprovalBadge', totalTier);
+                applyBadge('badgeOtcApproval', otcTier);
+                applyBadge('badgeMrcApproval', mrcTier);
+                applyBadge('badgeTotalApproval', totalTier);
+
+                // Baris OTC Table
+                const unitDivisor = isHdc ? totalPower : totalRack;
+                const unitLabel = isHdc ? 'kW' : 'rack';
+
+                document.getElementById('tblOtcCost').textContent = formatIDR(otcCost);
+                document.getElementById('tblOtcRsp').textContent = formatIDR(otcRsp);
+                document.getElementById('tblOtcRspMargin').textContent = `${otcRspMarginPct.toFixed(1)}%`;
+                document.getElementById('otcPerUnitHint').textContent = `Cost: ${formatIDR(otcCost / unitDivisor)} / ${unitLabel}`;
+                document.getElementById('otcSellingPerUnit').textContent = `${formatIDR(otcSelling / unitDivisor)} / ${unitLabel}`;
+                
+                const otcActEl = document.getElementById('tblOtcActMargin');
+                otcActEl.textContent = `${otcActMarginPct.toFixed(1)}%`;
+                otcActEl.className = otcActMarginPct < 0 ? 'text-rose-600' : 'text-slate-900';
+
+                // Baris MRC Table
+                document.getElementById('tblMrcCost').textContent = formatIDR(mrcCostY1);
+                document.getElementById('tblMrcRsp').textContent = formatIDR(mrcRspY1);
+                document.getElementById('tblMrcRspMargin').textContent = `${mrcRspMarginPct.toFixed(1)}%`;
+                document.getElementById('mrcPerUnitHint').textContent = `Cost: ${formatIDR(mrcCostY1 / unitDivisor)} / ${unitLabel} / bln`;
+                document.getElementById('mrcSellingPerUnit').textContent = `${formatIDR(mrcSellingY1 / unitDivisor)} / ${unitLabel} / bln`;
+
+                const mrcActEl = document.getElementById('tblMrcActMargin');
+                mrcActEl.textContent = `${mrcActMarginPct.toFixed(1)}%`;
+                mrcActEl.className = mrcActMarginPct < 0 ? 'text-rose-600' : 'text-slate-900';
+
+                // Baris Total Contract Table
+                document.getElementById('tblContractYearsLabel').textContent = contractYears;
+                document.getElementById('tblTotalCost').textContent = formatIDR(tco);
+                document.getElementById('tblTotalRsp').textContent = formatIDR(tcvRsp);
+                document.getElementById('tblTotalRspMargin').textContent = `${totalRspMarginPct.toFixed(1)}%`;
+                document.getElementById('tblTotalSelling').textContent = formatIDR(tcvSelling);
+                document.getElementById('tblTotalDiscount').textContent = `${totalDiscountPct.toFixed(1)}%`;
+
+                const totActEl = document.getElementById('tblTotalActMargin');
+                totActEl.textContent = `${totalActMarginPct.toFixed(1)}%`;
+                totActEl.className = `text-sm font-extrabold ${totalActMarginPct < 10 ? 'text-rose-600' : 'text-slate-900'}`;
+
+                // Target Margin Simulator UI
+                document.getElementById('simOtcPrice').textContent = formatIDR(simOtcPrice);
+                document.getElementById('simOtcActualMargin').textContent = `Actual Margin: ${simOtcActMargin.toFixed(1)}%`;
+                document.getElementById('simMrcPrice').textContent = formatIDR(simMrcPrice);
+                document.getElementById('simMrcActualMargin').textContent = `Actual Margin: ${simMrcActMargin.toFixed(1)}%`;
+
+                // Render Tab 2 (Multi-Year Projection)
+                renderCalculationTab();
+
+            } catch (err) {
+                console.error("Kesalahan pada recalculateAll:", err);
+            }
+        }
+
+        /**
+         * =========================================================================
+         * 3. RENDER TAB 2: MULTI-YEAR CASHFLOW & COST PROJECTION (Sheet: Calculationn)
+         * =========================================================================
+         */
+        function renderCalculationTab() {
+            const s = currentState;
+            if (!s.yearlyProjection) return;
+
+            document.getElementById('calcEscalationInfo').textContent = `${(s.yoyRate * 100).toFixed(1)}% YoY`;
+            document.getElementById('calcYearsInfo').textContent = `${s.contractYears} Tahun`;
+            document.getElementById('calcLocBadge').textContent = `${s.locationName} (${s.coloType} - ${s.powerSpec})`;
+            document.getElementById('calcCapBadge').textContent = `${s.totalRack} Rack / ${s.totalPower.toFixed(1)} ${s.isHdc ? 'kW' : 'kVA'}`;
+            document.getElementById('calcMaxYearHeader').textContent = s.contractYears;
+
+            // 1. Render Tabel Breakdown OTC
+            const otcBody = document.getElementById('otcBreakdownBody');
+            const pmRsp = s.pmCostTotal / (1 - masterData.otcRspMarginPct / 100);
+            const trRsp = s.transportCostTotal / (1 - masterData.otcRspMarginPct / 100);
+            const boqRsp = s.customBoqCost / (1 - masterData.otcRspMarginPct / 100);
+
+            let otcRows = `
+                <tr>
+                    <td class="py-2.5 px-4 font-medium text-slate-800">Mandays Project Management (PM)</td>
+                    <td class="py-2.5 px-4 text-right text-slate-500">${s.totalRack} Rack &times; ${formatIDR(masterData.otcPmCostPerRack)}</td>
+                    <td class="py-2.5 px-4 text-right font-medium">${formatIDR(s.pmCostTotal)}</td>
+                    <td class="py-2.5 px-4 text-right text-slate-700">${formatIDR(pmRsp)}</td>
+                    <td class="py-2.5 px-4 text-right text-slate-500">-</td>
+                </tr>
+                <tr>
+                    <td class="py-2.5 px-4 font-medium text-slate-800">PM Transport, Accommodation &amp; Meal</td>
+                    <td class="py-2.5 px-4 text-right text-slate-500">${s.totalRack} Rack &times; ${formatIDR(masterData.otcTransportPerRack)}</td>
+                    <td class="py-2.5 px-4 text-right font-medium">${formatIDR(s.transportCostTotal)}</td>
+                    <td class="py-2.5 px-4 text-right text-slate-700">${formatIDR(trRsp)}</td>
+                    <td class="py-2.5 px-4 text-right text-slate-500">-</td>
+                </tr>
+            `;
+
+            if (s.configType === 'Custom') {
+                otcRows += `
+                <tr class="bg-amber-50/50">
+                    <td class="py-2.5 px-4 font-medium text-amber-900">Custom BoQ &amp; Material Tambahan</td>
+                    <td class="py-2.5 px-4 text-right text-amber-700">1 Paket Custom</td>
+                    <td class="py-2.5 px-4 text-right font-medium text-amber-900">${formatIDR(s.customBoqCost)}</td>
+                    <td class="py-2.5 px-4 text-right text-amber-800">${formatIDR(boqRsp)}</td>
+                    <td class="py-2.5 px-4 text-right text-slate-500">-</td>
+                </tr>
+                `;
             }
 
-            emptyState.classList.add('hidden');
+            otcRows += `
+                <tr class="bg-slate-100 font-bold text-slate-900 border-t-2 border-slate-300">
+                    <td class="py-3 px-4" colspan="2">TOTAL ONE-TIME CHARGE (OTC)</td>
+                    <td class="py-3 px-4 text-right">${formatIDR(s.otcCost)}</td>
+                    <td class="py-3 px-4 text-right">${formatIDR(s.otcRsp)}</td>
+                    <td class="py-3 px-4 text-right text-blue-700">${formatIDR(s.otcSelling)}</td>
+                </tr>
+            `;
+            otcBody.innerHTML = otcRows;
 
-            container.innerHTML = serviceItems.map((item, index) => {
-                const optionsHtml = Object.entries(SERVICE_CATALOG).map(([key, val]) => {
-                    const selected = key === item.category ? 'selected' : '';
-                    return `<option value="${key}" ${selected}>${val.name}</option>`;
+            // 2. Render Tabel Multi-Year (Y1 .. Yn + Total)
+            const thead = document.getElementById('multiYearThead');
+            const tbody = document.getElementById('multiYearTbody');
+
+            let yearHeaders = s.yearlyProjection.map(p => `<th class="py-3 px-3 font-semibold text-right min-w-[130px]">Year ${p.year} (Y${p.year})</th>`).join('');
+            thead.innerHTML = `
+                <tr class="bg-slate-100 text-slate-700 border-b border-slate-300">
+                    <th class="py-3 px-4 font-bold sticky left-0 bg-slate-100 z-10 min-w-[220px]">Komponen Biaya &amp; Revenue</th>
+                    ${yearHeaders}
+                    <th class="py-3 px-4 font-extrabold text-right bg-slate-200 text-slate-900 min-w-[150px]">TOTAL (${s.contractYears} Thn)</th>
+                </tr>
+            `;
+
+            const buildRow = (label, getterFn, totalVal, rowClass = '', isPercent = false) => {
+                const cells = s.yearlyProjection.map(p => {
+                    const v = getterFn(p);
+                    return `<td class="py-2.5 px-3 text-right">${isPercent ? v.toFixed(1) + '%' : formatIDR(v)}</td>`;
                 }).join('');
-
-                const rowMrc = item.qty * item.mrcUnit;
-                const rowNrc = item.qty * item.nrcUnit;
-
+                const totalCell = isPercent ? `${totalVal.toFixed(1)}%` : formatIDR(totalVal);
                 return `
-                <div class="p-4 rounded-xl bg-slate-50/80 border border-slate-200 hover:border-slate-300 transition-all relative group">
-                    <div class="flex items-center justify-between gap-2 mb-3">
-                        <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Item #${index + 1}</span>
-                        <button onclick="removeServiceRow(${item.id})" title="Hapus Item"
-                            class="no-print text-slate-400 hover:text-rose-600 p-1 rounded-lg hover:bg-rose-50 transition-colors flex items-center gap-1 text-xs">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                            </svg>
-                            <span class="hidden sm:inline">Hapus</span>
-                        </button>
-                    </div>
+                    <tr class="${rowClass}">
+                        <td class="py-2.5 px-4 sticky left-0 bg-inherit z-10">${label}</td>
+                        ${cells}
+                        <td class="py-2.5 px-4 text-right font-bold bg-slate-50/80">${totalCell}</td>
+                    </tr>
+                `;
+            };
 
-                    <div class="grid grid-cols-1 md:grid-cols-12 gap-3">
-                        <!-- Pilihan Kategori Layanan -->
-                        <div class="md:col-span-6">
-                            <label class="block text-[11px] font-semibold text-slate-500 mb-1">Kategori Layanan</label>
-                            <select onchange="handleCategoryChange(${item.id}, this.value)"
-                                class="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg text-xs sm:text-sm font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-600">
-                                ${optionsHtml}
-                            </select>
-                        </div>
+            const sumField = (fn) => s.yearlyProjection.reduce((acc, p) => acc + fn(p), 0);
 
-                        <!-- Deskripsi / Spesifikasi Tambahan -->
-                        <div class="md:col-span-6">
-                            <label class="block text-[11px] font-semibold text-slate-500 mb-1">Deskripsi / Spesifikasi Item</label>
-                            <input type="text" value="${item.description}" oninput="updateItemField(${item.id}, 'description', this.value)"
-                                class="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg text-xs sm:text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-600">
-                        </div>
+            let bodyHtml = '';
+            // Sub-header: Monthly Cost Breakdown
+            bodyHtml += `
+                <tr class="bg-slate-50 text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                    <td class="py-2 px-4 sticky left-0 bg-slate-50" colspan="${s.contractYears + 2}">A. Breakdown HPP Bulanan (Monthly Cost / Bulan)</td>
+                </tr>
+            `;
+            bodyHtml += buildRow('1. Space / Floor Area', p => p.space, sumField(p => p.space) / s.contractYears, 'bg-white text-slate-600');
+            bodyHtml += buildRow('2. Power &amp; Cooling', p => p.power, sumField(p => p.power) / s.contractYears, 'bg-white text-slate-600');
+            bodyHtml += buildRow('3. Rack, PDU &amp; Power Cable', p => p.rackPduCable, sumField(p => p.rackPduCable) / s.contractYears, 'bg-white text-slate-600');
+            bodyHtml += buildRow('4. Preventive &amp; Corrective Maint.', p => p.maintenance, sumField(p => p.maintenance) / s.contractYears, 'bg-white text-slate-600');
+            bodyHtml += buildRow('5. Facility Insurance', p => p.insurance, sumField(p => p.insurance) / s.contractYears, 'bg-white text-slate-600');
+            bodyHtml += buildRow('Total Monthly Cost (MRC HPP)', p => p.monthlyCost, sumField(p => p.monthlyCost) / s.contractYears, 'bg-slate-100 font-bold text-slate-900');
 
-                        <!-- Kuantitas -->
-                        <div class="md:col-span-2">
-                            <label class="block text-[11px] font-semibold text-slate-500 mb-1">Qty</label>
-                            <input type="number" value="${item.qty}" min="1" oninput="updateItemField(${item.id}, 'qty', this.value)"
-                                class="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg text-xs sm:text-sm font-semibold text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-600">
-                        </div>
+            // Sub-header: Annual Cashflow (12 Months)
+            bodyHtml += `
+                <tr class="bg-slate-50 text-[11px] font-bold uppercase tracking-wider text-slate-500 border-t-2 border-slate-300">
+                    <td class="py-2 px-4 sticky left-0 bg-slate-50" colspan="${s.contractYears + 2}">B. Proyeksi Tahunan (Annualized &times; 12 Bulan)</td>
+                </tr>
+            `;
+            bodyHtml += buildRow('Annual MRC Cost (HPP / Tahun)', p => p.annualCost, sumField(p => p.annualCost), 'bg-white font-medium text-slate-800');
+            bodyHtml += buildRow('Annual MRC RSP (Rekomendasi / Thn)', p => p.annualRsp, sumField(p => p.annualRsp), 'bg-white font-medium text-slate-800');
+            bodyHtml += buildRow('Annual MRC Contract Selling / Thn', p => p.annualSelling, sumField(p => p.annualSelling), 'bg-blue-50/70 font-bold text-blue-900');
+            
+            const overallMrcMargin = sumField(p => p.annualSelling) > 0 
+                ? ((sumField(p => p.annualSelling) - sumField(p => p.annualCost)) / sumField(p => p.annualSelling)) * 100 
+                : 0;
+            bodyHtml += buildRow('Annual MRC Margin (%)', p => p.annualMargin, overallMrcMargin, 'bg-emerald-50/60 font-bold text-emerald-800', true);
 
-                        <!-- Harga Satuan MRC -->
-                        <div class="md:col-span-5">
-                            <label class="block text-[11px] font-semibold text-slate-500 mb-1">Harga Satuan MRC / Bln (Rp)</label>
-                            <input type="number" value="${item.mrcUnit}" min="0" step="100000" oninput="updateItemField(${item.id}, 'mrcUnit', this.value)"
-                                class="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg text-xs sm:text-sm font-semibold text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-600">
-                        </div>
+            tbody.innerHTML = bodyHtml;
+        }
 
-                        <!-- Harga Satuan NRC -->
-                        <div class="md:col-span-5">
-                            <label class="block text-[11px] font-semibold text-slate-500 mb-1">Harga Satuan NRC / Setup (Rp)</label>
-                            <input type="number" value="${item.nrcUnit}" min="0" step="100000" oninput="updateItemField(${item.id}, 'nrcUnit', this.value)"
-                                class="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg text-xs sm:text-sm font-semibold text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-600">
-                        </div>
-                    </div>
+        /**
+         * =========================================================================
+         * 4. RENDER & EDIT TAB 3: MASTER RATE CARD & ASSUMPTIONS
+         * =========================================================================
+         */
+        function renderMasterTab() {
+            document.getElementById('masterUsdRate').value = masterData.usdRate;
+            document.getElementById('masterBaseKva').value = masterData.baseKva3sdc;
+            document.getElementById('masterPlusKvaPrice').value = masterData.plusKvaPrice;
+            document.getElementById('masterMinusKvaPrice').value = masterData.minusKvaPrice;
+            document.getElementById('masterOtcPmCost').value = masterData.otcPmCostPerRack;
+            document.getElementById('masterOtcTransportCost').value = masterData.otcTransportPerRack;
+            document.getElementById('masterOtcRspMargin').value = masterData.otcRspMarginPct;
+            document.getElementById('masterCageMultiplier').value = masterData.cageMultiplier;
 
-                    <!-- Footer Baris (Subtotal per Item) -->
-                    <div class="mt-3 pt-2.5 border-t border-slate-200/80 flex justify-between items-center text-xs text-slate-600">
-                        <span>Subtotal Baris:</span>
-                        <span id="row-subtotal-${item.id}">MRC: <strong>${formatRupiah(rowMrc)}</strong> &bull; NRC: <strong>${formatRupiah(rowNrc)}</strong></span>
-                    </div>
-                </div>
+            const tbody = document.getElementById('masterRateTableBody');
+            tbody.innerHTML = Object.entries(masterData.locations).map(([locName, data]) => {
+                const marginPct = data.pclbRsp > 0 ? ((data.pclbRsp - data.pclbCost) / data.pclbRsp) * 100 : 0;
+                const badgeClass = data.group === 'HDC Cikarang' ? 'bg-purple-100 text-purple-800' : 'bg-indigo-100 text-indigo-800';
+                return `
+                <tr class="hover:bg-slate-50">
+                    <td class="py-3 px-4 font-bold text-slate-900">${locName}</td>
+                    <td class="py-3 px-3">
+                        <span class="px-2 py-0.5 rounded text-[11px] font-semibold ${badgeClass}">${data.group} (${data.unit})</span>
+                    </td>
+                    <td class="py-3 px-3 text-right">
+                        <input type="number" step="100000" value="${data.pclbCost}" onchange="updateMasterLocation('${locName}', 'pclbCost', this.value)"
+                            class="w-32 text-right px-2 py-1 bg-slate-50 border border-slate-300 rounded font-medium text-slate-900 focus:ring-2 focus:ring-blue-600">
+                    </td>
+                    <td class="py-3 px-3 text-right">
+                        <input type="number" step="100000" value="${data.pclbRsp}" onchange="updateMasterLocation('${locName}', 'pclbRsp', this.value)"
+                            class="w-32 text-right px-2 py-1 bg-blue-50/50 border border-blue-300 rounded font-bold text-slate-900 focus:ring-2 focus:ring-blue-600">
+                    </td>
+                    <td class="py-3 px-3 text-right">
+                        <input type="number" step="100000" value="${data.pcptCost}" onchange="updateMasterLocation('${locName}', 'pcptCost', this.value)"
+                            class="w-32 text-right px-2 py-1 bg-slate-50 border border-slate-300 rounded font-medium text-slate-900 focus:ring-2 focus:ring-blue-600">
+                    </td>
+                    <td class="py-3 px-3 text-right">
+                        <input type="number" step="100000" value="${data.pcptRsp}" onchange="updateMasterLocation('${locName}', 'pcptRsp', this.value)"
+                            class="w-32 text-right px-2 py-1 bg-blue-50/50 border border-blue-300 rounded font-bold text-slate-900 focus:ring-2 focus:ring-blue-600">
+                    </td>
+                    <td class="py-3 px-4 text-center font-bold text-emerald-700">${marginPct.toFixed(1)}%</td>
+                </tr>
                 `;
             }).join('');
         }
 
-        /**
-         * Menghitung seluruh komponen biaya secara real-time dan memperbarui tampilan UI
-         */
-        function calculateTotals() {
-            try {
-                // Ambil metadata klien & kontrak
-                const clientName = document.getElementById('clientName').value.trim() || 'Belum ditentukan';
-                const projectName = document.getElementById('projectName').value.trim() || 'Estimasi Biaya Infrastruktur';
-                
-                const rawDuration = parseInt(document.getElementById('contractDuration').value, 10);
-                const durationVal = isNaN(rawDuration) || rawDuration < 1 ? 1 : rawDuration;
-                const durationUnit = document.getElementById('durationUnit').value;
-                const totalMonths = durationUnit === 'years' ? durationVal * 12 : durationVal;
+        function saveMasterFromInputs() {
+            masterData.usdRate = parseFloat(document.getElementById('masterUsdRate').value) || 18000;
+            masterData.baseKva3sdc = parseFloat(document.getElementById('masterBaseKva').value) || 3.5;
+            masterData.plusKvaPrice = parseFloat(document.getElementById('masterPlusKvaPrice').value) || 2500000;
+            masterData.minusKvaPrice = parseFloat(document.getElementById('masterMinusKvaPrice').value) || 2000000;
+            masterData.otcPmCostPerRack = parseFloat(document.getElementById('masterOtcPmCost').value) || 3500000;
+            masterData.otcTransportPerRack = parseFloat(document.getElementById('masterOtcTransportCost').value) || 1500000;
+            masterData.otcRspMarginPct = parseFloat(document.getElementById('masterOtcRspMargin').value) || 25;
+            masterData.cageMultiplier = parseFloat(document.getElementById('masterCageMultiplier').value) || 1.15;
 
-                // Ambil parameter komersial
-                const rawDiscount = parseFloat(document.getElementById('discountPercent').value);
-                const discountPct = isNaN(rawDiscount) || rawDiscount < 0 ? 0 : Math.min(rawDiscount, 100);
-                const discountScope = document.getElementById('discountScope').value;
-                const includePpn = document.getElementById('includePpn').checked;
+            persistMasterData();
+            recalculateAll();
+            showToast('Parameter Master diperbarui & disimpan!');
+        }
 
-                // Hitung Subtotal MRC & NRC dari seluruh baris
-                let subtotalMrc = 0;
-                let subtotalNrc = 0;
-
-                serviceItems.forEach(item => {
-                    subtotalMrc += (item.qty * item.mrcUnit);
-                    subtotalNrc += (item.qty * item.nrcUnit);
-                });
-
-                // Kalkulasi Diskon
-                const discountMrc = subtotalMrc * (discountPct / 100);
-                const discountNrc = discountScope === 'all' ? subtotalNrc * (discountPct / 100) : 0;
-
-                const netMrc = Math.max(0, subtotalMrc - discountMrc);
-                const netNrc = Math.max(0, subtotalNrc - discountNrc);
-
-                // Kalkulasi Total Kontrak
-                const totalMrcContract = netMrc * totalMonths;
-                const totalExclTax = totalMrcContract + netNrc;
-                const ppnAmount = includePpn ? totalExclTax * 0.11 : 0;
-                const tcv = totalExclTax + ppnAmount;
-
-                // Estimasi Tagihan Bulan Pertama (1x Net MRC + Net NRC + PPN bulan pertama)
-                const firstMonthBase = netMrc + netNrc;
-                const firstMonthTotal = includePpn ? firstMonthBase * 1.11 : firstMonthBase;
-
-                // Simpan ke state untuk fitur Copy Summary
-                latestCalculation = {
-                    clientName,
-                    projectName,
-                    totalMonths,
-                    durationLabel: durationUnit === 'years' ? `${durationVal} Tahun (${totalMonths} Bulan)` : `${totalMonths} Bulan`,
-                    subtotalMrc,
-                    discountPct,
-                    discountScope,
-                    discountMrc,
-                    netMrc,
-                    subtotalNrc,
-                    discountNrc,
-                    netNrc,
-                    totalExclTax,
-                    includePpn,
-                    ppnAmount,
-                    tcv,
-                    firstMonthTotal
-                };
-
-                // Update Header Ringkasan
-                document.getElementById('summaryProjectTitle').textContent = projectName;
-                document.getElementById('summaryClientSubtitle').textContent = `Klien: ${clientName}`;
-                document.getElementById('summaryDurationBadge').textContent = `${totalMonths} Bulan`;
-
-                // Update Angka MRC
-                document.getElementById('valSubtotalMrc').textContent = formatRupiah(subtotalMrc);
-                document.getElementById('valNetMrc').textContent = formatRupiah(netMrc);
-                const rowDiscMrc = document.getElementById('rowDiscountMrc');
-                if (discountPct > 0 && subtotalMrc > 0) {
-                    rowDiscMrc.classList.remove('hidden');
-                    document.getElementById('labelDiscountMrcPct').textContent = discountPct;
-                    document.getElementById('valDiscountMrc').textContent = `- ${formatRupiah(discountMrc)}`;
-                } else {
-                    rowDiscMrc.classList.add('hidden');
-                }
-
-                // Update Angka NRC
-                document.getElementById('valSubtotalNrc').textContent = formatRupiah(subtotalNrc);
-                document.getElementById('valNetNrc').textContent = formatRupiah(netNrc);
-                const rowDiscNrc = document.getElementById('rowDiscountNrc');
-                if (discountPct > 0 && discountScope === 'all' && subtotalNrc > 0) {
-                    rowDiscNrc.classList.remove('hidden');
-                    document.getElementById('labelDiscountNrcPct').textContent = discountPct;
-                    document.getElementById('valDiscountNrc').textContent = `- ${formatRupiah(discountNrc)}`;
-                } else {
-                    rowDiscNrc.classList.add('hidden');
-                }
-
-                // Update Pajak & TCV
-                document.getElementById('valTotalExclTax').textContent = formatRupiah(totalExclTax);
-                document.getElementById('labelPpn').textContent = includePpn ? 'PPN (11%)' : 'PPN (0% / Non-PPN)';
-                document.getElementById('valPpn').textContent = formatRupiah(ppnAmount);
-                document.getElementById('valTcv').textContent = formatRupiah(tcv);
-                document.getElementById('valFirstMonthPayment').innerHTML = 
-                    `Estimasi Tagihan Bulan ke-1 (MRC + NRC${includePpn ? ' + PPN' : ''}): <strong class="text-slate-200">${formatRupiah(firstMonthTotal)}</strong>`;
-
-            } catch (error) {
-                console.error("Terjadi kesalahan saat menghitung biaya:", error);
+        function updateMasterLocation(locName, field, rawVal) {
+            const val = Math.max(0, parseFloat(rawVal) || 0);
+            if (masterData.locations[locName]) {
+                masterData.locations[locName][field] = val;
+                persistMasterData();
+                renderMasterTab();
+                recalculateAll();
+                showToast(`Tarif ${locName} berhasil diperbarui!`);
             }
         }
 
+        function resetMasterData() {
+            masterData = JSON.parse(JSON.stringify(DEFAULT_MASTER_DATA));
+            persistMasterData();
+            renderMasterTab();
+            recalculateAll();
+            showToast('Master Rate Card dikembalikan ke standar awal Excel.');
+        }
+
+        function resetToSample() {
+            document.getElementById('customerName').value = 'MUFG Bank';
+            document.getElementById('salesName').value = 'Enterprise Sales Team';
+            document.getElementById('orderType').value = 'New';
+            document.getElementById('configType').value = 'Standard';
+            document.getElementById('customBoqContainer').classList.add('hidden');
+            document.getElementById('dcLocation').value = 'Sentul 2N';
+            document.getElementById('coloType').value = 'Open Rack';
+            document.getElementById('powerSpec').value = 'PCLB';
+            document.getElementById('totalRack').value = 2;
+            document.getElementById('powerPerRack').value = 3.5;
+            document.getElementById('contractYears').value = 3;
+            document.getElementById('yoyEscalation').value = 3;
+            document.getElementById('inputOtcDiscount').value = 0;
+            document.getElementById('inputMrcDiscount').value = 0;
+            document.getElementById('togglePpn').checked = false;
+            userEditedSelling = { otc: false, mrc: false };
+            recalculateAll(true);
+            showToast('Form Request direset ke simulasi awal.');
+        }
+
         /**
-         * Menyalin ringkasan penawaran ke clipboard menggunakan document.execCommand('copy')
+         * =========================================================================
+         * 5. EKSPOR: COPY QUOTE SUMMARY & EXPORT CSV
+         * =========================================================================
          */
         function copyQuoteSummary() {
-            const c = latestCalculation;
-            const dateStr = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+            const s = currentState;
+            const otcTier = getApprovalTier(s.otcDiscountPct).label;
+            const mrcTier = getApprovalTier(s.mrcDiscountPct).label;
+            const totalTier = getApprovalTier(s.totalDiscountPct).label;
 
-            let itemsText = serviceItems.map((item, idx) => {
-                return `${idx + 1}. ${item.description} (${item.qty}x)\n   - MRC: ${formatRupiah(item.qty * item.mrcUnit)}/bln | NRC: ${formatRupiah(item.qty * item.nrcUnit)}`;
-            }).join('\n');
-
-            if (!itemsText) {
-                itemsText = "(Belum ada item layanan)";
-            }
-
-            const summaryText = [
-                `=========================================`,
-                `BUDGETARY QUOTATION SUMMARY - PRESALES`,
-                `=========================================`,
-                `Tanggal        : ${dateStr}`,
-                `Nama Klien     : ${c.clientName}`,
-                `Proyek/Solusi  : ${c.projectName}`,
-                `Durasi Kontrak : ${c.durationLabel}`,
+            const lines = [
+                `====================================================`,
+                `NEUTRADC — PRESALES COLOCATION QUOTE SUMMARY`,
+                `====================================================`,
+                `Tanggal / Rev  : ${s.reqDate} (${s.reqRev})`,
+                `Customer       : ${s.customerName}`,
+                `Sales / Order  : ${s.salesName} (${s.orderType} - ${s.configType})`,
                 ``,
-                `RINCIAN LAYANAN:`,
-                `${itemsText}`,
+                `SPESIFIKASI TEKNIS:`,
+                `• Lokasi DC      : ${s.locationName} (${s.coloType} - ${s.powerSpec})`,
+                `• Kapasitas      : ${s.totalRack} Rack @ ${s.powerPerRack} ${s.isHdc ? 'kW' : 'kVA'} (Total: ${s.totalPower.toFixed(1)} ${s.isHdc ? 'kW' : 'kVA'})`,
+                `• Durasi Kontrak : ${s.contractYears} Tahun (YoY Escalation: ${(s.yoyRate * 100).toFixed(1)}%)`,
                 ``,
-                `RINGKASAN BIAYA:`,
-                `• Net MRC (Bulanan)    : ${formatRupiah(c.netMrc)} / bulan`,
-                `• Net NRC (Setup Fee)  : ${formatRupiah(c.netNrc)} (sekali bayar)`,
-                c.discountPct > 0 ? `• Diskon Komersial     : ${c.discountPct}% (${c.discountScope === 'all' ? 'MRC & NRC' : 'MRC Only'})` : null,
-                `• Subtotal Kontrak     : ${formatRupiah(c.totalExclTax)} (Excl. PPN)`,
-                `• PPN (11%)            : ${c.includePpn ? formatRupiah(c.ppnAmount) : 'Tidak termasuk'}`,
-                `-----------------------------------------`,
-                `TOTAL CONTRACT VALUE   : ${formatRupiah(c.tcv)}`,
-                `Estimasi Tagihan Bln-1 : ${formatRupiah(c.firstMonthTotal)}`,
-                `=========================================`,
-                `*Catatan: Harga bersifat estimasi presales dan belum mengikat sebelum PO/Kontrak diterbitkan.`
-            ].filter(Boolean).join('\n');
+                `PENAWARAN KOMERSIAL (EXCL. PPN):`,
+                `1. One-Time Charge (OTC):`,
+                `   - RSP           : ${formatIDR(s.otcRsp)}`,
+                `   - Selling Price : ${formatIDR(s.otcSelling)} (Disc: ${s.otcDiscountPct.toFixed(1)}% | Approval: ${otcTier})`,
+                `2. Monthly Recurring (MRC Tahun ke-1):`,
+                `   - RSP           : ${formatIDR(s.mrcRspY1)} / bln`,
+                `   - Selling Price : ${formatIDR(s.mrcSellingY1)} / bln (Disc: ${s.mrcDiscountPct.toFixed(1)}% | Approval: ${mrcTier})`,
+                ``,
+                `VALUASI TOTAL KONTRAK (${s.contractYears} TAHUN):`,
+                `• TCO (Total Cost)      : ${formatIDR(s.tco)}`,
+                `• TCV (RSP)             : ${formatIDR(s.tcvRsp)}`,
+                `• TCV (Contract Selling): ${formatIDR(s.tcvSelling)} (Excl. PPN)`,
+                `• TCV (Incl. PPN 11%)   : ${formatIDR(s.tcvSellingWithPpn)}`,
+                `• Overall Margin        : ${s.totalActMarginPct.toFixed(1)}% (Overall Approval: ${totalTier})`,
+                `====================================================`
+            ];
 
-            // Gunakan textarea helper & document.execCommand('copy') agar aman di dalam iFrame
             const helper = document.getElementById('clipboardHelper');
-            helper.value = summaryText;
+            helper.value = lines.join('\n');
             helper.select();
             helper.setSelectionRange(0, 99999);
 
             try {
-                const successful = document.execCommand('copy');
-                if (successful) {
-                    showToast('Ringkasan penawaran berhasil disalin ke clipboard!');
-                } else {
-                    showToast('Gagal menyalin teks. Silakan coba lagi.');
-                }
-            } catch (err) {
-                console.error('Gagal menyalin ke clipboard:', err);
-                showToast('Terjadi kesalahan saat menyalin teks.');
+                document.execCommand('copy');
+                showToast('Quote Summary berhasil disalin ke clipboard!');
+            } catch (e) {
+                showToast('Gagal menyalin teks ke clipboard.');
             }
         }
 
-        /**
-         * Mereset seluruh form ke kondisi awal default
-         */
-        function resetCalculator() {
-            document.getElementById('clientName').value = '';
-            document.getElementById('projectName').value = '';
-            document.getElementById('contractDuration').value = 12;
-            document.getElementById('durationUnit').value = 'months';
-            document.getElementById('discountPercent').value = 0;
-            document.getElementById('discountScope').value = 'mrc_only';
-            document.getElementById('includePpn').checked = true;
+        function exportCSV() {
+            const s = currentState;
+            if (!s.yearlyProjection) return;
 
-            serviceItems = [];
-            rowIdCounter = 1;
-            initDefaultItems();
-            showToast('Kalkulator telah direset ke konfigurasi awal.');
+            let csv = [];
+            csv.push(['NEUTRADC PRESALES COLOCATION QUOTE & MULTI-YEAR PROJECTION']);
+            csv.push(['Customer', s.customerName, 'Location', s.locationName, 'Contract Years', s.contractYears]);
+            csv.push(['Colo Type', s.coloType, 'Power Spec', s.powerSpec, 'Total Rack', s.totalRack, 'Total Power', s.totalPower]);
+            csv.push([]);
+            csv.push(['Metric / Year', ...s.yearlyProjection.map(p => `Year ${p.year}`), 'Total Contract']);
+            csv.push(['Monthly Cost (IDR)', ...s.yearlyProjection.map(p => Math.round(p.monthlyCost)), '']);
+            csv.push(['Monthly RSP (IDR)', ...s.yearlyProjection.map(p => Math.round(p.monthlyRsp)), '']);
+            csv.push(['Monthly Selling (IDR)', ...s.yearlyProjection.map(p => Math.round(p.monthlySelling)), '']);
+            csv.push(['Annual Cost (IDR)', ...s.yearlyProjection.map(p => Math.round(p.annualCost)), Math.round(s.tco - s.otcCost)]);
+            csv.push(['Annual RSP (IDR)', ...s.yearlyProjection.map(p => Math.round(p.annualRsp)), Math.round(s.tcvRsp - s.otcRsp)]);
+            csv.push(['Annual Selling (IDR)', ...s.yearlyProjection.map(p => Math.round(p.annualSelling)), Math.round(s.tcvSelling - s.otcSelling)]);
+            csv.push(['OTC Cost / RSP / Selling', Math.round(s.otcCost), Math.round(s.otcRsp), Math.round(s.otcSelling)]);
+            csv.push(['GRAND TOTAL TCO / TCV RSP / TCV Selling', Math.round(s.tco), Math.round(s.tcvRsp), Math.round(s.tcvSelling)]);
+
+            const csvContent = "data:text/csv;charset=utf-8," + csv.map(e => e.join(",")).join("\n");
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            const safeName = (s.customerName || 'Quote').replace(/[^a-z0-9]/gi, '_');
+            link.setAttribute("download", `NeutraDC_Quote_${safeName}_${s.contractYears}Y.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            showToast('File proyeksi CSV berhasil diunduh!');
         }
 
         /**
-         * Memuat contoh paket standar saat pertama kali aplikasi dibuka
+         * Inisialisasi Aplikasi saat halaman dimuat
          */
-        function initDefaultItems() {
-            addServiceRow('colocation_full', 1);
-            addServiceRow('dedicated_power', 2);
-            addServiceRow('cross_connect', 1);
-        }
-
-        // Inisialisasi saat halaman dimuat
         window.onload = function() {
-            const today = new Date().toLocaleDateString('id-ID', {
-                weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
-            });
-            document.getElementById('printDate').textContent = `Tanggal Cetak: ${today}`;
-            initDefaultItems();
+            const now = new Date();
+            const isoDate = now.toISOString().split('T')[0];
+            document.getElementById('reqDate').value = isoDate;
+            document.getElementById('printTimestamp').textContent = `Generated: ${now.toLocaleDateString('id-ID', {
+                day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit'
+            })} WIB`;
+
+            renderMasterTab();
+            recalculateAll(true);
         };
     </script>
 </body>
