@@ -20,12 +20,22 @@
                     },
                     colors: {
                         brand: {
-                            50: '#eff6ff',
-                            100: '#dbeafe',
-                            600: '#2563eb',
-                            700: '#1d4ed8',
-                            900: '#0f172a',
-                            950: '#020617',
+                            50: '#fef2f2',
+                            100: '#fee2e2',
+                            200: '#fecaca',
+                            600: '#c40000',
+                            700: '#991b1b',
+                            900: '#18181b',
+                            950: '#09090b',
+                        },
+                        neutra: {
+                            red: '#C40000',
+                            dark: '#990000',
+                            tint: '#FEF2F2',
+                            border: '#FECACA',
+                            ink: '#18181B',
+                            green: '#15803D',
+                            greenTint: '#DCFCE7'
                         }
                     }
                 }
@@ -36,6 +46,20 @@
     <style>
         .tabular-nums {
             font-variant-numeric: tabular-nums;
+        }
+
+        /* Latar Belakang Mesh / Node Halus Khas NeutraDC */
+        .neutradc-mesh-bg {
+            background-color: #F8F9FA;
+            background-image: 
+                radial-gradient(circle at 18px 18px, rgba(196, 0, 0, 0.045) 1.5px, transparent 0),
+                radial-gradient(circle at 54px 54px, rgba(148, 163, 184, 0.09) 1.5px, transparent 0);
+            background-size: 72px 72px;
+        }
+
+        .neutradc-hero-pattern {
+            background: linear-gradient(115deg, #ffffff 0%, #ffffff 55%, #fef2f2 85%, #f1f5f9 100%);
+            position: relative;
         }
 
         /* Hilangkan panah default pada input number */
@@ -54,22 +78,23 @@
             width: 8px;
         }
         ::-webkit-scrollbar-track {
-            background: #f1f5f9;
+            background: #f4f4f5;
             border-radius: 4px;
         }
         ::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
+            background: #d4d4d8;
             border-radius: 4px;
         }
         ::-webkit-scrollbar-thumb:hover {
-            background: #94a3b8;
+            background: #a1a1aa;
         }
 
         /* Styling khusus saat Cetak / Export PDF */
         @media print {
             body {
                 background-color: white !important;
-                color: #0f172a !important;
+                background-image: none !important;
+                color: #18181b !important;
                 font-size: 11px !important;
             }
             .no-print {
@@ -85,14 +110,14 @@
             }
             .shadow-lg, .shadow-sm, .shadow-md, .shadow-xl {
                 box-shadow: none !important;
-                border: 1px solid #cbd5e1 !important;
+                border: 1px solid #d4d4d8 !important;
             }
             input, select {
                 border: none !important;
                 background: transparent !important;
                 padding: 0 !important;
                 font-weight: 600 !important;
-                color: #0f172a !important;
+                color: #18181b !important;
             }
             .tab-panel {
                 display: block !important;
@@ -102,92 +127,223 @@
         }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-800 font-sans antialiased min-h-screen flex flex-col">
+<body class="neutradc-mesh-bg text-zinc-900 font-sans antialiased min-h-screen flex flex-col">
 
     <!-- Notifikasi Toast -->
     <div id="toast" class="fixed bottom-5 right-5 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none no-print">
-        <div class="bg-slate-900 text-white px-5 py-3.5 rounded-xl shadow-xl border border-slate-700 flex items-center gap-3">
-            <svg class="w-5 h-5 text-emerald-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-            </svg>
-            <span id="toastMessage" class="text-sm font-medium">Aksi berhasil dilakukan!</span>
+        <div class="bg-zinc-900 text-white px-5 py-3.5 rounded-full shadow-xl border border-zinc-700 flex items-center gap-3">
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 shrink-0 animate-pulse"></span>
+            <span id="toastMessage" class="text-xs sm:text-sm font-medium">Aksi berhasil dilakukan!</span>
         </div>
     </div>
 
-    <!-- Top Navigation Bar -->
-    <header class="bg-slate-900 text-white border-b border-slate-800 sticky top-0 z-40 shadow-md no-print">
+    <!-- Top Corporate Navigation Bar (White Clean Theme sesuai Referensi NeutraDC) -->
+    <header class="bg-white/95 backdrop-blur-md text-zinc-900 border-b border-zinc-200 sticky top-0 z-40 shadow-xs no-print">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="h-16 flex items-center justify-between gap-4">
-                <!-- Brand Logo & Title -->
-                <div class="flex items-center gap-3">
-                    <div class="bg-gradient-to-br from-blue-500 to-indigo-600 p-2 rounded-xl shadow-inner">
-                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+            <div class="h-18 py-2.5 flex items-center justify-between gap-4">
+                
+                <!-- Official Custom SVG Logo: NeutraDC by Telkom Indonesia -->
+                <div class="flex items-center gap-4">
+                    <a href="#" onclick="switchTab('request'); return false;" class="flex items-center focus:outline-none group" title="NeutraDC Presales Portal">
+                        <svg class="h-11 sm:h-12 w-auto" viewBox="0 0 430 128" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="NeutraDC by Telkom Indonesia">
+                            <!-- Isometric Dot Matrix 'N' Emblem -->
+                            <!-- Jalur Penghubung Abu-abu Muda -->
+                            <path d="M36 36 L66 20 L92 10 M36 36 L36 66 L36 96 M92 10 L92 36 L92 66 L92 94 L92 116 M92 116 L120 100 L148 84 M148 36 L148 62 L148 84" stroke="#E5E7EB" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+                            
+                            <!-- Titik-titik Abu-abu Pendamping (Matrix Grid) -->
+                            <circle cx="64" cy="52" r="5" fill="#D1D5DB"/>
+                            <circle cx="64" cy="80" r="5" fill="#D1D5DB"/>
+                            <circle cx="64" cy="106" r="5" fill="#D1D5DB"/>
+                            <circle cx="120" cy="22" r="5" fill="#D1D5DB"/>
+                            <circle cx="120" cy="48" r="5" fill="#D1D5DB"/>
+                            <circle cx="120" cy="74" r="5" fill="#D1D5DB"/>
+                            <circle cx="36" cy="96" r="7.5" fill="#D1D5DB"/>
+                            <circle cx="148" cy="36" r="7.5" fill="#D1D5DB"/>
+
+                            <!-- Node Utama Huruf 'N' Merah NeutraDC (#C40000) -->
+                            <circle cx="36" cy="36" r="11.5" fill="#C40000"/>
+                            <circle cx="36" cy="66" r="9.5" fill="#C40000"/>
+                            <circle cx="64" cy="21" r="10.5" fill="#C40000"/>
+                            <circle cx="92" cy="10" r="7.5" fill="#C40000"/>
+                            <circle cx="92" cy="36" r="10" fill="#C40000"/>
+                            <circle cx="92" cy="66" r="12.5" fill="#C40000"/>
+                            <circle cx="92" cy="94" r="9.5" fill="#C40000"/>
+                            <circle cx="92" cy="116" r="7" fill="#C40000"/>
+                            <circle cx="120" cy="100" r="10.5" fill="#C40000"/>
+                            <circle cx="148" cy="62" r="9.5" fill="#C40000"/>
+                            <circle cx="148" cy="84" r="11.5" fill="#C40000"/>
+
+                            <!-- Tipografi Elegan 'NeutraDC' -->
+                            <text x="176" y="64" fill="#C40000" font-family="Inter, -apple-system, BlinkMacSystemFont, sans-serif" font-size="43" letter-spacing="-0.5">
+                                <tspan font-weight="400">Neutra</tspan><tspan font-weight="600">DC</tspan>
+                            </text>
+
+                            <!-- Sub-teks 'by Telkom Indonesia' -->
+                            <text x="178" y="96" fill="#27272A" font-family="Inter, -apple-system, BlinkMacSystemFont, sans-serif" font-size="16" font-weight="400">by</text>
+                            <text x="200" y="96" fill="#18181B" font-family="Inter, -apple-system, BlinkMacSystemFont, sans-serif" font-size="16.5" font-weight="600" letter-spacing="-0.2">Telkom Indonesia</text>
+
+                            <!-- Ikon Tangan Merah-Abu Khas Telkom Indonesia -->
+                            <g transform="translate(342, 70)">
+                                <!-- Lengkungan Cincin Abu-abu -->
+                                <path d="M18 33C10.8 33 5 27.2 5 20C5 14.5 8.4 9.8 13.2 7.9" stroke="#6B7280" stroke-width="4.2" stroke-linecap="round"/>
+                                <path d="M27.8 28.5C25.5 31.3 21.9 33 18 33" stroke="#6B7280" stroke-width="4.2" stroke-linecap="round"/>
+                                <!-- Siluet Tangan Merah Telkom -->
+                                <path d="M15 20C13.5 16.5 11.5 12.2 12.4 10.6C13.2 9.2 15.1 11.5 16.5 14.5C16.2 10.2 16.2 5.5 17.6 5.2C19.1 4.9 19.8 9.6 20.1 13.8C21.2 9.8 22.8 5.6 24.3 6.1C25.7 6.6 24.5 11.2 23.2 15.1C25.6 12.2 28.7 9.4 29.8 10.5C30.9 11.6 28.1 15.1 25.4 18.1C28.1 17.3 31.3 16.8 31.7 18.2C32.1 19.6 28.6 21.2 25.2 22.2C23.5 25.8 19.6 27.2 16.8 25.2C15.5 24.2 15.6 21.6 15 20Z" fill="#EE2E24"/>
+                            </g>
                         </svg>
-                    </div>
-                    <div>
-                        <div class="flex items-center gap-2">
-                            <h1 class="font-bold text-base sm:text-lg tracking-tight leading-none">NeutraDC Presales Engine</h1>
-                            <span class="hidden md:inline-flex items-center px-2 py-0.5 rounded text-[10px] font-semibold bg-blue-500/20 text-blue-300 border border-blue-500/30">v2.0 Colocation</span>
-                        </div>
-                        <p class="text-xs text-slate-400 mt-1 hidden sm:block">3SDC &amp; HDC Cikarang Commercial Pricing, Margin &amp; TCV Calculator</p>
-                    </div>
+                    </a>
                 </div>
 
-                <!-- Action Buttons -->
+                <!-- Portal Navigation Links (Bergaya Portal Resmi NeutraDC) -->
+                <nav class="hidden lg:flex items-center gap-1" aria-label="Tabs">
+                    <button onclick="switchTab('request')" id="tab-btn-request" class="tab-btn active px-4 py-2 text-sm font-semibold text-[#C40000] border-b-2 border-[#C40000] transition-all flex items-center gap-2">
+                        <span>Pricing Engine</span>
+                    </button>
+                    <button onclick="switchTab('calculation')" id="tab-btn-calculation" class="tab-btn px-4 py-2 text-sm font-medium text-zinc-600 hover:text-[#C40000] border-b-2 border-transparent transition-all flex items-center gap-2">
+                        <span>Multi-Year Cashflow (Y1–Y10)</span>
+                    </button>
+                    <button onclick="switchTab('master')" id="tab-btn-master" class="tab-btn px-4 py-2 text-sm font-medium text-zinc-600 hover:text-[#C40000] border-b-2 border-transparent transition-all flex items-center gap-2">
+                        <span>Master Rate Card</span>
+                    </button>
+                </nav>
+
+                <!-- Corporate Pill Action Buttons -->
                 <div class="flex items-center gap-2">
-                    <button onclick="exportCSV()" class="px-3 py-2 text-xs font-medium text-slate-200 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-lg transition-colors flex items-center gap-1.5" title="Unduh Proyeksi Multi-Tahun ke CSV">
-                        <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <button onclick="exportCSV()" class="px-3.5 py-2 text-xs font-semibold text-zinc-700 bg-zinc-100 hover:bg-zinc-200 border border-zinc-200 rounded-full transition-colors flex items-center gap-1.5" title="Unduh Proyeksi Multi-Tahun ke CSV">
+                        <svg class="w-3.5 h-3.5 text-[#15803D]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
                         </svg>
                         <span class="hidden md:inline">Export CSV</span>
                     </button>
-                    <button onclick="window.print()" class="px-3 py-2 text-xs font-medium text-slate-200 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-lg transition-colors flex items-center gap-1.5" title="Cetak atau Simpan sebagai PDF">
-                        <svg class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <button onclick="window.print()" class="px-4 py-2 text-xs font-semibold text-[#C40000] bg-[#FEF2F2] hover:bg-[#FEE2E2] border border-[#FECACA] rounded-full transition-colors flex items-center gap-1.5" title="Cetak atau Simpan Proposal sebagai PDF">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
                         </svg>
-                        <span class="hidden sm:inline">Print / PDF</span>
+                        <span class="hidden sm:inline">Export PDF</span>
                     </button>
-                    <button onclick="copyQuoteSummary()" class="px-3.5 py-2 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-500 rounded-lg shadow-sm transition-colors flex items-center gap-1.5">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <button onclick="copyQuoteSummary()" class="px-4 py-2 text-xs font-semibold text-white bg-[#C40000] hover:bg-[#990000] rounded-full shadow-sm transition-all flex items-center gap-1.5">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path>
                         </svg>
-                        <span>Copy Quote</span>
+                        <span>Copy Summary</span>
                     </button>
                 </div>
             </div>
 
-            <!-- Excel-style Sheet Tabs -->
-            <nav class="flex space-x-1 overflow-x-auto pb-0 -mb-px" aria-label="Tabs">
-                <button onclick="switchTab('request')" id="tab-btn-request" class="tab-btn active px-4 py-2.5 text-xs sm:text-sm font-semibold border-b-2 border-blue-500 text-white bg-slate-800/60 rounded-t-lg transition-all whitespace-nowrap flex items-center gap-2">
-                    <span class="w-2 h-2 rounded-full bg-blue-400"></span>
-                    <span>1. Request &amp; Quote Form</span>
+            <!-- Mobile / Tablet Tab Strip -->
+            <div class="flex lg:hidden space-x-1 overflow-x-auto pb-0 -mb-px border-t border-zinc-100">
+                <button onclick="switchTab('request')" id="tab-btn-mobile-request" class="tab-btn-mobile active px-3.5 py-2.5 text-xs font-semibold border-b-2 border-[#C40000] text-[#C40000] whitespace-nowrap">
+                    1. Pricing Engine
                 </button>
-                <button onclick="switchTab('calculation')" id="tab-btn-calculation" class="tab-btn px-4 py-2.5 text-xs sm:text-sm font-medium border-b-2 border-transparent text-slate-400 hover:text-slate-200 hover:bg-slate-800/40 rounded-t-lg transition-all whitespace-nowrap flex items-center gap-2">
-                    <span class="w-2 h-2 rounded-full bg-slate-600"></span>
-                    <span>2. Calculation (Multi-Year Y1–Y10)</span>
+                <button onclick="switchTab('calculation')" id="tab-btn-mobile-calculation" class="tab-btn-mobile px-3.5 py-2.5 text-xs font-medium border-b-2 border-transparent text-zinc-500 hover:text-[#C40000] whitespace-nowrap">
+                    2. Multi-Year Cashflow
                 </button>
-                <button onclick="switchTab('master')" id="tab-btn-master" class="tab-btn px-4 py-2.5 text-xs sm:text-sm font-medium border-b-2 border-transparent text-slate-400 hover:text-slate-200 hover:bg-slate-800/40 rounded-t-lg transition-all whitespace-nowrap flex items-center gap-2">
-                    <span class="w-2 h-2 rounded-full bg-slate-600"></span>
-                    <span>3. Master Rate Card &amp; Assumptions</span>
+                <button onclick="switchTab('master')" id="tab-btn-mobile-master" class="tab-btn-mobile px-3.5 py-2.5 text-xs font-medium border-b-2 border-transparent text-zinc-500 hover:text-[#C40000] whitespace-nowrap">
+                    3. Master Rate Card
                 </button>
-            </nav>
+            </div>
         </div>
     </header>
+
+    <!-- Corporate Hero Sub-Banner (Terinspirasi dari Website NeutraDC) -->
+    <section class="neutradc-hero-pattern border-b border-zinc-200 overflow-hidden no-print">
+        <!-- Decorative SVG Network Mesh & Sustainable Eco Nodes di Sisi Kanan -->
+        <svg class="hidden md:block absolute right-0 top-0 h-full w-1/2 pointer-events-none opacity-80" viewBox="0 0 600 220" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <line x1="220" y1="40" x2="350" y2="95" stroke="#E4E4E7" stroke-width="1.5"/>
+            <line x1="350" y1="95" x2="480" y2="50" stroke="#FECACA" stroke-width="1.5"/>
+            <line x1="350" y1="95" x2="430" y2="175" stroke="#E4E4E7" stroke-width="1.5"/>
+            <line x1="480" y1="50" x2="560" y2="135" stroke="#DCFCE7" stroke-width="2"/>
+            <line x1="260" y1="165" x2="350" y2="95" stroke="#E4E4E7" stroke-width="1.5"/>
+            <circle cx="220" cy="40" r="6" fill="#E4E4E7"/>
+            <circle cx="350" cy="95" r="14" fill="#FEE2E2" stroke="#C40000" stroke-width="2"/>
+            <circle cx="350" cy="95" r="5" fill="#C40000"/>
+            <circle cx="480" cy="50" r="10" fill="#FEF2F2" stroke="#C40000" stroke-width="1.5"/>
+            <circle cx="430" cy="175" r="9" fill="#DCFCE7" stroke="#15803D" stroke-width="1.5"/>
+            <circle cx="560" cy="135" r="12" fill="#FEF2F2" stroke="#C40000" stroke-width="1.5"/>
+            <circle cx="260" cy="165" r="5" fill="#D4D4D8"/>
+        </svg>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-7 relative z-10">
+            <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-5">
+                <!-- Left Editorial Headline -->
+                <div>
+                    <div class="inline-flex items-center gap-2 mb-2">
+                        <span class="w-2 h-2 rounded-full bg-[#C40000]"></span>
+                        <span class="text-xs font-semibold tracking-wide text-[#C40000]">Welcome to NeutraDC &bull; Presales Commercial Portal</span>
+                    </div>
+                    <h1 class="text-xl sm:text-2xl lg:text-[26px] font-extrabold text-zinc-900 tracking-tight uppercase leading-tight">
+                        COLOCATION PRICING &amp; COMMERCIAL QUOTE ENGINE
+                    </h1>
+                    <p class="text-xs sm:text-sm text-zinc-600 mt-1 max-w-2xl">
+                        Your Digital Ecosystem Partner — Kalkulasi otomatis HPP, RSP, Margin, Matrix Approval &amp; Valuasi Kontrak Multi-Tahun (3SDC &amp; HDC Cikarang).
+                    </p>
+                </div>
+
+                <!-- Right Active Context Glassmorphism Status Strip -->
+                <div class="bg-white/85 backdrop-blur-md border border-zinc-200/90 rounded-2xl p-3.5 shadow-xs grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 shrink-0">
+                    <div class="border-r border-zinc-100 pr-2">
+                        <span class="block text-[10px] font-semibold uppercase tracking-wider text-zinc-400">Customer</span>
+                        <span id="heroCustomerBadge" class="block text-xs sm:text-sm font-bold text-zinc-900 truncate max-w-[130px]">MUFG Bank</span>
+                    </div>
+                    <div class="sm:border-r border-zinc-100 pr-2">
+                        <span class="block text-[10px] font-semibold uppercase tracking-wider text-zinc-400">Data Center</span>
+                        <span id="heroLocationBadge" class="block text-xs sm:text-sm font-bold text-[#C40000] truncate">Sentul 2N</span>
+                    </div>
+                    <div class="border-r border-zinc-100 pr-2">
+                        <span class="block text-[10px] font-semibold uppercase tracking-wider text-zinc-400">Kapasitas</span>
+                        <span id="heroCapacityBadge" class="block text-xs sm:text-sm font-bold text-zinc-900 tabular-nums">2 Rack / 7.0 kVA</span>
+                    </div>
+                    <div>
+                        <span class="block text-[10px] font-semibold uppercase tracking-wider text-zinc-400">Kurs USD-IDR</span>
+                        <span id="heroUsdBadge" class="block text-xs sm:text-sm font-bold text-[#15803D] tabular-nums">Rp 18.000</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
     <!-- Main Workspace -->
     <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
 
-        <!-- Header Khusus Print -->
-        <div class="hidden print-only mb-6 pb-4 border-b-2 border-slate-900">
-            <div class="flex justify-between items-end">
-                <div>
-                    <h2 class="text-xl font-extrabold text-slate-900 uppercase tracking-tight">NeutraDC — Presales Colocation Commercial Proposal</h2>
-                    <p class="text-xs text-slate-600">Internal Costing, Recommended Selling Price (RSP) &amp; Contract Valuation Summary</p>
+        <!-- Header Kop Surat Resmi Khusus Print / Export PDF -->
+        <div class="hidden print-only mb-6 pb-4 border-b-2 border-[#C40000]">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center gap-4">
+                    <svg class="h-12 w-auto" viewBox="0 0 430 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M36 36 L66 20 L92 10 M36 36 L36 66 L36 96 M92 10 L92 36 L92 66 L92 94 L92 116 M92 116 L120 100 L148 84 M148 36 L148 62 L148 84" stroke="#E5E7EB" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+                        <circle cx="64" cy="52" r="5" fill="#D1D5DB"/>
+                        <circle cx="64" cy="80" r="5" fill="#D1D5DB"/>
+                        <circle cx="64" cy="106" r="5" fill="#D1D5DB"/>
+                        <circle cx="120" cy="22" r="5" fill="#D1D5DB"/>
+                        <circle cx="120" cy="48" r="5" fill="#D1D5DB"/>
+                        <circle cx="120" cy="74" r="5" fill="#D1D5DB"/>
+                        <circle cx="36" cy="96" r="7.5" fill="#D1D5DB"/>
+                        <circle cx="148" cy="36" r="7.5" fill="#D1D5DB"/>
+                        <circle cx="36" cy="36" r="11.5" fill="#C40000"/>
+                        <circle cx="36" cy="66" r="9.5" fill="#C40000"/>
+                        <circle cx="64" cy="21" r="10.5" fill="#C40000"/>
+                        <circle cx="92" cy="10" r="7.5" fill="#C40000"/>
+                        <circle cx="92" cy="36" r="10" fill="#C40000"/>
+                        <circle cx="92" cy="66" r="12.5" fill="#C40000"/>
+                        <circle cx="92" cy="94" r="9.5" fill="#C40000"/>
+                        <circle cx="92" cy="116" r="7" fill="#C40000"/>
+                        <circle cx="120" cy="100" r="10.5" fill="#C40000"/>
+                        <circle cx="148" cy="62" r="9.5" fill="#C40000"/>
+                        <circle cx="148" cy="84" r="11.5" fill="#C40000"/>
+                        <text x="176" y="64" fill="#C40000" font-family="Inter, sans-serif" font-size="43"><tspan font-weight="400">Neutra</tspan><tspan font-weight="600">DC</tspan></text>
+                        <text x="178" y="96" fill="#27272A" font-family="Inter, sans-serif" font-size="16">by</text>
+                        <text x="200" y="96" fill="#18181B" font-family="Inter, sans-serif" font-size="16.5" font-weight="600">Telkom Indonesia</text>
+                        <g transform="translate(342, 70)">
+                            <path d="M18 33C10.8 33 5 27.2 5 20C5 14.5 8.4 9.8 13.2 7.9" stroke="#6B7280" stroke-width="4.2" stroke-linecap="round"/>
+                            <path d="M27.8 28.5C25.5 31.3 21.9 33 18 33" stroke="#6B7280" stroke-width="4.2" stroke-linecap="round"/>
+                            <path d="M15 20C13.5 16.5 11.5 12.2 12.4 10.6C13.2 9.2 15.1 11.5 16.5 14.5C16.2 10.2 16.2 5.5 17.6 5.2C19.1 4.9 19.8 9.6 20.1 13.8C21.2 9.8 22.8 5.6 24.3 6.1C25.7 6.6 24.5 11.2 23.2 15.1C25.6 12.2 28.7 9.4 29.8 10.5C30.9 11.6 28.1 15.1 25.4 18.1C28.1 17.3 31.3 16.8 31.7 18.2C32.1 19.6 28.6 21.2 25.2 22.2C23.5 25.8 19.6 27.2 16.8 25.2C15.5 24.2 15.6 21.6 15 20Z" fill="#EE2E24"/>
+                        </g>
+                    </svg>
                 </div>
-                <div class="text-right text-xs text-slate-600">
-                    <p id="printTimestamp"></p>
-                    <p>Confidential — Presales Division</p>
+                <div class="text-right">
+                    <h2 class="text-base font-extrabold text-zinc-900 uppercase tracking-tight">Commercial Colocation Quotation</h2>
+                    <p class="text-xs text-zinc-600" id="printTimestamp"></p>
+                    <p class="text-[11px] font-semibold text-[#C40000]">PT Telkom Data Ekosistem (NeutraDC) — Confidential</p>
                 </div>
             </div>
         </div>
@@ -197,135 +353,139 @@
         <!-- ===================================================================== -->
         <div id="panel-request" class="tab-panel space-y-6">
             
-            <!-- Top Executive KPI Cards (TCO, TCV RSP, TCV Contract, Overall Margin) -->
+            <!-- Top Executive KPI Cards (Corporate White + NeutraDC Crimson Top Accent) -->
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 <!-- TCO -->
-                <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm">
+                <div class="bg-white rounded-2xl p-5 border border-zinc-200 border-t-4 border-t-zinc-800 shadow-xs">
                     <div class="flex items-center justify-between mb-2">
-                        <span class="text-xs font-semibold uppercase tracking-wider text-slate-500">TCO (Total Cost)</span>
-                        <span id="kpiYearsBadge1" class="px-2 py-0.5 text-[11px] font-semibold bg-slate-100 text-slate-600 rounded-md">3 Tahun</span>
+                        <span class="text-xs font-bold uppercase tracking-wider text-zinc-500">TCO (Total Cost)</span>
+                        <span id="kpiYearsBadge1" class="px-2.5 py-0.5 text-[11px] font-semibold bg-zinc-100 text-zinc-700 rounded-full">3 Tahun</span>
                     </div>
-                    <div id="kpiTco" class="text-xl sm:text-2xl font-bold text-slate-900 tabular-nums">Rp 0</div>
-                    <p class="text-[11px] text-slate-500 mt-1">OTC Cost + Multi-Year MRC Cost</p>
+                    <div id="kpiTco" class="text-xl sm:text-2xl font-extrabold text-zinc-900 tabular-nums">Rp 0</div>
+                    <p class="text-[11px] text-zinc-500 mt-1">OTC Cost + Multi-Year MRC Cost</p>
                 </div>
 
                 <!-- TCV Based on RSP -->
-                <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm">
+                <div class="bg-white rounded-2xl p-5 border border-zinc-200 border-t-4 border-t-zinc-400 shadow-xs">
                     <div class="flex items-center justify-between mb-2">
-                        <span class="text-xs font-semibold uppercase tracking-wider text-blue-600">TCV (Based on RSP)</span>
-                        <span id="kpiRspMarginBadge" class="px-2 py-0.5 text-[11px] font-semibold bg-blue-50 text-blue-700 rounded-md">Margin 0%</span>
+                        <span class="text-xs font-bold uppercase tracking-wider text-zinc-600">TCV (Based on RSP)</span>
+                        <span id="kpiRspMarginBadge" class="px-2.5 py-0.5 text-[11px] font-semibold bg-[#FEF2F2] text-[#C40000] border border-[#FECACA] rounded-full">Margin 0%</span>
                     </div>
-                    <div id="kpiTcvRsp" class="text-xl sm:text-2xl font-bold text-slate-900 tabular-nums">Rp 0</div>
-                    <p class="text-[11px] text-slate-500 mt-1">Harga Rekomendasi Standar (Excl. PPN)</p>
+                    <div id="kpiTcvRsp" class="text-xl sm:text-2xl font-extrabold text-zinc-900 tabular-nums">Rp 0</div>
+                    <p class="text-[11px] text-zinc-500 mt-1">Harga Rekomendasi Standar (Excl. PPN)</p>
                 </div>
 
-                <!-- TCV Based on Contract / Selling -->
-                <div class="bg-slate-900 text-white rounded-2xl p-5 border border-slate-800 shadow-md">
-                    <div class="flex items-center justify-between mb-2">
-                        <span class="text-xs font-semibold uppercase tracking-wider text-blue-400">TCV (Contract / Selling)</span>
-                        <span id="kpiTaxLabel" class="px-2 py-0.5 text-[10px] font-semibold bg-slate-800 text-slate-300 border border-slate-700 rounded-md">Excl. PPN</span>
+                <!-- TCV Based on Contract / Selling (Highlight Merah NeutraDC) -->
+                <div class="bg-white rounded-2xl p-5 border-2 border-[#C40000] shadow-sm relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-20 h-20 bg-[#FEF2F2] rounded-bl-full -mr-6 -mt-6 pointer-events-none"></div>
+                    <div class="flex items-center justify-between mb-2 relative z-10">
+                        <span class="text-xs font-bold uppercase tracking-wider text-[#C40000]">TCV (Contract / Selling)</span>
+                        <span id="kpiTaxLabel" class="px-2.5 py-0.5 text-[10px] font-bold bg-[#C40000] text-white rounded-full">Excl. PPN</span>
                     </div>
-                    <div id="kpiTcvSelling" class="text-xl sm:text-2xl font-extrabold text-white tabular-nums">Rp 0</div>
-                    <p id="kpiTcvWithPpnSub" class="text-[11px] text-slate-400 mt-1">Incl. PPN 11%: Rp 0</p>
+                    <div id="kpiTcvSelling" class="text-xl sm:text-2xl font-extrabold text-zinc-900 tabular-nums relative z-10">Rp 0</div>
+                    <p id="kpiTcvWithPpnSub" class="text-[11px] font-medium text-zinc-500 mt-1 relative z-10">Incl. PPN 11%: Rp 0</p>
                 </div>
 
-                <!-- Overall Margin & Approval Tier -->
-                <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm flex flex-col justify-between">
+                <!-- Overall Margin & Sustainable Eco-Green Indicator -->
+                <div class="bg-white rounded-2xl p-5 border border-zinc-200 border-t-4 border-t-[#15803D] shadow-xs flex flex-col justify-between">
                     <div>
                         <div class="flex items-center justify-between mb-2">
-                            <span class="text-xs font-semibold uppercase tracking-wider text-slate-500">Contract Margin</span>
-                            <span id="kpiOverallApprovalBadge" class="px-2.5 py-0.5 text-xs font-bold rounded-full bg-emerald-100 text-emerald-800">AM</span>
+                            <span class="text-xs font-bold uppercase tracking-wider text-zinc-500">Contract Margin</span>
+                            <span id="kpiOverallApprovalBadge" class="px-2.5 py-0.5 text-xs font-bold rounded-full bg-[#DCFCE7] text-[#15803D]">AM</span>
                         </div>
                         <div class="flex items-baseline gap-2">
-                            <span id="kpiOverallMargin" class="text-2xl font-extrabold text-slate-900 tabular-nums">0.0%</span>
-                            <span id="kpiOverallDiscount" class="text-xs font-medium text-slate-500">(Disc: 0.0%)</span>
+                            <span id="kpiOverallMargin" class="text-2xl font-extrabold text-zinc-900 tabular-nums">0.0%</span>
+                            <span id="kpiOverallDiscount" class="text-xs font-medium text-zinc-500">(Disc: 0.0%)</span>
                         </div>
                     </div>
-                    <p id="kpiNetProfitAmount" class="text-[11px] font-medium text-emerald-600 mt-1">Est. Gross Profit: Rp 0</p>
+                    <div class="flex items-center justify-between mt-1.5">
+                        <p id="kpiNetProfitAmount" class="text-[11px] font-semibold text-[#15803D]">Est. Gross Profit: Rp 0</p>
+                        <span id="kpiMarginHealthPill" class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#DCFCE7] text-[#15803D]">HEALTHY</span>
+                    </div>
                 </div>
             </div>
 
             <!-- Main 12-Column Grid -->
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
                 
-                <!-- Left Column (7 cols): Metadata & Technical Colocation Specs -->
+                <!-- Left Column (5 cols): Metadata & Technical Colocation Specs -->
                 <div class="lg:col-span-5 space-y-6 print-full-width">
                     
                     <!-- Section A: Project & Order Metadata -->
-                    <section class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
-                        <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-100">
-                            <div class="flex items-center gap-2">
-                                <span class="w-6 h-6 rounded-lg bg-blue-600 text-white font-bold text-xs flex items-center justify-center">A</span>
-                                <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wide">Project &amp; Sales Metadata</h2>
+                    <section class="bg-white rounded-2xl shadow-xs border border-zinc-200 p-5">
+                        <div class="flex items-center justify-between mb-4 pb-3 border-b border-zinc-100">
+                            <div class="flex items-center gap-2.5">
+                                <span class="w-6 h-6 rounded-full bg-[#C40000] text-white font-bold text-xs flex items-center justify-center">A</span>
+                                <h2 class="text-sm font-bold text-zinc-900 uppercase tracking-wide">Project &amp; Sales Metadata</h2>
                             </div>
-                            <button onclick="resetToSample()" class="no-print text-xs font-medium text-slate-500 hover:text-blue-600 transition-colors">Reset Default</button>
+                            <button onclick="resetToSample()" class="no-print text-xs font-semibold text-[#C40000] hover:underline transition-colors">Reset Default</button>
                         </div>
 
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                             <div>
-                                <label class="block text-[11px] font-semibold text-slate-500 uppercase mb-1">Request Date</label>
+                                <label class="block text-[11px] font-semibold text-zinc-500 uppercase mb-1">Request Date</label>
                                 <input type="date" id="reqDate" onchange="recalculateAll()"
-                                    class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs sm:text-sm font-medium text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white">
+                                    class="w-full px-3 py-2 bg-zinc-50 border border-zinc-300 rounded-xl text-xs sm:text-sm font-medium text-zinc-900 focus:outline-none focus:ring-2 focus:ring-[#C40000] focus:border-[#C40000] focus:bg-white">
                             </div>
                             <div>
-                                <label class="block text-[11px] font-semibold text-slate-500 uppercase mb-1">Revision (Rev)</label>
+                                <label class="block text-[11px] font-semibold text-zinc-500 uppercase mb-1">Revision (Rev)</label>
                                 <input type="text" id="reqRev" value="Rev-01" oninput="recalculateAll()"
-                                    class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs sm:text-sm font-semibold text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white">
+                                    class="w-full px-3 py-2 bg-zinc-50 border border-zinc-300 rounded-xl text-xs sm:text-sm font-semibold text-zinc-900 focus:outline-none focus:ring-2 focus:ring-[#C40000] focus:border-[#C40000] focus:bg-white">
                             </div>
                             <div>
-                                <label class="block text-[11px] font-semibold text-slate-500 uppercase mb-1">Customer Name</label>
+                                <label class="block text-[11px] font-semibold text-zinc-500 uppercase mb-1">Customer Name</label>
                                 <input type="text" id="customerName" value="MUFG Bank" placeholder="Contoh: MUFG Bank" oninput="recalculateAll()"
-                                    class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs sm:text-sm font-semibold text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white">
+                                    class="w-full px-3 py-2 bg-zinc-50 border border-zinc-300 rounded-xl text-xs sm:text-sm font-semibold text-zinc-900 focus:outline-none focus:ring-2 focus:ring-[#C40000] focus:border-[#C40000] focus:bg-white">
                             </div>
                             <div>
-                                <label class="block text-[11px] font-semibold text-slate-500 uppercase mb-1">Sales Name</label>
+                                <label class="block text-[11px] font-semibold text-zinc-500 uppercase mb-1">Sales Name</label>
                                 <input type="text" id="salesName" value="Enterprise Sales Team" placeholder="Nama Account Manager" oninput="recalculateAll()"
-                                    class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs sm:text-sm font-medium text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white">
+                                    class="w-full px-3 py-2 bg-zinc-50 border border-zinc-300 rounded-xl text-xs sm:text-sm font-medium text-zinc-900 focus:outline-none focus:ring-2 focus:ring-[#C40000] focus:border-[#C40000] focus:bg-white">
                             </div>
                             <div>
-                                <label class="block text-[11px] font-semibold text-slate-500 uppercase mb-1">Order Type</label>
+                                <label class="block text-[11px] font-semibold text-zinc-500 uppercase mb-1">Order Type</label>
                                 <select id="orderType" onchange="recalculateAll()"
-                                    class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs sm:text-sm font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white">
+                                    class="w-full px-3 py-2 bg-zinc-50 border border-zinc-300 rounded-xl text-xs sm:text-sm font-medium text-zinc-800 focus:outline-none focus:ring-2 focus:ring-[#C40000] focus:border-[#C40000] focus:bg-white">
                                     <option value="New" selected>New Order</option>
                                     <option value="Renewal">Renewal</option>
                                 </select>
                             </div>
                             <div>
-                                <label class="block text-[11px] font-semibold text-slate-500 uppercase mb-1">Configuration Type</label>
+                                <label class="block text-[11px] font-semibold text-zinc-500 uppercase mb-1">Configuration Type</label>
                                 <select id="configType" onchange="handleConfigTypeChange()"
-                                    class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs sm:text-sm font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white">
+                                    class="w-full px-3 py-2 bg-zinc-50 border border-zinc-300 rounded-xl text-xs sm:text-sm font-medium text-zinc-800 focus:outline-none focus:ring-2 focus:ring-[#C40000] focus:border-[#C40000] focus:bg-white">
                                     <option value="Standard" selected>Standard</option>
                                     <option value="Custom">Custom (BoQ Tambahan)</option>
                                 </select>
                             </div>
 
                             <!-- Input Custom BoQ OTC jika Custom dipilih -->
-                            <div id="customBoqContainer" class="hidden sm:col-span-2 p-3 bg-amber-50 border border-amber-200 rounded-xl">
-                                <label class="block text-[11px] font-bold text-amber-800 uppercase mb-1">BoQ Customization Cost (OTC - Rp)</label>
+                            <div id="customBoqContainer" class="hidden sm:col-span-2 p-3 bg-[#FEF2F2] border border-[#FECACA] rounded-xl">
+                                <label class="block text-[11px] font-bold text-[#C40000] uppercase mb-1">BoQ Customization Cost (OTC - Rp)</label>
                                 <input type="number" id="customBoqCost" value="15000000" min="0" step="500000" oninput="recalculateAll()"
-                                    class="w-full px-3 py-2 bg-white border border-amber-300 rounded-lg text-sm font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-amber-500 tabular-nums">
-                                <p class="text-[11px] text-amber-700 mt-1">Biaya instalasi khusus/material tambahan ditambahkan ke komponen OTC.</p>
+                                    class="w-full px-3 py-2 bg-white border border-[#FECACA] rounded-lg text-sm font-bold text-zinc-900 focus:outline-none focus:ring-2 focus:ring-[#C40000] tabular-nums">
+                                <p class="text-[11px] text-zinc-600 mt-1">Biaya instalasi khusus/material tambahan ditambahkan ke komponen OTC.</p>
                             </div>
                         </div>
                     </section>
 
                     <!-- Section B: Colocation Technical Specifications -->
-                    <section class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
-                        <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-100">
-                            <div class="flex items-center gap-2">
-                                <span class="w-6 h-6 rounded-lg bg-blue-600 text-white font-bold text-xs flex items-center justify-center">B</span>
-                                <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wide">Colocation Specifications</h2>
+                    <section class="bg-white rounded-2xl shadow-xs border border-zinc-200 p-5">
+                        <div class="flex items-center justify-between mb-4 pb-3 border-b border-zinc-100">
+                            <div class="flex items-center gap-2.5">
+                                <span class="w-6 h-6 rounded-full bg-[#C40000] text-white font-bold text-xs flex items-center justify-center">B</span>
+                                <h2 class="text-sm font-bold text-zinc-900 uppercase tracking-wide">Colocation Specifications</h2>
                             </div>
-                            <span id="dcGroupBadge" class="px-2.5 py-1 text-xs font-bold rounded-lg bg-indigo-50 text-indigo-700 border border-indigo-200">
+                            <span id="dcGroupBadge" class="px-2.5 py-1 text-xs font-bold rounded-full bg-[#FEF2F2] text-[#C40000] border border-[#FECACA]">
                                 3SDC (Per-Rack)
                             </span>
                         </div>
 
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                             <div class="sm:col-span-2">
-                                <label class="block text-[11px] font-semibold text-slate-500 uppercase mb-1">Data Center Location</label>
+                                <label class="block text-[11px] font-semibold text-zinc-500 uppercase mb-1">Data Center Location</label>
                                 <select id="dcLocation" onchange="recalculateAll()"
-                                    class="w-full px-3 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm font-semibold text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white">
+                                    class="w-full px-3 py-2.5 bg-zinc-50 border border-zinc-300 rounded-xl text-sm font-semibold text-zinc-900 focus:outline-none focus:ring-2 focus:ring-[#C40000] focus:border-[#C40000] focus:bg-white">
                                     <option value="Serpong N+1">Serpong N+1 (3SDC)</option>
                                     <option value="Serpong 2N">Serpong 2N (3SDC)</option>
                                     <option value="Sentul 2N" selected>Sentul 2N (3SDC)</option>
@@ -337,9 +497,9 @@
                             </div>
 
                             <div>
-                                <label class="block text-[11px] font-semibold text-slate-500 uppercase mb-1">Type of Colo</label>
+                                <label class="block text-[11px] font-semibold text-zinc-500 uppercase mb-1">Type of Colo</label>
                                 <select id="coloType" onchange="recalculateAll()"
-                                    class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs sm:text-sm font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white">
+                                    class="w-full px-3 py-2 bg-zinc-50 border border-zinc-300 rounded-xl text-xs sm:text-sm font-medium text-zinc-800 focus:outline-none focus:ring-2 focus:ring-[#C40000] focus:border-[#C40000] focus:bg-white">
                                     <option value="Open Rack" selected>Open Rack</option>
                                     <option value="Cage">Cage</option>
                                     <option value="Private Suite">Private Suite</option>
@@ -347,41 +507,41 @@
                             </div>
 
                             <div>
-                                <label class="block text-[11px] font-semibold text-slate-500 uppercase mb-1">Spesifikasi Power</label>
+                                <label class="block text-[11px] font-semibold text-zinc-500 uppercase mb-1">Spesifikasi Power</label>
                                 <select id="powerSpec" onchange="recalculateAll()"
-                                    class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs sm:text-sm font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white">
+                                    class="w-full px-3 py-2 bg-zinc-50 border border-zinc-300 rounded-xl text-xs sm:text-sm font-medium text-zinc-800 focus:outline-none focus:ring-2 focus:ring-[#C40000] focus:border-[#C40000] focus:bg-white">
                                     <option value="PCLB" selected>PCLB (Power Included)</option>
                                     <option value="PCPT">PCPT (Power Pass-Through)</option>
                                 </select>
                             </div>
 
                             <div>
-                                <label class="block text-[11px] font-semibold text-slate-500 uppercase mb-1">Total Rack (Qty)</label>
+                                <label class="block text-[11px] font-semibold text-zinc-500 uppercase mb-1">Total Rack (Qty)</label>
                                 <input type="number" id="totalRack" value="2" min="1" max="500" oninput="recalculateAll()"
-                                    class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-sm font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white tabular-nums">
+                                    class="w-full px-3 py-2 bg-zinc-50 border border-zinc-300 rounded-xl text-sm font-bold text-zinc-900 focus:outline-none focus:ring-2 focus:ring-[#C40000] focus:border-[#C40000] focus:bg-white tabular-nums">
                             </div>
 
                             <div>
-                                <label id="powerPerRackLabel" class="block text-[11px] font-semibold text-slate-500 uppercase mb-1">Power per Rack (kVA)</label>
+                                <label id="powerPerRackLabel" class="block text-[11px] font-semibold text-zinc-500 uppercase mb-1">Power per Rack (kVA)</label>
                                 <input type="number" id="powerPerRack" value="3.5" min="0.5" max="50" step="0.5" oninput="recalculateAll()"
-                                    class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-sm font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white tabular-nums">
+                                    class="w-full px-3 py-2 bg-zinc-50 border border-zinc-300 rounded-xl text-sm font-bold text-zinc-900 focus:outline-none focus:ring-2 focus:ring-[#C40000] focus:border-[#C40000] focus:bg-white tabular-nums">
                             </div>
 
                             <!-- Auto-Calculated Total Power Box -->
-                            <div class="sm:col-span-2 bg-slate-50 border border-slate-200 rounded-xl p-3 flex items-center justify-between">
+                            <div class="sm:col-span-2 bg-[#FEF2F2]/60 border border-[#FECACA] rounded-xl p-3 flex items-center justify-between">
                                 <div>
-                                    <span class="block text-[11px] font-semibold text-slate-500 uppercase">Total Power Capacity</span>
-                                    <span id="powerAdjustmentNote" class="text-[11px] text-slate-500">Sesuai basis standar 3.5 kVA/rack</span>
+                                    <span class="block text-[11px] font-bold text-zinc-700 uppercase">Total Power Capacity</span>
+                                    <span id="powerAdjustmentNote" class="text-[11px] text-zinc-600">Sesuai basis standar 3.5 kVA/rack</span>
                                 </div>
                                 <div class="text-right">
-                                    <span id="totalPowerDisplay" class="text-base font-extrabold text-blue-700 tabular-nums">7.0 kVA</span>
+                                    <span id="totalPowerDisplay" class="text-base font-extrabold text-[#C40000] tabular-nums">7.0 kVA</span>
                                 </div>
                             </div>
 
                             <div>
-                                <label class="block text-[11px] font-semibold text-slate-500 uppercase mb-1">Contract Period (Years)</label>
+                                <label class="block text-[11px] font-semibold text-zinc-500 uppercase mb-1">Contract Period (Years)</label>
                                 <select id="contractYears" onchange="recalculateAll()"
-                                    class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-sm font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white">
+                                    class="w-full px-3 py-2 bg-zinc-50 border border-zinc-300 rounded-xl text-sm font-bold text-zinc-900 focus:outline-none focus:ring-2 focus:ring-[#C40000] focus:border-[#C40000] focus:bg-white">
                                     <option value="1">1 Tahun (12 Bulan)</option>
                                     <option value="2">2 Tahun (24 Bulan)</option>
                                     <option value="3" selected>3 Tahun (36 Bulan)</option>
@@ -396,11 +556,11 @@
                             </div>
 
                             <div>
-                                <label class="block text-[11px] font-semibold text-slate-500 uppercase mb-1">YoY Cost Escalation (%)</label>
+                                <label class="block text-[11px] font-semibold text-zinc-500 uppercase mb-1">YoY Cost Escalation (%)</label>
                                 <div class="relative">
                                     <input type="number" id="yoyEscalation" value="3" min="0" max="25" step="0.5" oninput="recalculateAll()"
-                                        class="w-full pl-3 pr-8 py-2 bg-slate-50 border border-slate-300 rounded-xl text-sm font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white tabular-nums">
-                                    <span class="absolute right-3 top-2 text-sm font-semibold text-slate-400">%</span>
+                                        class="w-full pl-3 pr-8 py-2 bg-zinc-50 border border-zinc-300 rounded-xl text-sm font-bold text-zinc-900 focus:outline-none focus:ring-2 focus:ring-[#C40000] focus:border-[#C40000] focus:bg-white tabular-nums">
+                                    <span class="absolute right-3 top-2 text-sm font-semibold text-zinc-400">%</span>
                                 </div>
                             </div>
                         </div>
@@ -411,22 +571,22 @@
                 <div class="lg:col-span-7 space-y-6 print-full-width">
                     
                     <!-- Section C: Commercial Quote Table (OTC & MRC) -->
-                    <section class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-                        <div class="p-5 border-b border-slate-100 flex flex-wrap items-center justify-between gap-3">
-                            <div class="flex items-center gap-2">
-                                <span class="w-6 h-6 rounded-lg bg-blue-600 text-white font-bold text-xs flex items-center justify-center">C</span>
+                    <section class="bg-white rounded-2xl shadow-xs border border-zinc-200 overflow-hidden">
+                        <div class="p-5 border-b border-zinc-100 flex flex-wrap items-center justify-between gap-3">
+                            <div class="flex items-center gap-2.5">
+                                <span class="w-6 h-6 rounded-full bg-[#C40000] text-white font-bold text-xs flex items-center justify-center">C</span>
                                 <div>
-                                    <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wide">Commercial Quote &amp; Approval Matrix</h2>
-                                    <p class="text-xs text-slate-500">Edit <strong>Selling Price</strong> atau <strong>Discount %</strong> — keduanya tersinkronisasi otomatis</p>
+                                    <h2 class="text-sm font-bold text-zinc-900 uppercase tracking-wide">Commercial Quote &amp; Approval Matrix</h2>
+                                    <p class="text-xs text-zinc-500">Edit <strong>Selling Price</strong> atau <strong>Discount %</strong> — tersinkronisasi dua arah otomatis</p>
                                 </div>
                             </div>
 
                             <!-- Toggle PPN 11% -->
-                            <div class="flex items-center gap-2.5 bg-slate-50 px-3 py-1.5 rounded-xl border border-slate-200 no-print">
-                                <span class="text-xs font-semibold text-slate-700">Include PPN 11%</span>
+                            <div class="flex items-center gap-2.5 bg-zinc-50 px-3.5 py-1.5 rounded-full border border-zinc-200 no-print">
+                                <span class="text-xs font-semibold text-zinc-700">Include PPN 11%</span>
                                 <label class="relative inline-flex items-center cursor-pointer">
                                     <input type="checkbox" id="togglePpn" onchange="recalculateAll()" class="sr-only peer">
-                                    <div class="w-9 h-5 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-blue-600"></div>
+                                    <div class="w-9 h-5 bg-zinc-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-zinc-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#C40000]"></div>
                                 </label>
                             </div>
                         </div>
@@ -435,7 +595,7 @@
                         <div class="overflow-x-auto">
                             <table class="w-full text-left border-collapse">
                                 <thead>
-                                    <tr class="bg-slate-900 text-white text-[11px] uppercase tracking-wider">
+                                    <tr class="bg-[#C40000] text-white text-[11px] uppercase tracking-wider">
                                         <th class="py-3 px-4 font-semibold">Item / Komponen</th>
                                         <th class="py-3 px-3 font-semibold text-right">Total Cost (Y1)</th>
                                         <th class="py-3 px-3 font-semibold text-right">RSP (Price &amp; Margin)</th>
@@ -445,103 +605,103 @@
                                         <th class="py-3 px-4 font-semibold text-center">Approval</th>
                                     </tr>
                                 </thead>
-                                <tbody class="divide-y divide-slate-200 text-xs sm:text-sm">
+                                <tbody class="divide-y divide-zinc-200 text-xs sm:text-sm">
                                     
                                     <!-- BARIS 1: ONE-TIME CHARGE (OTC) -->
-                                    <tr class="hover:bg-slate-50/80 transition-colors">
+                                    <tr class="hover:bg-zinc-50/90 transition-colors">
                                         <td class="py-4 px-4 align-top">
-                                            <div class="font-bold text-slate-900">One-Time Charge (OTC)</div>
-                                            <div class="text-[11px] text-slate-500 mt-0.5">Setup, PM Mandays &amp; Instalasi</div>
-                                            <div id="otcPerUnitHint" class="text-[11px] font-medium text-blue-600 mt-1 tabular-nums">Rp 0 / rack</div>
+                                            <div class="font-bold text-zinc-900">One-Time Charge (OTC)</div>
+                                            <div class="text-[11px] text-zinc-500 mt-0.5">Setup, PM Mandays &amp; Instalasi</div>
+                                            <div id="otcPerUnitHint" class="text-[11px] font-semibold text-[#C40000] mt-1 tabular-nums">Rp 0 / rack</div>
                                         </td>
-                                        <td class="py-4 px-3 text-right align-top font-medium text-slate-700 tabular-nums">
+                                        <td class="py-4 px-3 text-right align-top font-medium text-zinc-700 tabular-nums">
                                             <div id="tblOtcCost">Rp 0</div>
                                         </td>
                                         <td class="py-4 px-3 text-right align-top tabular-nums">
-                                            <div id="tblOtcRsp" class="font-semibold text-slate-900">Rp 0</div>
-                                            <span id="tblOtcRspMargin" class="inline-block mt-1 px-1.5 py-0.5 text-[10px] font-semibold bg-slate-100 text-slate-600 rounded">0.0%</span>
+                                            <div id="tblOtcRsp" class="font-semibold text-zinc-900">Rp 0</div>
+                                            <span id="tblOtcRspMargin" class="inline-block mt-1 px-2 py-0.5 text-[10px] font-semibold bg-zinc-100 text-zinc-600 rounded-full">0.0%</span>
                                         </td>
                                         <td class="py-4 px-3 text-right align-top">
                                             <input type="number" id="inputOtcSelling" step="100000" oninput="handleSellingInput('otc')"
-                                                class="w-full text-right px-2.5 py-1.5 bg-blue-50/60 border border-blue-300 rounded-lg font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white tabular-nums">
-                                            <div id="otcSellingPerUnit" class="text-[10px] text-slate-500 mt-1 tabular-nums">Rp 0 / unit</div>
+                                                class="w-full text-right px-2.5 py-1.5 bg-[#FEF2F2]/60 border border-[#FECACA] rounded-lg font-bold text-zinc-900 focus:outline-none focus:ring-2 focus:ring-[#C40000] focus:bg-white tabular-nums">
+                                            <div id="otcSellingPerUnit" class="text-[10px] text-zinc-500 mt-1 tabular-nums">Rp 0 / unit</div>
                                         </td>
                                         <td class="py-4 px-3 text-center align-top">
                                             <div class="relative">
                                                 <input type="number" id="inputOtcDiscount" step="0.5" value="0" oninput="handleDiscountInput('otc')"
-                                                    class="w-full text-center pr-5 pl-1.5 py-1.5 bg-slate-50 border border-slate-300 rounded-lg font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white tabular-nums">
-                                                <span class="absolute right-2 top-1.5 text-xs text-slate-400">%</span>
+                                                    class="w-full text-center pr-5 pl-1.5 py-1.5 bg-zinc-50 border border-zinc-300 rounded-lg font-semibold text-zinc-800 focus:outline-none focus:ring-2 focus:ring-[#C40000] focus:bg-white tabular-nums">
+                                                <span class="absolute right-2 top-1.5 text-xs text-zinc-400">%</span>
                                             </div>
                                         </td>
                                         <td class="py-4 px-3 text-right align-top font-bold tabular-nums">
-                                            <span id="tblOtcActMargin" class="text-slate-900">0.0%</span>
+                                            <span id="tblOtcActMargin" class="text-zinc-900">0.0%</span>
                                         </td>
                                         <td class="py-4 px-4 text-center align-top">
-                                            <span id="badgeOtcApproval" class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800">AM</span>
+                                            <span id="badgeOtcApproval" class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-[#DCFCE7] text-[#15803D]">AM</span>
                                         </td>
                                     </tr>
 
                                     <!-- BARIS 2: MONTHLY RECURRING CHARGE (MRC) -->
-                                    <tr class="hover:bg-slate-50/80 transition-colors">
+                                    <tr class="hover:bg-zinc-50/90 transition-colors">
                                         <td class="py-4 px-4 align-top">
-                                            <div class="font-bold text-slate-900">Monthly Recurring (MRC)</div>
-                                            <div class="text-[11px] text-slate-500 mt-0.5">Sewa Bulanan (Tahun ke-1)</div>
-                                            <div id="mrcPerUnitHint" class="text-[11px] font-medium text-blue-600 mt-1 tabular-nums">Rp 0 / rack / bln</div>
+                                            <div class="font-bold text-zinc-900">Monthly Recurring (MRC)</div>
+                                            <div class="text-[11px] text-zinc-500 mt-0.5">Sewa Bulanan (Tahun ke-1)</div>
+                                            <div id="mrcPerUnitHint" class="text-[11px] font-semibold text-[#C40000] mt-1 tabular-nums">Rp 0 / rack / bln</div>
                                         </td>
-                                        <td class="py-4 px-3 text-right align-top font-medium text-slate-700 tabular-nums">
+                                        <td class="py-4 px-3 text-right align-top font-medium text-zinc-700 tabular-nums">
                                             <div id="tblMrcCost">Rp 0</div>
-                                            <div class="text-[10px] text-slate-400 mt-0.5">/ bulan</div>
+                                            <div class="text-[10px] text-zinc-400 mt-0.5">/ bulan</div>
                                         </td>
                                         <td class="py-4 px-3 text-right align-top tabular-nums">
-                                            <div id="tblMrcRsp" class="font-semibold text-slate-900">Rp 0</div>
-                                            <span id="tblMrcRspMargin" class="inline-block mt-1 px-1.5 py-0.5 text-[10px] font-semibold bg-slate-100 text-slate-600 rounded">0.0%</span>
+                                            <div id="tblMrcRsp" class="font-semibold text-zinc-900">Rp 0</div>
+                                            <span id="tblMrcRspMargin" class="inline-block mt-1 px-2 py-0.5 text-[10px] font-semibold bg-zinc-100 text-zinc-600 rounded-full">0.0%</span>
                                         </td>
                                         <td class="py-4 px-3 text-right align-top">
                                             <input type="number" id="inputMrcSelling" step="100000" oninput="handleSellingInput('mrc')"
-                                                class="w-full text-right px-2.5 py-1.5 bg-blue-50/60 border border-blue-300 rounded-lg font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white tabular-nums">
-                                            <div id="mrcSellingPerUnit" class="text-[10px] text-slate-500 mt-1 tabular-nums">Rp 0 / unit / bln</div>
+                                                class="w-full text-right px-2.5 py-1.5 bg-[#FEF2F2]/60 border border-[#FECACA] rounded-lg font-bold text-zinc-900 focus:outline-none focus:ring-2 focus:ring-[#C40000] focus:bg-white tabular-nums">
+                                            <div id="mrcSellingPerUnit" class="text-[10px] text-zinc-500 mt-1 tabular-nums">Rp 0 / unit / bln</div>
                                         </td>
                                         <td class="py-4 px-3 text-center align-top">
                                             <div class="relative">
                                                 <input type="number" id="inputMrcDiscount" step="0.5" value="0" oninput="handleDiscountInput('mrc')"
-                                                    class="w-full text-center pr-5 pl-1.5 py-1.5 bg-slate-50 border border-slate-300 rounded-lg font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white tabular-nums">
-                                                <span class="absolute right-2 top-1.5 text-xs text-slate-400">%</span>
+                                                    class="w-full text-center pr-5 pl-1.5 py-1.5 bg-zinc-50 border border-zinc-300 rounded-lg font-semibold text-zinc-800 focus:outline-none focus:ring-2 focus:ring-[#C40000] focus:bg-white tabular-nums">
+                                                <span class="absolute right-2 top-1.5 text-xs text-zinc-400">%</span>
                                             </div>
                                         </td>
                                         <td class="py-4 px-3 text-right align-top font-bold tabular-nums">
-                                            <span id="tblMrcActMargin" class="text-slate-900">0.0%</span>
+                                            <span id="tblMrcActMargin" class="text-zinc-900">0.0%</span>
                                         </td>
                                         <td class="py-4 px-4 text-center align-top">
-                                            <span id="badgeMrcApproval" class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800">AM</span>
+                                            <span id="badgeMrcApproval" class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-[#DCFCE7] text-[#15803D]">AM</span>
                                         </td>
                                     </tr>
 
                                     <!-- BARIS 3: TOTAL CONTRACT VALUE (TCV MULTI-YEAR) -->
-                                    <tr class="bg-slate-100/90 font-semibold border-t-2 border-slate-300">
+                                    <tr class="bg-[#FEF2F2]/70 font-semibold border-t-2 border-[#FECACA]">
                                         <td class="py-4 px-4 align-middle">
-                                            <div class="font-extrabold text-slate-900">Total Contract (<span id="tblContractYearsLabel">3</span> Tahun)</div>
-                                            <div class="text-[11px] text-slate-600 font-normal">OTC + Akumulasi MRC Multi-Tahun</div>
+                                            <div class="font-extrabold text-zinc-900">Total Contract (<span id="tblContractYearsLabel">3</span> Tahun)</div>
+                                            <div class="text-[11px] text-zinc-600 font-normal">OTC + Akumulasi MRC Multi-Tahun</div>
                                         </td>
-                                        <td class="py-4 px-3 text-right align-middle text-slate-800 tabular-nums">
-                                            <div class="text-[10px] text-slate-500 font-normal">TCO</div>
+                                        <td class="py-4 px-3 text-right align-middle text-zinc-800 tabular-nums">
+                                            <div class="text-[10px] text-zinc-500 font-normal">TCO</div>
                                             <div id="tblTotalCost" class="font-bold">Rp 0</div>
                                         </td>
-                                        <td class="py-4 px-3 text-right align-middle text-slate-800 tabular-nums">
+                                        <td class="py-4 px-3 text-right align-middle text-zinc-800 tabular-nums">
                                             <div id="tblTotalRsp" class="font-bold">Rp 0</div>
-                                            <span id="tblTotalRspMargin" class="inline-block mt-0.5 px-1.5 py-0.5 text-[10px] font-semibold bg-white text-slate-700 border border-slate-200 rounded">0.0%</span>
+                                            <span id="tblTotalRspMargin" class="inline-block mt-0.5 px-2 py-0.5 text-[10px] font-semibold bg-white text-zinc-700 border border-zinc-200 rounded-full">0.0%</span>
                                         </td>
-                                        <td class="py-4 px-3 text-right align-middle text-blue-700 tabular-nums">
-                                            <div class="text-[10px] text-slate-500 font-normal">TCV Selling</div>
+                                        <td class="py-4 px-3 text-right align-middle text-[#C40000] tabular-nums">
+                                            <div class="text-[10px] text-zinc-500 font-normal">TCV Selling</div>
                                             <div id="tblTotalSelling" class="text-sm sm:text-base font-extrabold">Rp 0</div>
                                         </td>
                                         <td class="py-4 px-3 text-center align-middle tabular-nums">
-                                            <span id="tblTotalDiscount" class="text-xs font-bold text-slate-700">0.0%</span>
+                                            <span id="tblTotalDiscount" class="text-xs font-bold text-zinc-700">0.0%</span>
                                         </td>
                                         <td class="py-4 px-3 text-right align-middle tabular-nums">
-                                            <span id="tblTotalActMargin" class="text-sm font-extrabold text-slate-900">0.0%</span>
+                                            <span id="tblTotalActMargin" class="text-sm font-extrabold text-[#15803D]">0.0%</span>
                                         </td>
                                         <td class="py-4 px-4 text-center align-middle">
-                                            <span id="badgeTotalApproval" class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800">AM</span>
+                                            <span id="badgeTotalApproval" class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-[#DCFCE7] text-[#15803D]">AM</span>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -549,59 +709,59 @@
                         </div>
 
                         <!-- Legend Matrix Approval Level (Rumus Excel IF Discount) -->
-                        <div class="px-5 py-3 bg-slate-50 border-t border-slate-200 flex flex-wrap items-center justify-between gap-2 text-[11px] text-slate-600">
-                            <span class="font-semibold text-slate-700">Matrix Approval Diskon:</span>
+                        <div class="px-5 py-3 bg-zinc-50 border-t border-zinc-200 flex flex-wrap items-center justify-between gap-2 text-[11px] text-zinc-600">
+                            <span class="font-bold text-zinc-700">Matrix Approval Diskon:</span>
                             <div class="flex flex-wrap items-center gap-2">
-                                <span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 font-semibold">&le; 10%: AM</span>
-                                <span class="px-2 py-0.5 rounded bg-blue-100 text-blue-800 font-semibold">10.1% – 15%: VP</span>
-                                <span class="px-2 py-0.5 rounded bg-amber-100 text-amber-800 font-semibold">15.1% – 20%: EVP / CCO</span>
-                                <span class="px-2 py-0.5 rounded bg-rose-100 text-rose-800 font-semibold">&gt; 20%: CEO</span>
+                                <span class="px-2.5 py-0.5 rounded-full bg-[#DCFCE7] text-[#15803D] font-bold">&le; 10%: AM</span>
+                                <span class="px-2.5 py-0.5 rounded-full bg-zinc-200 text-zinc-800 font-bold">10.1% – 15%: VP</span>
+                                <span class="px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-800 font-bold">15.1% – 20%: EVP / CCO</span>
+                                <span class="px-2.5 py-0.5 rounded-full bg-[#FEE2E2] text-[#C40000] font-bold">&gt; 20%: CEO</span>
                             </div>
                         </div>
                     </section>
 
                     <!-- Section D: Target Margin Reverse Calculator (Cell F34:H36 Excel) -->
-                    <section class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 no-print">
-                        <div class="flex flex-wrap items-center justify-between gap-2 mb-4 pb-3 border-b border-slate-100">
-                            <div class="flex items-center gap-2">
-                                <span class="w-6 h-6 rounded-lg bg-indigo-600 text-white font-bold text-xs flex items-center justify-center">D</span>
+                    <section class="bg-white rounded-2xl shadow-xs border border-zinc-200 p-5 no-print">
+                        <div class="flex flex-wrap items-center justify-between gap-2 mb-4 pb-3 border-b border-zinc-100">
+                            <div class="flex items-center gap-2.5">
+                                <span class="w-6 h-6 rounded-full bg-[#15803D] text-white font-bold text-xs flex items-center justify-center">D</span>
                                 <div>
-                                    <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wide">Target Margin Simulator (Reverse Pricing)</h2>
-                                    <p class="text-xs text-slate-500">Hitung harga jual minimum menggunakan rumus <code class="bg-slate-100 px-1 py-0.5 rounded text-slate-700">ROUNDUP(Cost / (1 - Target%), -5)</code></p>
+                                    <h2 class="text-sm font-bold text-zinc-900 uppercase tracking-wide">Target Margin Simulator (Reverse Pricing)</h2>
+                                    <p class="text-xs text-zinc-500">Hitung harga jual minimum menggunakan rumus <code class="bg-zinc-100 px-1.5 py-0.5 rounded text-zinc-700">ROUNDUP(Cost / (1 - Target%), -5)</code></p>
                                 </div>
                             </div>
                             <div class="flex items-center gap-2">
-                                <label for="targetMarginInput" class="text-xs font-semibold text-slate-600">Target Margin:</label>
+                                <label for="targetMarginInput" class="text-xs font-semibold text-zinc-600">Target Margin:</label>
                                 <div class="relative w-24">
                                     <input type="number" id="targetMarginInput" value="20" min="1" max="90" step="1" oninput="recalculateAll()"
-                                        class="w-full pl-3 pr-7 py-1.5 bg-indigo-50 border border-indigo-300 rounded-lg text-sm font-bold text-indigo-900 focus:outline-none focus:ring-2 focus:ring-indigo-600 tabular-nums">
-                                    <span class="absolute right-2.5 top-1.5 text-xs font-bold text-indigo-500">%</span>
+                                        class="w-full pl-3 pr-7 py-1.5 bg-[#DCFCE7]/50 border border-emerald-300 rounded-full text-sm font-bold text-[#15803D] focus:outline-none focus:ring-2 focus:ring-[#15803D] tabular-nums">
+                                    <span class="absolute right-3 top-1.5 text-xs font-bold text-[#15803D]">%</span>
                                 </div>
                             </div>
                         </div>
 
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <!-- Simulasi OTC -->
-                            <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between gap-3">
+                            <div class="p-3.5 rounded-xl bg-zinc-50 border border-zinc-200 flex items-center justify-between gap-3">
                                 <div>
-                                    <span class="block text-[11px] font-semibold text-slate-500 uppercase">Min. OTC Selling Price</span>
-                                    <span id="simOtcPrice" class="text-base font-extrabold text-slate-900 tabular-nums">Rp 0</span>
-                                    <span id="simOtcActualMargin" class="block text-[11px] text-emerald-600 font-medium">Actual Margin: 0.0%</span>
+                                    <span class="block text-[11px] font-semibold text-zinc-500 uppercase">Min. OTC Selling Price</span>
+                                    <span id="simOtcPrice" class="text-base font-extrabold text-zinc-900 tabular-nums">Rp 0</span>
+                                    <span id="simOtcActualMargin" class="block text-[11px] text-[#15803D] font-semibold">Actual Margin: 0.0%</span>
                                 </div>
-                                <button onclick="applySimulatedPrice('otc')" class="px-3 py-1.5 bg-white hover:bg-indigo-600 text-indigo-700 hover:text-white border border-indigo-300 rounded-lg text-xs font-semibold transition-colors shrink-0">
-                                    Terapkan ke OTC
+                                <button onclick="applySimulatedPrice('otc')" class="px-3.5 py-2 bg-white hover:bg-[#C40000] text-[#C40000] hover:text-white border border-[#FECACA] rounded-full text-xs font-semibold transition-colors shrink-0">
+                                    Terapkan OTC
                                 </button>
                             </div>
 
                             <!-- Simulasi MRC -->
-                            <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between gap-3">
+                            <div class="p-3.5 rounded-xl bg-zinc-50 border border-zinc-200 flex items-center justify-between gap-3">
                                 <div>
-                                    <span class="block text-[11px] font-semibold text-slate-500 uppercase">Min. MRC Selling Price / Bln</span>
-                                    <span id="simMrcPrice" class="text-base font-extrabold text-slate-900 tabular-nums">Rp 0</span>
-                                    <span id="simMrcActualMargin" class="block text-[11px] text-emerald-600 font-medium">Actual Margin: 0.0%</span>
+                                    <span class="block text-[11px] font-semibold text-zinc-500 uppercase">Min. MRC Selling Price / Bln</span>
+                                    <span id="simMrcPrice" class="text-base font-extrabold text-zinc-900 tabular-nums">Rp 0</span>
+                                    <span id="simMrcActualMargin" class="block text-[11px] text-[#15803D] font-semibold">Actual Margin: 0.0%</span>
                                 </div>
-                                <button onclick="applySimulatedPrice('mrc')" class="px-3 py-1.5 bg-white hover:bg-indigo-600 text-indigo-700 hover:text-white border border-indigo-300 rounded-lg text-xs font-semibold transition-colors shrink-0">
-                                    Terapkan ke MRC
+                                <button onclick="applySimulatedPrice('mrc')" class="px-3.5 py-2 bg-white hover:bg-[#C40000] text-[#C40000] hover:text-white border border-[#FECACA] rounded-full text-xs font-semibold transition-colors shrink-0">
+                                    Terapkan MRC
                                 </button>
                             </div>
                         </div>
@@ -617,34 +777,34 @@
         <div id="panel-calculation" class="tab-panel hidden space-y-6">
             
             <!-- Ringkasan Parameter Proyeksi -->
-            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 flex flex-wrap items-center justify-between gap-4">
+            <div class="bg-white rounded-2xl shadow-xs border border-zinc-200 p-5 flex flex-wrap items-center justify-between gap-4">
                 <div>
-                    <h2 class="text-base sm:text-lg font-bold text-slate-900">Proyeksi Biaya &amp; Cashflow Multi-Tahun (Sheet: Calculation)</h2>
-                    <p class="text-xs text-slate-500 mt-0.5">
+                    <h2 class="text-base sm:text-lg font-bold text-zinc-900">Proyeksi Biaya &amp; Cashflow Multi-Tahun (Sheet: Calculation)</h2>
+                    <p class="text-xs text-zinc-500 mt-0.5">
                         Rincian komponen HPP (Space, Power, Rack/PDU, Maintenance, Insurance) dengan eskalasi majemuk 
-                        <strong id="calcEscalationInfo" class="text-slate-800">3% YoY</strong> selama <strong id="calcYearsInfo" class="text-slate-800">3 Tahun</strong>.
+                        <strong id="calcEscalationInfo" class="text-zinc-800">3% YoY</strong> selama <strong id="calcYearsInfo" class="text-zinc-800">3 Tahun</strong>.
                     </p>
                 </div>
-                <div class="flex items-center gap-3 text-xs">
-                    <div class="px-3 py-2 rounded-xl bg-slate-100 border border-slate-200">
-                        <span class="text-slate-500">Lokasi:</span> <strong id="calcLocBadge" class="text-slate-900">Sentul 2N</strong>
+                <div class="flex items-center gap-2.5 text-xs">
+                    <div class="px-3.5 py-2 rounded-full bg-[#FEF2F2] border border-[#FECACA]">
+                        <span class="text-zinc-600">Lokasi:</span> <strong id="calcLocBadge" class="text-[#C40000]">Sentul 2N</strong>
                     </div>
-                    <div class="px-3 py-2 rounded-xl bg-slate-100 border border-slate-200">
-                        <span class="text-slate-500">Kapasitas:</span> <strong id="calcCapBadge" class="text-slate-900">2 Rack / 7.0 kVA</strong>
+                    <div class="px-3.5 py-2 rounded-full bg-zinc-100 border border-zinc-200">
+                        <span class="text-zinc-600">Kapasitas:</span> <strong id="calcCapBadge" class="text-zinc-900">2 Rack / 7.0 kVA</strong>
                     </div>
                 </div>
             </div>
 
             <!-- Tabel 1: Breakdown One-Time Charge (OTC) -->
-            <section class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-                <div class="px-5 py-3.5 bg-slate-900 text-white flex items-center justify-between">
+            <section class="bg-white rounded-2xl shadow-xs border border-zinc-200 overflow-hidden">
+                <div class="px-5 py-3.5 bg-[#C40000] text-white flex items-center justify-between">
                     <h3 class="text-xs sm:text-sm font-bold uppercase tracking-wider">1. Rincian Biaya One-Time Charge (OTC — Tahun ke-1)</h3>
-                    <span class="text-xs text-slate-400">Sekali Bayar di Awal Kontrak</span>
+                    <span class="text-xs text-red-100">Sekali Bayar di Awal Kontrak</span>
                 </div>
                 <div class="overflow-x-auto">
                     <table class="w-full text-left border-collapse text-xs sm:text-sm">
                         <thead>
-                            <tr class="bg-slate-100 text-slate-700 border-b border-slate-200">
+                            <tr class="bg-zinc-100 text-zinc-700 border-b border-zinc-200">
                                 <th class="py-2.5 px-4 font-semibold">Komponen OTC</th>
                                 <th class="py-2.5 px-4 font-semibold text-right">Satuan / Basis</th>
                                 <th class="py-2.5 px-4 font-semibold text-right">Total Cost (HPP)</th>
@@ -652,7 +812,7 @@
                                 <th class="py-2.5 px-4 font-semibold text-right">Contract Selling</th>
                             </tr>
                         </thead>
-                        <tbody id="otcBreakdownBody" class="divide-y divide-slate-200 tabular-nums">
+                        <tbody id="otcBreakdownBody" class="divide-y divide-zinc-200 tabular-nums">
                             <!-- Diisi via JS -->
                         </tbody>
                     </table>
@@ -660,17 +820,17 @@
             </section>
 
             <!-- Tabel 2: Proyeksi Bulanan & Tahunan MRC (Y1 - Yn) -->
-            <section class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-                <div class="px-5 py-3.5 bg-slate-900 text-white flex items-center justify-between">
+            <section class="bg-white rounded-2xl shadow-xs border border-zinc-200 overflow-hidden">
+                <div class="px-5 py-3.5 bg-zinc-900 text-white flex items-center justify-between">
                     <h3 class="text-xs sm:text-sm font-bold uppercase tracking-wider">2. Proyeksi Cost, RSP &amp; Revenue Tahunan (Y1 – Y<span id="calcMaxYearHeader">3</span>)</h3>
-                    <span class="text-xs text-blue-300">Geser tabel ke samping untuk melihat seluruh tahun &rarr;</span>
+                    <span class="text-xs text-red-300">Geser tabel ke samping untuk melihat seluruh tahun &rarr;</span>
                 </div>
                 <div class="overflow-x-auto">
                     <table class="w-full text-left border-collapse text-xs tabular-nums">
                         <thead id="multiYearThead">
                             <!-- Header Y1..Yn di-render via JS -->
                         </thead>
-                        <tbody id="multiYearTbody" class="divide-y divide-slate-200">
+                        <tbody id="multiYearTbody" class="divide-y divide-zinc-200">
                             <!-- Baris komponen & cashflow di-render via JS -->
                         </tbody>
                     </table>
@@ -684,74 +844,74 @@
         <div id="panel-master" class="tab-panel hidden space-y-6">
             
             <!-- Header Master Data -->
-            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 flex flex-wrap items-center justify-between gap-4">
+            <div class="bg-white rounded-2xl shadow-xs border border-zinc-200 p-5 flex flex-wrap items-center justify-between gap-4">
                 <div>
-                    <h2 class="text-base sm:text-lg font-bold text-slate-900">Master Rate Card &amp; Global Assumptions</h2>
-                    <p class="text-xs text-slate-500 mt-0.5">
-                        Seluruh angka di bawah ini dapat diedit langsung oleh tim Presales dan otomatis tersimpan di browser (<code class="bg-slate-100 px-1 rounded">localStorage</code>).
+                    <h2 class="text-base sm:text-lg font-bold text-zinc-900">Master Rate Card &amp; Global Assumptions</h2>
+                    <p class="text-xs text-zinc-500 mt-0.5">
+                        Seluruh tarif di bawah dapat diedit langsung oleh tim Presales dan otomatis tersimpan di browser (<code class="bg-zinc-100 px-1 rounded">localStorage</code>).
                     </p>
                 </div>
-                <button onclick="resetMasterData()" class="px-4 py-2 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 rounded-xl text-xs font-semibold transition-colors">
+                <button onclick="resetMasterData()" class="px-4 py-2 bg-[#FEF2F2] hover:bg-[#FEE2E2] text-[#C40000] border border-[#FECACA] rounded-full text-xs font-semibold transition-colors">
                     Reset Rate Card ke Standar Awal
                 </button>
             </div>
 
             <!-- Global Assumptions (Kurs USD, Basis kVA, Penyesuaian Daya, OTC Mandays) -->
-            <section class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
-                <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wide mb-4 pb-2 border-b border-slate-100">A. Parameter Global &amp; Formula Daya / OTC</h3>
+            <section class="bg-white rounded-2xl shadow-xs border border-zinc-200 p-5">
+                <h3 class="text-sm font-bold text-zinc-900 uppercase tracking-wide mb-4 pb-2 border-b border-zinc-100">A. Parameter Global &amp; Formula Daya / OTC</h3>
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                     <div>
-                        <label class="block text-[11px] font-semibold text-slate-500 uppercase mb-1">Kurs USD ke IDR (HDC Cikarang)</label>
+                        <label class="block text-[11px] font-semibold text-zinc-500 uppercase mb-1">Kurs USD ke IDR (HDC Cikarang)</label>
                         <input type="number" id="masterUsdRate" step="100" onchange="saveMasterFromInputs()"
-                            class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-sm font-bold text-slate-900 tabular-nums">
+                            class="w-full px-3 py-2 bg-zinc-50 border border-zinc-300 rounded-xl text-sm font-bold text-zinc-900 focus:ring-2 focus:ring-[#C40000] tabular-nums">
                     </div>
                     <div>
-                        <label class="block text-[11px] font-semibold text-slate-500 uppercase mb-1">Basis Daya Standar 3SDC (kVA)</label>
+                        <label class="block text-[11px] font-semibold text-zinc-500 uppercase mb-1">Basis Daya Standar 3SDC (kVA)</label>
                         <input type="number" id="masterBaseKva" step="0.5" onchange="saveMasterFromInputs()"
-                            class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-sm font-bold text-slate-900 tabular-nums">
+                            class="w-full px-3 py-2 bg-zinc-50 border border-zinc-300 rounded-xl text-sm font-bold text-zinc-900 focus:ring-2 focus:ring-[#C40000] tabular-nums">
                     </div>
                     <div>
-                        <label class="block text-[11px] font-semibold text-slate-500 uppercase mb-1">Kenaikan Harga per +1 kVA (Rp)</label>
+                        <label class="block text-[11px] font-semibold text-zinc-500 uppercase mb-1">Kenaikan Harga per +1 kVA (Rp)</label>
                         <input type="number" id="masterPlusKvaPrice" step="100000" onchange="saveMasterFromInputs()"
-                            class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-sm font-bold text-slate-900 tabular-nums">
+                            class="w-full px-3 py-2 bg-zinc-50 border border-zinc-300 rounded-xl text-sm font-bold text-zinc-900 focus:ring-2 focus:ring-[#C40000] tabular-nums">
                     </div>
                     <div>
-                        <label class="block text-[11px] font-semibold text-slate-500 uppercase mb-1">Pengurangan per -1 kVA (Rp)</label>
+                        <label class="block text-[11px] font-semibold text-zinc-500 uppercase mb-1">Pengurangan per -1 kVA (Rp)</label>
                         <input type="number" id="masterMinusKvaPrice" step="100000" onchange="saveMasterFromInputs()"
-                            class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-sm font-bold text-slate-900 tabular-nums">
+                            class="w-full px-3 py-2 bg-zinc-50 border border-zinc-300 rounded-xl text-sm font-bold text-zinc-900 focus:ring-2 focus:ring-[#C40000] tabular-nums">
                     </div>
                     <div>
-                        <label class="block text-[11px] font-semibold text-slate-500 uppercase mb-1">OTC Mandays PM / Rack (Rp)</label>
+                        <label class="block text-[11px] font-semibold text-zinc-500 uppercase mb-1">OTC Mandays PM / Rack (Rp)</label>
                         <input type="number" id="masterOtcPmCost" step="100000" onchange="saveMasterFromInputs()"
-                            class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-sm font-bold text-slate-900 tabular-nums">
+                            class="w-full px-3 py-2 bg-zinc-50 border border-zinc-300 rounded-xl text-sm font-bold text-zinc-900 focus:ring-2 focus:ring-[#C40000] tabular-nums">
                     </div>
                     <div>
-                        <label class="block text-[11px] font-semibold text-slate-500 uppercase mb-1">OTC Transport &amp; Meal / Rack (Rp)</label>
+                        <label class="block text-[11px] font-semibold text-zinc-500 uppercase mb-1">OTC Transport &amp; Meal / Rack (Rp)</label>
                         <input type="number" id="masterOtcTransportCost" step="100000" onchange="saveMasterFromInputs()"
-                            class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-sm font-bold text-slate-900 tabular-nums">
+                            class="w-full px-3 py-2 bg-zinc-50 border border-zinc-300 rounded-xl text-sm font-bold text-zinc-900 focus:ring-2 focus:ring-[#C40000] tabular-nums">
                     </div>
                     <div>
-                        <label class="block text-[11px] font-semibold text-slate-500 uppercase mb-1">Target Margin RSP OTC (%)</label>
+                        <label class="block text-[11px] font-semibold text-zinc-500 uppercase mb-1">Target Margin RSP OTC (%)</label>
                         <input type="number" id="masterOtcRspMargin" step="1" onchange="saveMasterFromInputs()"
-                            class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-sm font-bold text-slate-900 tabular-nums">
+                            class="w-full px-3 py-2 bg-zinc-50 border border-zinc-300 rounded-xl text-sm font-bold text-zinc-900 focus:ring-2 focus:ring-[#C40000] tabular-nums">
                     </div>
                     <div>
-                        <label class="block text-[11px] font-semibold text-slate-500 uppercase mb-1">Multiplier Cage vs Open Rack</label>
+                        <label class="block text-[11px] font-semibold text-zinc-500 uppercase mb-1">Multiplier Cage vs Open Rack</label>
                         <input type="number" id="masterCageMultiplier" step="0.05" onchange="saveMasterFromInputs()"
-                            class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-sm font-bold text-slate-900 tabular-nums">
+                            class="w-full px-3 py-2 bg-zinc-50 border border-zinc-300 rounded-xl text-sm font-bold text-zinc-900 focus:ring-2 focus:ring-[#C40000] tabular-nums">
                     </div>
                 </div>
             </section>
 
             <!-- Tabel Master Rate Card Colocation-MRC -->
-            <section class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-                <div class="px-5 py-3.5 bg-slate-900 text-white">
+            <section class="bg-white rounded-2xl shadow-xs border border-zinc-200 overflow-hidden">
+                <div class="px-5 py-3.5 bg-[#C40000] text-white">
                     <h3 class="text-xs sm:text-sm font-bold uppercase tracking-wider">B. Master Rate Card Colocation MRC (3SDC Per-Rack &amp; HDC Cikarang Per-kW)</h3>
                 </div>
                 <div class="overflow-x-auto">
                     <table class="w-full text-left border-collapse text-xs">
                         <thead>
-                            <tr class="bg-slate-100 text-slate-700 border-b border-slate-200">
+                            <tr class="bg-zinc-100 text-zinc-700 border-b border-zinc-200">
                                 <th class="py-3 px-4 font-semibold">Lokasi Data Center</th>
                                 <th class="py-3 px-3 font-semibold">Grup / Satuan</th>
                                 <th class="py-3 px-3 font-semibold text-right">PCLB Cost (IDR)</th>
@@ -761,7 +921,7 @@
                                 <th class="py-3 px-4 font-semibold text-center">Margin RSP (PCLB)</th>
                             </tr>
                         </thead>
-                        <tbody id="masterRateTableBody" class="divide-y divide-slate-200 tabular-nums">
+                        <tbody id="masterRateTableBody" class="divide-y divide-zinc-200 tabular-nums">
                             <!-- Di-render via JS -->
                         </tbody>
                     </table>
@@ -771,6 +931,18 @@
         </div>
 
     </main>
+
+    <!-- Corporate Footer -->
+    <footer class="bg-white border-t border-zinc-200 py-4 mt-8 no-print">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-zinc-500">
+            <div class="flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-[#C40000]"></span>
+                <span class="font-semibold text-zinc-700">NeutraDC by Telkom Indonesia</span>
+                <span>&mdash; Presales Commercial Pricing &amp; Quote Engine</span>
+            </div>
+            <div>Internal Commercial Tool &bull; 3SDC &amp; HDC Cikarang Rate Card</div>
+        </div>
+    </footer>
 
     <!-- Textarea tersembunyi untuk Copy Clipboard aman di iFrame -->
     <textarea id="clipboardHelper" class="sr-only" aria-hidden="true"></textarea>
@@ -930,13 +1102,13 @@
             // Toleransi floating point kecil (misal 10.0001%)
             const d = Math.round(discountPct * 100) / 100;
             if (d <= 10) {
-                return { label: 'AM', classes: 'bg-emerald-100 text-emerald-800 border border-emerald-200' };
+                return { label: 'AM', classes: 'bg-[#DCFCE7] text-[#15803D] border border-emerald-200' };
             } else if (d <= 15) {
-                return { label: 'VP', classes: 'bg-blue-100 text-blue-800 border border-blue-200' };
+                return { label: 'VP', classes: 'bg-zinc-200 text-zinc-800 border border-zinc-300' };
             } else if (d <= 20) {
                 return { label: 'EVP / CCO', classes: 'bg-amber-100 text-amber-800 border border-amber-200' };
             } else {
-                return { label: 'CEO', classes: 'bg-rose-100 text-rose-800 border border-rose-200' };
+                return { label: 'CEO', classes: 'bg-[#FEE2E2] text-[#C40000] border border-[#FECACA]' };
             }
         }
 
@@ -959,23 +1131,28 @@
             document.querySelectorAll('.tab-panel').forEach(panel => panel.classList.add('hidden'));
             document.getElementById(`panel-${tabName}`).classList.remove('hidden');
 
+            // Desktop nav links
             document.querySelectorAll('.tab-btn').forEach(btn => {
-                btn.classList.remove('border-blue-500', 'text-white', 'bg-slate-800/60', 'font-semibold');
-                btn.classList.add('border-transparent', 'text-slate-400', 'font-medium');
-                const dot = btn.querySelector('span:first-child');
-                if (dot) {
-                    dot.classList.remove('bg-blue-400');
-                    dot.classList.add('bg-slate-600');
-                }
+                btn.classList.remove('border-[#C40000]', 'text-[#C40000]', 'font-semibold');
+                btn.classList.add('border-transparent', 'text-zinc-600', 'font-medium');
             });
 
             const activeBtn = document.getElementById(`tab-btn-${tabName}`);
-            activeBtn.classList.remove('border-transparent', 'text-slate-400', 'font-medium');
-            activeBtn.classList.add('border-blue-500', 'text-white', 'bg-slate-800/60', 'font-semibold');
-            const activeDot = activeBtn.querySelector('span:first-child');
-            if (activeDot) {
-                activeDot.classList.remove('bg-slate-600');
-                activeDot.classList.add('bg-blue-400');
+            if (activeBtn) {
+                activeBtn.classList.remove('border-transparent', 'text-zinc-600', 'font-medium');
+                activeBtn.classList.add('border-[#C40000]', 'text-[#C40000]', 'font-semibold');
+            }
+
+            // Mobile nav links
+            document.querySelectorAll('.tab-btn-mobile').forEach(btn => {
+                btn.classList.remove('border-[#C40000]', 'text-[#C40000]', 'font-semibold');
+                btn.classList.add('border-transparent', 'text-zinc-500', 'font-medium');
+            });
+
+            const activeMobileBtn = document.getElementById(`tab-btn-mobile-${tabName}`);
+            if (activeMobileBtn) {
+                activeMobileBtn.classList.remove('border-transparent', 'text-zinc-500', 'font-medium');
+                activeMobileBtn.classList.add('border-[#C40000]', 'text-[#C40000]', 'font-semibold');
             }
         }
 
@@ -1083,13 +1260,13 @@
 
                 if (isHdc) {
                     dcGroupBadge.textContent = 'HDC Cikarang (Per-kW)';
-                    dcGroupBadge.className = 'px-2.5 py-1 text-xs font-bold rounded-lg bg-purple-50 text-purple-700 border border-purple-200';
+                    dcGroupBadge.className = 'px-2.5 py-1 text-xs font-bold rounded-full bg-zinc-900 text-white';
                     powerPerRackLabel.textContent = 'Power per Rack (kW)';
                     totalPowerDisplay.textContent = `${totalPower.toFixed(1)} kW`;
                     powerAdjustmentNote.textContent = `Tarif HDC dihitung berbasis total ${totalPower.toFixed(1)} kW (Kurs Rp ${masterData.usdRate.toLocaleString('id-ID')}/USD)`;
                 } else {
                     dcGroupBadge.textContent = '3SDC (Per-Rack)';
-                    dcGroupBadge.className = 'px-2.5 py-1 text-xs font-bold rounded-lg bg-indigo-50 text-indigo-700 border border-indigo-200';
+                    dcGroupBadge.className = 'px-2.5 py-1 text-xs font-bold rounded-full bg-[#FEF2F2] text-[#C40000] border border-[#FECACA]';
                     powerPerRackLabel.textContent = 'Power per Rack (kVA)';
                     totalPowerDisplay.textContent = `${totalPower.toFixed(1)} kVA`;
 
@@ -1249,8 +1426,13 @@
                 };
 
                 // =====================================================================
-                // UPDATE DOM: KPI CARDS & COMMERCIAL TABLE
+                // UPDATE DOM: HERO STATUS STRIP, KPI CARDS & COMMERCIAL TABLE
                 // =====================================================================
+                document.getElementById('heroCustomerBadge').textContent = customerName;
+                document.getElementById('heroLocationBadge').textContent = locationName;
+                document.getElementById('heroCapacityBadge').textContent = `${totalRack} Rack / ${totalPower.toFixed(1)} ${isHdc ? 'kW' : 'kVA'}`;
+                document.getElementById('heroUsdBadge').textContent = formatIDR(masterData.usdRate);
+
                 document.getElementById('kpiYearsBadge1').textContent = `${contractYears} Tahun`;
                 document.getElementById('kpiTco').textContent = formatIDR(tco);
                 document.getElementById('kpiTcvRsp').textContent = formatIDR(tcvRsp);
@@ -1264,6 +1446,24 @@
                     document.getElementById('kpiTaxLabel').textContent = 'Excl. PPN';
                     document.getElementById('kpiTcvSelling').textContent = formatIDR(tcvSelling);
                     document.getElementById('kpiTcvWithPpnSub').textContent = `Incl. PPN 11%: ${formatIDR(tcvSellingWithPpn)}`;
+                }
+
+                document.getElementById('kpiOverallMargin').textContent = `${totalActMarginPct.toFixed(1)}%`;
+                document.getElementById('kpiOverallMargin').className = `text-2xl font-extrabold tabular-nums ${totalActMarginPct < 10 ? 'text-[#C40000]' : 'text-zinc-900'}`;
+                document.getElementById('kpiOverallDiscount').textContent = `(Disc: ${totalDiscountPct.toFixed(1)}%)`;
+                document.getElementById('kpiNetProfitAmount').textContent = `Est. Gross Profit: ${formatIDR(grossProfit)}`;
+                document.getElementById('kpiNetProfitAmount').className = `text-[11px] font-semibold ${totalActMarginPct < 10 ? 'text-[#C40000]' : 'text-[#15803D]'}`;
+
+                const healthPill = document.getElementById('kpiMarginHealthPill');
+                if (totalActMarginPct >= 15) {
+                    healthPill.textContent = 'HEALTHY MARGIN';
+                    healthPill.className = 'px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#DCFCE7] text-[#15803D]';
+                } else if (totalActMarginPct >= 10) {
+                    healthPill.textContent = 'MODERATE';
+                    healthPill.className = 'px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800';
+                } else {
+                    healthPill.textContent = 'LOW MARGIN';
+                    healthPill.className = 'px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#FEE2E2] text-[#C40000]';
                 }
 
                 document.getElementById('kpiOverallMargin').textContent = `${totalActMarginPct.toFixed(1)}%`;
@@ -1298,7 +1498,7 @@
                 
                 const otcActEl = document.getElementById('tblOtcActMargin');
                 otcActEl.textContent = `${otcActMarginPct.toFixed(1)}%`;
-                otcActEl.className = otcActMarginPct < 0 ? 'text-rose-600' : 'text-slate-900';
+                otcActEl.className = otcActMarginPct < 0 ? 'text-[#C40000]' : 'text-zinc-900';
 
                 // Baris MRC Table
                 document.getElementById('tblMrcCost').textContent = formatIDR(mrcCostY1);
@@ -1309,7 +1509,7 @@
 
                 const mrcActEl = document.getElementById('tblMrcActMargin');
                 mrcActEl.textContent = `${mrcActMarginPct.toFixed(1)}%`;
-                mrcActEl.className = mrcActMarginPct < 0 ? 'text-rose-600' : 'text-slate-900';
+                mrcActEl.className = mrcActMarginPct < 0 ? 'text-[#C40000]' : 'text-zinc-900';
 
                 // Baris Total Contract Table
                 document.getElementById('tblContractYearsLabel').textContent = contractYears;
@@ -1321,7 +1521,7 @@
 
                 const totActEl = document.getElementById('tblTotalActMargin');
                 totActEl.textContent = `${totalActMarginPct.toFixed(1)}%`;
-                totActEl.className = `text-sm font-extrabold ${totalActMarginPct < 10 ? 'text-rose-600' : 'text-slate-900'}`;
+                totActEl.className = `text-sm font-extrabold ${totalActMarginPct < 10 ? 'text-[#C40000]' : 'text-[#15803D]'}`;
 
                 // Target Margin Simulator UI
                 document.getElementById('simOtcPrice').textContent = formatIDR(simOtcPrice);
@@ -1388,11 +1588,25 @@
             }
 
             otcRows += `
-                <tr class="bg-slate-100 font-bold text-slate-900 border-t-2 border-slate-300">
+                <tr class="bg-[#FEF2F2]/70 font-bold text-zinc-900 border-t-2 border-[#FECACA]">
                     <td class="py-3 px-4" colspan="2">TOTAL ONE-TIME CHARGE (OTC)</td>
                     <td class="py-3 px-4 text-right">${formatIDR(s.otcCost)}</td>
                     <td class="py-3 px-4 text-right">${formatIDR(s.otcRsp)}</td>
-                    <td class="py-3 px-4 text-right text-blue-700">${formatIDR(s.otcSelling)}</td>
+                    <td class="py-3 px-4 text-right text-[#C40000]">${formatIDR(s.otcSelling)}</td>
+                </tr>
+            `;
+            otcBody.innerHTML = otcRows;
+
+            // 2. Render Tabel Multi-Year (Y1 .. Yn + Total)
+            const thead = document.getElementById('multiYearThead');
+            const tbody = document.getElementById('multiYearTbody');
+
+            let yearHeaders = s.yearlyProjection.map(p => `<th class="py-3 px-3 font-semibold text-right min-w-[130px]">Year ${p.year} (Y${p.year})</th>`).join('');
+            thead.innerHTML = `
+                <tr class="bg-zinc-100 text-zinc-700 border-b border-zinc-300">
+                    <th class="py-3 px-4 font-bold sticky left-0 bg-zinc-100 z-10 min-w-[220px]">Komponen Biaya &amp; Revenue</th>
+                    ${yearHeaders}
+                    <th class="py-3 px-4 font-extrabold text-right bg-zinc-200 text-zinc-900 min-w-[150px]">TOTAL (${s.contractYears} Thn)</th>
                 </tr>
             `;
             otcBody.innerHTML = otcRows;
@@ -1447,14 +1661,14 @@
                     <td class="py-2 px-4 sticky left-0 bg-slate-50" colspan="${s.contractYears + 2}">B. Proyeksi Tahunan (Annualized &times; 12 Bulan)</td>
                 </tr>
             `;
-            bodyHtml += buildRow('Annual MRC Cost (HPP / Tahun)', p => p.annualCost, sumField(p => p.annualCost), 'bg-white font-medium text-slate-800');
-            bodyHtml += buildRow('Annual MRC RSP (Rekomendasi / Thn)', p => p.annualRsp, sumField(p => p.annualRsp), 'bg-white font-medium text-slate-800');
-            bodyHtml += buildRow('Annual MRC Contract Selling / Thn', p => p.annualSelling, sumField(p => p.annualSelling), 'bg-blue-50/70 font-bold text-blue-900');
+            bodyHtml += buildRow('Annual MRC Cost (HPP / Tahun)', p => p.annualCost, sumField(p => p.annualCost), 'bg-white font-medium text-zinc-800');
+            bodyHtml += buildRow('Annual MRC RSP (Rekomendasi / Thn)', p => p.annualRsp, sumField(p => p.annualRsp), 'bg-white font-medium text-zinc-800');
+            bodyHtml += buildRow('Annual MRC Contract Selling / Thn', p => p.annualSelling, sumField(p => p.annualSelling), 'bg-[#FEF2F2]/70 font-bold text-[#C40000]');
             
             const overallMrcMargin = sumField(p => p.annualSelling) > 0 
                 ? ((sumField(p => p.annualSelling) - sumField(p => p.annualCost)) / sumField(p => p.annualSelling)) * 100 
                 : 0;
-            bodyHtml += buildRow('Annual MRC Margin (%)', p => p.annualMargin, overallMrcMargin, 'bg-emerald-50/60 font-bold text-emerald-800', true);
+            bodyHtml += buildRow('Annual MRC Margin (%)', p => p.annualMargin, overallMrcMargin, 'bg-[#DCFCE7]/60 font-bold text-[#15803D]', true);
 
             tbody.innerHTML = bodyHtml;
         }
@@ -1477,30 +1691,30 @@
             const tbody = document.getElementById('masterRateTableBody');
             tbody.innerHTML = Object.entries(masterData.locations).map(([locName, data]) => {
                 const marginPct = data.pclbRsp > 0 ? ((data.pclbRsp - data.pclbCost) / data.pclbRsp) * 100 : 0;
-                const badgeClass = data.group === 'HDC Cikarang' ? 'bg-purple-100 text-purple-800' : 'bg-indigo-100 text-indigo-800';
+                const badgeClass = data.group === 'HDC Cikarang' ? 'bg-zinc-900 text-white' : 'bg-[#FEF2F2] text-[#C40000] border border-[#FECACA]';
                 return `
-                <tr class="hover:bg-slate-50">
-                    <td class="py-3 px-4 font-bold text-slate-900">${locName}</td>
+                <tr class="hover:bg-zinc-50">
+                    <td class="py-3 px-4 font-bold text-zinc-900">${locName}</td>
                     <td class="py-3 px-3">
-                        <span class="px-2 py-0.5 rounded text-[11px] font-semibold ${badgeClass}">${data.group} (${data.unit})</span>
+                        <span class="px-2.5 py-0.5 rounded-full text-[11px] font-semibold ${badgeClass}">${data.group} (${data.unit})</span>
                     </td>
                     <td class="py-3 px-3 text-right">
                         <input type="number" step="100000" value="${data.pclbCost}" onchange="updateMasterLocation('${locName}', 'pclbCost', this.value)"
-                            class="w-32 text-right px-2 py-1 bg-slate-50 border border-slate-300 rounded font-medium text-slate-900 focus:ring-2 focus:ring-blue-600">
+                            class="w-32 text-right px-2 py-1 bg-zinc-50 border border-zinc-300 rounded font-medium text-zinc-900 focus:ring-2 focus:ring-[#C40000]">
                     </td>
                     <td class="py-3 px-3 text-right">
                         <input type="number" step="100000" value="${data.pclbRsp}" onchange="updateMasterLocation('${locName}', 'pclbRsp', this.value)"
-                            class="w-32 text-right px-2 py-1 bg-blue-50/50 border border-blue-300 rounded font-bold text-slate-900 focus:ring-2 focus:ring-blue-600">
+                            class="w-32 text-right px-2 py-1 bg-[#FEF2F2]/60 border border-[#FECACA] rounded font-bold text-zinc-900 focus:ring-2 focus:ring-[#C40000]">
                     </td>
                     <td class="py-3 px-3 text-right">
                         <input type="number" step="100000" value="${data.pcptCost}" onchange="updateMasterLocation('${locName}', 'pcptCost', this.value)"
-                            class="w-32 text-right px-2 py-1 bg-slate-50 border border-slate-300 rounded font-medium text-slate-900 focus:ring-2 focus:ring-blue-600">
+                            class="w-32 text-right px-2 py-1 bg-zinc-50 border border-zinc-300 rounded font-medium text-zinc-900 focus:ring-2 focus:ring-[#C40000]">
                     </td>
                     <td class="py-3 px-3 text-right">
                         <input type="number" step="100000" value="${data.pcptRsp}" onchange="updateMasterLocation('${locName}', 'pcptRsp', this.value)"
-                            class="w-32 text-right px-2 py-1 bg-blue-50/50 border border-blue-300 rounded font-bold text-slate-900 focus:ring-2 focus:ring-blue-600">
+                            class="w-32 text-right px-2 py-1 bg-[#FEF2F2]/60 border border-[#FECACA] rounded font-bold text-zinc-900 focus:ring-2 focus:ring-[#C40000]">
                     </td>
-                    <td class="py-3 px-4 text-center font-bold text-emerald-700">${marginPct.toFixed(1)}%</td>
+                    <td class="py-3 px-4 text-center font-bold text-[#15803D]">${marginPct.toFixed(1)}%</td>
                 </tr>
                 `;
             }).join('');
