@@ -64,8 +64,16 @@
         }
 
         .neutradc-hero-pattern {
-            background: linear-gradient(115deg, #ffffff 0%, #ffffff 55%, #fef2f2 85%, #f1f5f9 100%);
+            background: linear-gradient(100deg, #ffffff 0%, #ffffff 42%, rgba(255,255,255,0.65) 62%, rgba(241,245,249,0.2) 100%);
             position: relative;
+        }
+
+        @keyframes floatLeafSlow {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-7px) rotate(6deg); }
+        }
+        .animate-leaf-slow {
+            animation: floatLeafSlow 6s ease-in-out infinite;
         }
 
         /* Hilangkan panah default pada input number */
@@ -296,75 +304,258 @@
     <!-- VIEW 1: HOME (Corporate Landing Page Identik NeutraDC)                    -->
     <!-- ========================================================================= -->
     <div id="view-home" class="main-view flex-grow flex flex-col justify-between bg-white">
-        <section class="neutradc-hero-pattern relative overflow-hidden border-b border-zinc-200">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20 grid grid-cols-1 lg:grid-cols-12 gap-10 items-center relative z-10">
-                <div class="lg:col-span-6 space-y-5">
-                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#FEF2F2] border border-[#FECACA]">
+        <section class="neutradc-hero-pattern relative overflow-hidden">
+            <!-- Full-Bleed Vector & Canvas Skyline Ecosystem Background (Sesuai Referensi Visual NeutraDC) -->
+            <div class="absolute inset-0 pointer-events-none select-none overflow-hidden" aria-hidden="true">
+                <svg class="w-full h-full object-cover" viewBox="0 0 1440 640" preserveAspectRatio="xMaxYMax slice" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <linearGradient id="skyWash" x1="0" y1="0" x2="1440" y2="640" gradientUnits="userSpaceOnUse">
+                            <stop offset="0%" stop-color="#FFFFFF" stop-opacity="1"/>
+                            <stop offset="45%" stop-color="#FFFFFF" stop-opacity="0.96"/>
+                            <stop offset="75%" stop-color="#E2E8F0" stop-opacity="0.45"/>
+                            <stop offset="100%" stop-color="#CBD5E1" stop-opacity="0.55"/>
+                        </linearGradient>
+                        <linearGradient id="towerGlassA" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stop-color="#94A3B8"/>
+                            <stop offset="55%" stop-color="#64748B"/>
+                            <stop offset="100%" stop-color="#334155"/>
+                        </linearGradient>
+                        <linearGradient id="towerGlassB" x1="0" y1="0" x2="1" y2="1">
+                            <stop offset="0%" stop-color="#CBD5E1"/>
+                            <stop offset="50%" stop-color="#94A3B8"/>
+                            <stop offset="100%" stop-color="#475569"/>
+                        </linearGradient>
+                        <linearGradient id="towerSunlit" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stop-color="#F8FAFC"/>
+                            <stop offset="45%" stop-color="#CBD5E1"/>
+                            <stop offset="100%" stop-color="#64748B"/>
+                        </linearGradient>
+                        <radialGradient id="greenParkGlow" cx="0.5" cy="0.5" r="0.5">
+                            <stop offset="0%" stop-color="#4D7C0F" stop-opacity="0.72"/>
+                            <stop offset="60%" stop-color="#65A30D" stop-opacity="0.42"/>
+                            <stop offset="100%" stop-color="#84CC16" stop-opacity="0"/>
+                        </radialGradient>
+                        <radialGradient id="nodeGlowRed" cx="0.5" cy="0.5" r="0.5">
+                            <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.95"/>
+                            <stop offset="45%" stop-color="#FCA5A5" stop-opacity="0.55"/>
+                            <stop offset="100%" stop-color="#C40000" stop-opacity="0"/>
+                        </radialGradient>
+                        <filter id="softBlur" x="-20%" y="-20%" width="140%" height="140%">
+                            <feGaussianBlur stdDeviation="8"/>
+                        </filter>
+                        <filter id="nodeShadow" x="-30%" y="-30%" width="160%" height="160%">
+                            <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#991B1B" flood-opacity="0.35"/>
+                        </filter>
+                    </defs>
+
+                    <!-- Latar Langit Putih ke Abu-abu Lembut -->
+                    <rect width="1440" height="640" fill="url(#skyWash)"/>
+
+                    <!-- Jaringan Node AI Transparan di Langit Atas -->
+                    <g opacity="0.35" stroke="#E2E8F0" stroke-width="2">
+                        <line x1="480" y1="180" x2="730" y2="115"/>
+                        <line x1="730" y1="115" x2="1185" y2="95"/>
+                        <line x1="730" y1="115" x2="910" y2="310"/>
+                        <line x1="565" y1="360" x2="730" y2="115"/>
+                        <circle cx="730" cy="115" r="32" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="2"/>
+                        <rect x="719" y="104" width="22" height="22" rx="4" stroke="#CBD5E1" stroke-width="1.5"/>
+                        <text x="730" y="119" text-anchor="middle" fill="#CBD5E1" font-family="Inter, sans-serif" font-size="10" font-weight="700">AI</text>
+                        <circle cx="1185" cy="95" r="28" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="2"/>
+                        <circle cx="565" cy="360" r="24" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5"/>
+                    </g>
+
+                    <!-- Hamparan Hutan & Taman Hijau Berkelanjutan di Dasar Skyline -->
+                    <ellipse cx="950" cy="545" rx="460" ry="135" fill="url(#greenParkGlow)"/>
+                    <ellipse cx="770" cy="560" rx="260" ry="95" fill="#4D7C0F" opacity="0.48"/>
+                    <ellipse cx="1140" cy="555" rx="310" ry="105" fill="#3F6212" opacity="0.52"/>
+
+                    <!-- Kluster Gedung Pencakar Langit Modern (Skyline Sisi Kanan) -->
+                    <g opacity="0.92">
+                        <!-- Gedung Latar Belakang -->
+                        <rect x="745" y="340" width="44" height="260" rx="2" fill="url(#towerGlassB)"/>
+                        <rect x="815" y="295" width="48" height="305" rx="2" fill="url(#towerSunlit)"/>
+                        <rect x="888" y="210" width="54" height="390" rx="3" fill="url(#towerGlassA)"/>
+                        <rect x="965" y="245" width="46" height="355" rx="2" fill="url(#towerSunlit)"/>
+                        <rect x="1032" y="175" width="42" height="425" rx="2" fill="url(#towerGlassB)"/>
+                        <!-- Menara Tertinggi (Iconic Spire Tower) -->
+                        <rect x="1115" y="110" width="26" height="490" rx="2" fill="url(#towerGlassA)"/>
+                        <rect x="1124" y="82" width="8" height="32" fill="#94A3B8"/>
+                        <rect x="1152" y="225" width="52" height="375" rx="3" fill="url(#towerSunlit)"/>
+                        <rect x="1220" y="275" width="48" height="325" rx="2" fill="url(#towerGlassA)"/>
+                        <rect x="1282" y="255" width="56" height="345" rx="3" fill="url(#towerGlassB)"/>
+                        <rect x="1352" y="205" width="62" height="395" rx="3" fill="url(#towerGlassA)"/>
+
+                        <!-- Gedung Lapisan Depan dengan Highlight Kaca -->
+                        <rect x="780" y="395" width="40" height="225" rx="2" fill="url(#towerGlassA)"/>
+                        <rect x="852" y="355" width="46" height="265" rx="2" fill="url(#towerGlassB)"/>
+                        <rect x="928" y="320" width="52" height="300" rx="3" fill="url(#towerSunlit)"/>
+                        <rect x="1005" y="345" width="46" height="275" rx="2" fill="url(#towerGlassA)"/>
+                        <rect x="1072" y="290" width="44" height="330" rx="2" fill="url(#towerSunlit)"/>
+                        <rect x="1182" y="330" width="46" height="290" rx="2" fill="url(#towerGlassB)"/>
+                        <rect x="1250" y="360" width="50" height="260" rx="2" fill="url(#towerSunlit)"/>
+                        <rect x="1315" y="315" width="52" height="305" rx="3" fill="url(#towerGlassB)"/>
+
+                        <!-- Garis-garis Kisi Jendela & Cahaya Data Hijau-Biru Vertikal -->
+                        <g stroke="#FFFFFF" stroke-opacity="0.28" stroke-width="1">
+                            <line x1="898" y1="220" x2="898" y2="580"/>
+                            <line x1="915" y1="220" x2="915" y2="580"/>
+                            <line x1="1044" y1="185" x2="1044" y2="580"/>
+                            <line x1="1126" y1="120" x2="1126" y2="580"/>
+                            <line x1="1168" y1="235" x2="1168" y2="580"/>
+                            <line x1="1370" y1="215" x2="1370" y2="580"/>
+                        </g>
+                        <!-- Partikel Cahaya Data Digital di Dasar Gedung -->
+                        <g fill="#34D399" opacity="0.65">
+                            <circle cx="840" cy="510" r="2.5"/><circle cx="875" cy="495" r="2"/><circle cx="945" cy="520" r="3"/>
+                            <circle cx="1025" cy="500" r="2.5"/><circle cx="1100" cy="485" r="2"/><circle cx="1195" cy="515" r="3"/>
+                            <circle cx="1275" cy="490" r="2.5"/><circle cx="1340" cy="505" r="2"/>
+                        </g>
+                    </g>
+
+                    <!-- Pepohonan Hijau di Kaki Skyline -->
+                    <g fill="#3F6212" opacity="0.78">
+                        <circle cx="715" cy="555" r="32"/><circle cx="755" cy="565" r="38"/><circle cx="805" cy="575" r="34"/>
+                        <circle cx="865" cy="580" r="30"/><circle cx="980" cy="585" r="36"/><circle cx="1095" cy="580" r="32"/>
+                        <circle cx="1235" cy="575" r="34"/><circle cx="1365" cy="565" r="38"/>
+                    </g>
+
+                    <!-- Jalur Sinar Putih Penghubung 4 Node Merah NeutraDC -->
+                    <g>
+                        <line x1="742" y1="478" x2="912" y2="305" stroke="url(#nodeGlowRed)" stroke-width="14"/>
+                        <line x1="912" y1="305" x2="1080" y2="452" stroke="url(#nodeGlowRed)" stroke-width="14"/>
+                        <line x1="1080" y1="452" x2="1282" y2="335" stroke="url(#nodeGlowRed)" stroke-width="14"/>
+
+                        <polyline points="742,478 912,305 1080,452 1282,335" stroke="#FFFFFF" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                    </g>
+
+                    <!-- 4 Node Ikon Merah Khas NeutraDC (#C40000) -->
+                    <!-- Node 1: Green Building / Eco Infrastructure -->
+                    <g transform="translate(742, 478)" filter="url(#nodeShadow)">
+                        <circle r="31" fill="#C40000" stroke="#FFFFFF" stroke-width="3"/>
+                        <rect x="-11" y="-10" width="9" height="20" rx="1" stroke="#FFFFFF" stroke-width="1.8"/>
+                        <rect x="1" y="-4" width="10" height="14" rx="1" stroke="#FFFFFF" stroke-width="1.8"/>
+                        <path d="M-15 11 H15" stroke="#FFFFFF" stroke-width="1.8" stroke-linecap="round"/>
+                    </g>
+
+                    <!-- Node 2: AI Chip -->
+                    <g transform="translate(912, 305)" filter="url(#nodeShadow)">
+                        <circle r="31" fill="#C40000" stroke="#FFFFFF" stroke-width="3"/>
+                        <rect x="-11" y="-11" width="22" height="22" rx="3" stroke="#FFFFFF" stroke-width="2"/>
+                        <text x="0" y="4" text-anchor="middle" fill="#FFFFFF" font-family="Inter, sans-serif" font-size="11" font-weight="800">AI</text>
+                        <path d="M-6 -15 V-11 M6 -15 V-11 M-6 11 V15 M6 11 V15 M-15 -6 H-11 M-15 6 H-11 M11 -6 H15 M11 6 H15" stroke="#FFFFFF" stroke-width="1.8" stroke-linecap="round"/>
+                    </g>
+
+                    <!-- Node 3: Neural / Ecosystem Hexagon -->
+                    <g transform="translate(1080, 452)" filter="url(#nodeShadow)">
+                        <circle r="30" fill="#C40000" stroke="#FFFFFF" stroke-width="3"/>
+                        <polygon points="0,-13 11,-6 11,6 0,13 -11,6 -11,-6" stroke="#FFFFFF" stroke-width="1.8" fill="none"/>
+                        <circle cx="0" cy="0" r="3" fill="#FFFFFF"/>
+                        <line x1="0" y1="-13" x2="0" y2="13" stroke="#FFFFFF" stroke-width="1.3"/>
+                        <line x1="-11" y1="-6" x2="11" y2="6" stroke="#FFFFFF" stroke-width="1.3"/>
+                        <line x1="11" y1="-6" x2="-11" y2="6" stroke="#FFFFFF" stroke-width="1.3"/>
+                    </g>
+
+                    <!-- Node 4: Connected People / Digital Ecosystem -->
+                    <g transform="translate(1282, 335)" filter="url(#nodeShadow)">
+                        <circle r="30" fill="#C40000" stroke="#FFFFFF" stroke-width="3"/>
+                        <circle cx="0" cy="-10" r="4" stroke="#FFFFFF" stroke-width="1.8"/>
+                        <circle cx="-10" cy="7" r="4" stroke="#FFFFFF" stroke-width="1.8"/>
+                        <circle cx="10" cy="7" r="4" stroke="#FFFFFF" stroke-width="1.8"/>
+                        <line x1="-2" y1="-6" x2="-8" y2="3" stroke="#FFFFFF" stroke-width="1.6"/>
+                        <line x1="2" y1="-6" x2="8" y2="3" stroke="#FFFFFF" stroke-width="1.6"/>
+                        <line x1="-6" y1="7" x2="6" y2="7" stroke="#FFFFFF" stroke-width="1.6"/>
+                    </g>
+
+                    <!-- Daun Hijau Melayang (Eco-Sustainability Accent) -->
+                    <g class="animate-leaf-slow">
+                        <!-- Daun Kanan Atas -->
+                        <path d="M1265 135 C1285 95, 1322 88, 1332 88 C1332 105, 1318 142, 1278 152 C1268 154, 1260 145, 1265 135 Z" fill="#65A30D" opacity="0.88"/>
+                        <path d="M1267 148 Q1298 122 1328 92" stroke="#ECFCCB" stroke-width="1.5" fill="none"/>
+                        <!-- Daun Kiri Bawah -->
+                        <path d="M445 535 C462 548, 488 575, 496 592 C475 595, 448 580, 442 550 C440 541, 441 533, 445 535 Z" fill="#65A30D" opacity="0.9"/>
+                        <path d="M446 538 Q470 562 492 588" stroke="#ECFCCB" stroke-width="1.5" fill="none"/>
+                        <!-- Daun Tengah Blur Halus -->
+                        <path d="M530 455 C565 458, 608 485, 622 508 C590 515, 545 498, 526 470 Z" fill="#84CC16" opacity="0.55" filter="url(#softBlur)"/>
+                    </g>
+
+                    <!-- Lengkungan Kurva Hitam Khas Bagian Bawah Banner NeutraDC -->
+                    <path d="M0 568 Q720 668 1440 568 L1440 640 L0 640 Z" fill="#09090B"/>
+                </svg>
+            </div>
+
+            <!-- Konten Utama Hero Home (Sisi Kiri Bersih + Quick Access Bar di Bawah agar Skyline Kanan Terlihat Utuh) -->
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-24 sm:pt-16 sm:pb-28 lg:pt-20 lg:pb-32 relative z-10">
+                <div class="max-w-xl space-y-5">
+                    <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/95 border border-[#FECACA] shadow-xs">
                         <span class="w-2 h-2 rounded-full bg-[#C40000]"></span>
-                        <span class="text-xs font-bold text-[#C40000]">Welcome to NeutraDC Presales Portal</span>
+                        <span class="text-xs font-bold text-[#C40000]">Welcome to NeutraDC</span>
                     </div>
-                    <h1 class="text-3xl sm:text-4xl lg:text-[42px] font-extrabold text-zinc-900 tracking-tight leading-[1.15] uppercase">
+                    <h1 class="text-3xl sm:text-4xl lg:text-[44px] font-extrabold text-zinc-900 tracking-tight leading-[1.13] uppercase">
                         Your Digital Ecosystem Partner in Southeast Asia’s Fastest Growing Economy
                     </h1>
-                    <p class="text-sm sm:text-base text-zinc-600 leading-relaxed max-w-xl">
+                    <p class="text-sm sm:text-base text-zinc-600 leading-relaxed bg-white/75 backdrop-blur-xs rounded-2xl p-3 -ml-3">
                         Akses materi presentasi teknis 4 lokasi Data Center NeutraDC (<strong>Sentul, Serpong, Surabaya, HDC Cikarang</strong>) serta hitung penawaran komersial <em>Colocation</em> secara instan.
                     </p>
-                    <div class="flex flex-wrap items-center gap-3 pt-2">
+                    <div class="flex flex-wrap items-center gap-3 pt-1">
                         <button type="button" onclick="switchMainView('pricing')" class="cursor-pointer px-6 py-3 rounded-full bg-[#C40000] hover:bg-[#990000] text-white text-xs sm:text-sm font-bold shadow-md transition-all flex items-center gap-2">
                             <span>Buka Pricing Calculator</span>
                             <span>&rarr;</span>
                         </button>
-                        <button type="button" onclick="switchMainView('datacenter')" class="cursor-pointer px-6 py-3 rounded-full bg-white hover:bg-[#FEF2F2] text-[#C40000] border border-[#FECACA] text-xs sm:text-sm font-bold transition-all">
+                        <button type="button" onclick="switchMainView('datacenter')" class="cursor-pointer px-6 py-3 rounded-full bg-white/95 hover:bg-[#FEF2F2] text-[#C40000] border border-[#FECACA] text-xs sm:text-sm font-bold shadow-xs transition-all">
                             Lihat 4 Data Center Deck
                         </button>
                     </div>
                 </div>
+            </div>
+        </section>
 
-                <!-- Right Ecosystem Visual Card -->
-                <div class="lg:col-span-6">
-                    <div class="bg-white/90 backdrop-blur-md rounded-3xl border border-zinc-200 p-6 shadow-xl space-y-4">
-                        <div class="flex items-center justify-between border-b border-zinc-100 pb-3">
-                            <span class="text-xs font-extrabold uppercase tracking-wider text-[#C40000]">NeutraDC Facility Footprint</span>
-                            <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-[#DCFCE7] text-[#15803D]">AI &amp; Green DC Ready</span>
-                        </div>
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                            <button type="button" onclick="openDcDeck('sentul')" class="cursor-pointer p-4 rounded-2xl border border-zinc-200 hover:border-[#C40000] hover:bg-[#FEF2F2]/40 text-left transition-all group">
-                                <div class="flex items-center justify-between">
-                                    <span class="text-xs font-bold text-[#C40000]">3SDC &bull; Tier III</span>
-                                    <span id="home-badge-sentul" class="text-[11px] font-semibold text-zinc-400">4 Slides Deck</span>
-                                </div>
-                                <div class="text-base font-extrabold text-zinc-900 mt-1 group-hover:text-[#C40000]">1. Sentul 2N</div>
-                                <p class="text-[11px] text-zinc-500 mt-0.5">Full 2N Redundant Power &amp; DRC Site</p>
-                            </button>
-
-                            <button type="button" onclick="openDcDeck('serpong')" class="cursor-pointer p-4 rounded-2xl border border-zinc-200 hover:border-[#C40000] hover:bg-[#FEF2F2]/40 text-left transition-all group">
-                                <div class="flex items-center justify-between">
-                                    <span class="text-xs font-bold text-[#C40000]">3SDC &bull; Tier III</span>
-                                    <span id="home-badge-serpong" class="text-[11px] font-semibold text-zinc-400">4 Slides Deck</span>
-                                </div>
-                                <div class="text-base font-extrabold text-zinc-900 mt-1 group-hover:text-[#C40000]">2. Serpong N+1 &amp; 2N</div>
-                                <p class="text-[11px] text-zinc-500 mt-0.5">Dual Topology Option &lt; 2ms to JKT</p>
-                            </button>
-
-                            <button type="button" onclick="openDcDeck('surabaya')" class="cursor-pointer p-4 rounded-2xl border border-zinc-200 hover:border-[#C40000] hover:bg-[#FEF2F2]/40 text-left transition-all group">
-                                <div class="flex items-center justify-between">
-                                    <span class="text-xs font-bold text-[#C40000]">3SDC &bull; Tier III/IV</span>
-                                    <span id="home-badge-surabaya" class="text-[11px] font-semibold text-zinc-400">4 Slides Deck</span>
-                                </div>
-                                <div class="text-base font-extrabold text-zinc-900 mt-1 group-hover:text-[#C40000]">3. Surabaya 2N &amp; Tier 4</div>
-                                <p class="text-[11px] text-zinc-500 mt-0.5">Eastern Indonesia Gateway &amp; Geo-DRC</p>
-                            </button>
-
-                            <button type="button" onclick="openDcDeck('cikarang')" class="cursor-pointer p-4 rounded-2xl border border-zinc-200 hover:border-[#C40000] hover:bg-[#FEF2F2]/40 text-left transition-all group">
-                                <div class="flex items-center justify-between">
-                                    <span class="text-xs font-bold text-[#15803D]">Hyperscale &bull; Per-kW</span>
-                                    <span id="home-badge-cikarang" class="text-[11px] font-semibold text-zinc-400">4 Slides Deck</span>
-                                </div>
-                                <div class="text-base font-extrabold text-zinc-900 mt-1 group-hover:text-[#C40000]">4. HDC Cikarang</div>
-                                <p class="text-[11px] text-zinc-500 mt-0.5">High-Density AI Campus &amp; Private Suite</p>
-                            </button>
-                        </div>
+        <!-- Strip Akses Cepat 4 Lokasi Data Center (Tersusun Rapi di Bawah Lengkungan Kurva Hitam) -->
+        <section class="bg-zinc-950 text-white py-8 px-4 sm:px-6 lg:px-8 border-t border-zinc-900">
+            <div class="max-w-7xl mx-auto space-y-4">
+                <div class="flex flex-wrap items-center justify-between gap-2">
+                    <div class="flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-[#C40000]"></span>
+                        <span class="text-xs font-extrabold uppercase tracking-wider text-zinc-300">NeutraDC Facility Footprint — Quick Deck Access</span>
                     </div>
+                    <span class="px-3 py-0.5 rounded-full text-[11px] font-bold bg-[#DCFCE7] text-[#15803D]">AI &amp; Green Data Center Ready</span>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
+                    <button type="button" onclick="openDcDeck('sentul')" class="cursor-pointer p-4 rounded-2xl bg-zinc-900/90 border border-zinc-800 hover:border-[#C40000] hover:bg-zinc-900 text-left transition-all group">
+                        <div class="flex items-center justify-between">
+                            <span class="text-[11px] font-bold text-[#EF4444]">3SDC &bull; Tier III</span>
+                            <span id="home-badge-sentul" class="text-[11px] font-semibold text-zinc-400">4 Slides Deck</span>
+                        </div>
+                        <div class="text-base font-extrabold text-white mt-1 group-hover:text-[#EF4444]">1. Sentul 2N</div>
+                        <p class="text-[11px] text-zinc-400 mt-0.5">Full 2N Redundant Power &amp; DRC Site</p>
+                    </button>
+
+                    <button type="button" onclick="openDcDeck('serpong')" class="cursor-pointer p-4 rounded-2xl bg-zinc-900/90 border border-zinc-800 hover:border-[#C40000] hover:bg-zinc-900 text-left transition-all group">
+                        <div class="flex items-center justify-between">
+                            <span class="text-[11px] font-bold text-[#EF4444]">3SDC &bull; Tier III</span>
+                            <span id="home-badge-serpong" class="text-[11px] font-semibold text-zinc-400">4 Slides Deck</span>
+                        </div>
+                        <div class="text-base font-extrabold text-white mt-1 group-hover:text-[#EF4444]">2. Serpong N+1 &amp; 2N</div>
+                        <p class="text-[11px] text-zinc-400 mt-0.5">Dual Topology Option &lt; 2ms to JKT</p>
+                    </button>
+
+                    <button type="button" onclick="openDcDeck('surabaya')" class="cursor-pointer p-4 rounded-2xl bg-zinc-900/90 border border-zinc-800 hover:border-[#C40000] hover:bg-zinc-900 text-left transition-all group">
+                        <div class="flex items-center justify-between">
+                            <span class="text-[11px] font-bold text-[#EF4444]">3SDC &bull; Tier III/IV</span>
+                            <span id="home-badge-surabaya" class="text-[11px] font-semibold text-zinc-400">4 Slides Deck</span>
+                        </div>
+                        <div class="text-base font-extrabold text-white mt-1 group-hover:text-[#EF4444]">3. Surabaya 2N &amp; Tier 4</div>
+                        <p class="text-[11px] text-zinc-400 mt-0.5">Eastern Indonesia Gateway &amp; Geo-DRC</p>
+                    </button>
+
+                    <button type="button" onclick="openDcDeck('cikarang')" class="cursor-pointer p-4 rounded-2xl bg-zinc-900/90 border border-zinc-800 hover:border-[#C40000] hover:bg-zinc-900 text-left transition-all group">
+                        <div class="flex items-center justify-between">
+                            <span class="text-[11px] font-bold text-emerald-400">Hyperscale &bull; Per-kW</span>
+                            <span id="home-badge-cikarang" class="text-[11px] font-semibold text-zinc-400">4 Slides Deck</span>
+                        </div>
+                        <div class="text-base font-extrabold text-white mt-1 group-hover:text-[#EF4444]">4. HDC Cikarang</div>
+                        <p class="text-[11px] text-zinc-400 mt-0.5">High-Density AI Campus &amp; Private Suite</p>
+                    </button>
                 </div>
             </div>
         </section>
