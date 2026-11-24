@@ -8,8 +8,10 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- SheetJS (xlsx) CDN untuk membaca langsung file Excel (.xlsx/.xls) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-    <!-- JSZip CDN untuk membaca & mengonversi file PowerPoint (.pptx) langsung di browser -->
+    <!-- JSZip CDN untuk membaca file PowerPoint (.pptx) langsung di browser -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <!-- PDF.js CDN untuk menampilkan file PDF (.pdf) 100% persis seperti desain aslinya -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     <!-- Google Fonts: Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -291,228 +293,77 @@
     </header>
 
     <!-- ========================================================================= -->
-    <!-- VIEW 1: LANDING HOME PAGE (Identik Referensi Website NeutraDC)            -->
+    <!-- VIEW 1: HOME (Corporate Landing Page Identik NeutraDC)                    -->
     <!-- ========================================================================= -->
-    <div id="view-home" class="main-view flex-grow flex flex-col">
-        <!-- Full-Width Hero Section dengan Lengkungan Bawah & Ilustrasi Smart City AI/Green DC -->
-        <section class="relative bg-gradient-to-br from-white via-zinc-50 to-red-50/40 overflow-hidden border-b border-zinc-200">
-            <!-- Network Constellation Lines Background -->
-            <svg class="absolute inset-0 w-full h-full pointer-events-none opacity-60" viewBox="0 0 1440 620" fill="none" preserveAspectRatio="xMidYMid slice">
-                <line x1="220" y1="110" x2="430" y2="210" stroke="#E4E4E7" stroke-width="1.5"/>
-                <line x1="430" y1="210" x2="680" y2="120" stroke="#E4E4E7" stroke-width="1.5"/>
-                <line x1="680" y1="120" x2="920" y2="250" stroke="#FECACA" stroke-width="1.5"/>
-                <line x1="430" y1="210" x2="540" y2="410" stroke="#E4E4E7" stroke-width="1.5"/>
-                <circle cx="430" cy="210" r="5" fill="#E4E4E7"/>
-                <circle cx="680" cy="120" r="24" stroke="#E4E4E7" stroke-width="1.5" fill="white" fill-opacity="0.6"/>
-                <text x="680" y="125" text-anchor="middle" fill="#D4D4D8" font-family="Inter, sans-serif" font-size="13" font-weight="700">AI</text>
-            </svg>
+    <div id="view-home" class="main-view flex-grow flex flex-col justify-between bg-white">
+        <section class="neutradc-hero-pattern relative overflow-hidden border-b border-zinc-200">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20 grid grid-cols-1 lg:grid-cols-12 gap-10 items-center relative z-10">
+                <div class="lg:col-span-6 space-y-5">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#FEF2F2] border border-[#FECACA]">
+                        <span class="w-2 h-2 rounded-full bg-[#C40000]"></span>
+                        <span class="text-xs font-bold text-[#C40000]">Welcome to NeutraDC Presales Portal</span>
+                    </div>
+                    <h1 class="text-3xl sm:text-4xl lg:text-[42px] font-extrabold text-zinc-900 tracking-tight leading-[1.15] uppercase">
+                        Your Digital Ecosystem Partner in Southeast Asia’s Fastest Growing Economy
+                    </h1>
+                    <p class="text-sm sm:text-base text-zinc-600 leading-relaxed max-w-xl">
+                        Akses materi presentasi teknis 4 lokasi Data Center NeutraDC (<strong>Sentul, Serpong, Surabaya, HDC Cikarang</strong>) serta hitung penawaran komersial <em>Colocation</em> secara instan.
+                    </p>
+                    <div class="flex flex-wrap items-center gap-3 pt-2">
+                        <button type="button" onclick="switchMainView('pricing')" class="cursor-pointer px-6 py-3 rounded-full bg-[#C40000] hover:bg-[#990000] text-white text-xs sm:text-sm font-bold shadow-md transition-all flex items-center gap-2">
+                            <span>Buka Pricing Calculator</span>
+                            <span>&rarr;</span>
+                        </button>
+                        <button type="button" onclick="switchMainView('datacenter')" class="cursor-pointer px-6 py-3 rounded-full bg-white hover:bg-[#FEF2F2] text-[#C40000] border border-[#FECACA] text-xs sm:text-sm font-bold transition-all">
+                            Lihat 4 Data Center Deck
+                        </button>
+                    </div>
+                </div>
 
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-24 lg:py-20 relative z-10">
-                <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
-                    
-                    <!-- Left Editorial Copy (Identik dengan referensi gambar NeutraDC) -->
-                    <div class="lg:col-span-6 space-y-6">
-                        <div class="inline-flex items-center gap-2">
-                            <span class="text-sm sm:text-base font-semibold text-[#C40000] tracking-tight">Welcome to NeutraDC</span>
+                <!-- Right Ecosystem Visual Card -->
+                <div class="lg:col-span-6">
+                    <div class="bg-white/90 backdrop-blur-md rounded-3xl border border-zinc-200 p-6 shadow-xl space-y-4">
+                        <div class="flex items-center justify-between border-b border-zinc-100 pb-3">
+                            <span class="text-xs font-extrabold uppercase tracking-wider text-[#C40000]">NeutraDC Facility Footprint</span>
+                            <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-[#DCFCE7] text-[#15803D]">AI &amp; Green DC Ready</span>
                         </div>
-                        
-                        <h1 class="text-3xl sm:text-4xl lg:text-[42px] font-extrabold text-zinc-900 tracking-tight uppercase leading-[1.15]">
-                            YOUR DIGITAL ECOSYSTEM PARTNER IN SOUTHEAST ASIA’S FASTEST GROWING ECONOMY
-                        </h1>
-                        
-                        <p class="text-sm sm:text-base text-zinc-600 leading-relaxed max-w-xl">
-                            Portal terintegrasi untuk tim Presales &amp; Enterprise Sales NeutraDC — jelajahi spesifikasi teknis 4 lokasi Data Center utama melalui presentasi interaktif dan susun penawaran komersial secara instan.
-                        </p>
-
-                        <div class="flex flex-wrap items-center gap-3.5 pt-2">
-                            <button type="button" onclick="switchMainView('datacenter')" class="cursor-pointer px-6 py-3 bg-[#C40000] hover:bg-[#990000] text-white text-xs sm:text-sm font-semibold rounded-full shadow-md hover:shadow-lg transition-all flex items-center gap-2">
-                                <span>Leverage our capabilities</span>
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
-                                </svg>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <button type="button" onclick="openDcDeck('sentul')" class="cursor-pointer p-4 rounded-2xl border border-zinc-200 hover:border-[#C40000] hover:bg-[#FEF2F2]/40 text-left transition-all group">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-xs font-bold text-[#C40000]">3SDC &bull; Tier III</span>
+                                    <span id="home-badge-sentul" class="text-[11px] font-semibold text-zinc-400">4 Slides Deck</span>
+                                </div>
+                                <div class="text-base font-extrabold text-zinc-900 mt-1 group-hover:text-[#C40000]">1. Sentul 2N</div>
+                                <p class="text-[11px] text-zinc-500 mt-0.5">Full 2N Redundant Power &amp; DRC Site</p>
                             </button>
-                            <button type="button" onclick="switchMainView('pricing')" class="cursor-pointer px-6 py-3 bg-white hover:bg-zinc-50 text-zinc-900 border border-zinc-300 text-xs sm:text-sm font-semibold rounded-full shadow-xs transition-all flex items-center gap-2">
-                                <span class="w-2 h-2 rounded-full bg-[#15803D]"></span>
-                                <span>Presales Pricing Calculator</span>
+
+                            <button type="button" onclick="openDcDeck('serpong')" class="cursor-pointer p-4 rounded-2xl border border-zinc-200 hover:border-[#C40000] hover:bg-[#FEF2F2]/40 text-left transition-all group">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-xs font-bold text-[#C40000]">3SDC &bull; Tier III</span>
+                                    <span id="home-badge-serpong" class="text-[11px] font-semibold text-zinc-400">4 Slides Deck</span>
+                                </div>
+                                <div class="text-base font-extrabold text-zinc-900 mt-1 group-hover:text-[#C40000]">2. Serpong N+1 &amp; 2N</div>
+                                <p class="text-[11px] text-zinc-500 mt-0.5">Dual Topology Option &lt; 2ms to JKT</p>
+                            </button>
+
+                            <button type="button" onclick="openDcDeck('surabaya')" class="cursor-pointer p-4 rounded-2xl border border-zinc-200 hover:border-[#C40000] hover:bg-[#FEF2F2]/40 text-left transition-all group">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-xs font-bold text-[#C40000]">3SDC &bull; Tier III/IV</span>
+                                    <span id="home-badge-surabaya" class="text-[11px] font-semibold text-zinc-400">4 Slides Deck</span>
+                                </div>
+                                <div class="text-base font-extrabold text-zinc-900 mt-1 group-hover:text-[#C40000]">3. Surabaya 2N &amp; Tier 4</div>
+                                <p class="text-[11px] text-zinc-500 mt-0.5">Eastern Indonesia Gateway &amp; Geo-DRC</p>
+                            </button>
+
+                            <button type="button" onclick="openDcDeck('cikarang')" class="cursor-pointer p-4 rounded-2xl border border-zinc-200 hover:border-[#C40000] hover:bg-[#FEF2F2]/40 text-left transition-all group">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-xs font-bold text-[#15803D]">Hyperscale &bull; Per-kW</span>
+                                    <span id="home-badge-cikarang" class="text-[11px] font-semibold text-zinc-400">4 Slides Deck</span>
+                                </div>
+                                <div class="text-base font-extrabold text-zinc-900 mt-1 group-hover:text-[#C40000]">4. HDC Cikarang</div>
+                                <p class="text-[11px] text-zinc-500 mt-0.5">High-Density AI Campus &amp; Private Suite</p>
                             </button>
                         </div>
-                    </div>
-
-                    <!-- Right Smart Eco-City & Connected Red Node Illustration (Terinspirasi Hero Visual NeutraDC) -->
-                    <div class="lg:col-span-6 relative">
-                        <div class="relative mx-auto max-w-xl">
-                            <svg viewBox="0 0 640 440" class="w-full h-auto drop-shadow-xl" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <defs>
-                                    <linearGradient id="skyGlow" x1="320" y1="0" x2="320" y2="420" gradientUnits="userSpaceOnUse">
-                                        <stop offset="0%" stop-color="#F8FAFC" stop-opacity="0"/>
-                                        <stop offset="100%" stop-color="#DCFCE7" stop-opacity="0.55"/>
-                                    </linearGradient>
-                                    <linearGradient id="towerGrad1" x1="0" y1="0" x2="1" y2="1">
-                                        <stop offset="0%" stop-color="#475569"/>
-                                        <stop offset="100%" stop-color="#1E293B"/>
-                                    </linearGradient>
-                                    <linearGradient id="towerGrad2" x1="0" y1="0" x2="0" y2="1">
-                                        <stop offset="0%" stop-color="#94A3B8"/>
-                                        <stop offset="100%" stop-color="#334155"/>
-                                    </linearGradient>
-                                </defs>
-
-                                <!-- Soft Circular Backdrop -->
-                                <circle cx="350" cy="240" r="190" fill="url(#skyGlow)"/>
-
-                                <!-- Stylized Green Lush Base -->
-                                <ellipse cx="340" cy="375" rx="250" ry="45" fill="#15803D" fill-opacity="0.16"/>
-                                <ellipse cx="340" cy="368" rx="210" ry="34" fill="#16A34A" fill-opacity="0.24"/>
-
-                                <!-- Modern Data Center & Smart City Skyscrapers -->
-                                <rect x="175" y="180" width="44" height="185" rx="4" fill="url(#towerGrad2)"/>
-                                <rect x="228" y="135" width="52" height="230" rx="4" fill="url(#towerGrad1)"/>
-                                <rect x="290" y="95" width="46" height="270" rx="4" fill="#334155"/>
-                                <rect x="346" y="65" width="38" height="300" rx="4" fill="url(#towerGrad1)"/>
-                                <rect x="394" y="125" width="54" height="240" rx="4" fill="url(#towerGrad2)"/>
-                                <rect x="458" y="165" width="48" height="200" rx="4" fill="#1E293B"/>
-                                <rect x="515" y="210" width="40" height="155" rx="4" fill="#475569"/>
-
-                                <!-- Glowing Data Streams (Vertical Teal/White Lines) -->
-                                <line x1="254" y1="150" x2="254" y2="355" stroke="#38BDF8" stroke-width="1.5" stroke-dasharray="4 6"/>
-                                <line x1="365" y1="80" x2="365" y2="355" stroke="#4ADE80" stroke-width="1.5" stroke-dasharray="4 6"/>
-                                <line x1="420" y1="140" x2="420" y2="355" stroke="#38BDF8" stroke-width="1.5" stroke-dasharray="4 6"/>
-
-                                <!-- Connected Glowing Red Ecosystem Path (Sama seperti 4 lingkaran merah di gambar) -->
-                                <path d="M165 315 L285 205 L405 280 L525 220" stroke="white" stroke-width="5" stroke-linecap="round"/>
-                                <path d="M165 315 L285 205 L405 280 L525 220" stroke="#FECACA" stroke-width="2" stroke-linecap="round"/>
-
-                                <!-- Node 1: Green Sustainable Building -->
-                                <g transform="translate(165, 315)">
-                                    <circle r="34" fill="#C40000" fill-opacity="0.18"/>
-                                    <circle r="27" fill="#C40000" stroke="white" stroke-width="2.5"/>
-                                    <path d="M-8 10V-6H2V10M2 2H9V10M-11 10H12" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                </g>
-
-                                <!-- Node 2: AI Chip Ecosystem -->
-                                <g transform="translate(285, 205)">
-                                    <circle r="34" fill="#C40000" fill-opacity="0.18"/>
-                                    <circle r="27" fill="#C40000" stroke="white" stroke-width="2.5"/>
-                                    <rect x="-10" y="-10" width="20" height="20" rx="3" stroke="white" stroke-width="2"/>
-                                    <text x="0" y="4" text-anchor="middle" fill="white" font-family="Inter, sans-serif" font-size="10" font-weight="800">AI</text>
-                                </g>
-
-                                <!-- Node 3: Data Center Network Mesh -->
-                                <g transform="translate(405, 280)">
-                                    <circle r="32" fill="#C40000" fill-opacity="0.18"/>
-                                    <circle r="25" fill="#C40000" stroke="white" stroke-width="2.5"/>
-                                    <circle cx="0" cy="-9" r="3" fill="white"/>
-                                    <circle cx="-8" cy="5" r="3" fill="white"/>
-                                    <circle cx="8" cy="5" r="3" fill="white"/>
-                                    <line x1="0" y1="-9" x2="-8" y2="5" stroke="white" stroke-width="1.5"/>
-                                    <line x1="0" y1="-9" x2="8" y2="5" stroke="white" stroke-width="1.5"/>
-                                    <line x1="-8" y1="5" x2="8" y2="5" stroke="white" stroke-width="1.5"/>
-                                </g>
-
-                                <!-- Node 4: Enterprise Ecosystem Connectivity -->
-                                <g transform="translate(525, 220)">
-                                    <circle r="32" fill="#C40000" fill-opacity="0.18"/>
-                                    <circle r="25" fill="#C40000" stroke="white" stroke-width="2.5"/>
-                                    <circle cx="0" cy="0" r="5" stroke="white" stroke-width="2"/>
-                                    <circle cx="-10" cy="-7" r="2.5" fill="white"/>
-                                    <circle cx="10" cy="-7" r="2.5" fill="white"/>
-                                    <circle cx="0" cy="11" r="2.5" fill="white"/>
-                                </g>
-
-                                <!-- Floating Eco Leaves (Identik dengan daun hijau melayang di hero image NeutraDC) -->
-                                <path d="M110 355 C125 340, 145 345, 148 362 C132 372, 115 368, 110 355 Z" fill="#65A30D"/>
-                                <path d="M535 90 C555 72, 580 78, 582 98 C562 112, 540 105, 535 90 Z" fill="#4D7C0F"/>
-                                <path d="M355 55 C368 45, 382 48, 384 60 C372 68, 358 64, 355 55 Z" fill="#84CC16"/>
-                            </svg>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Curved White Bottom Arch (Lengkungan khas bagian bawah hero section NeutraDC) -->
-            <div class="w-full overflow-hidden leading-none">
-                <svg viewBox="0 0 1440 54" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-full h-8 sm:h-12" preserveAspectRatio="none">
-                    <path d="M0 0C480 54 960 54 1440 0V54H0V0Z" fill="#F8F9FA"/>
-                </svg>
-            </div>
-        </section>
-
-        <!-- Home Section 2: 4 Lokasi Data Center NeutraDC (Quick Access ke PPT Slide Viewer) -->
-        <section class="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-12">
-            <div class="flex flex-col sm:flex-row sm:items-end justify-between mb-8 gap-4">
-                <div>
-                    <span class="text-xs font-bold uppercase tracking-wider text-[#C40000]">Our Data Center Footprint</span>
-                    <h2 class="text-2xl sm:text-3xl font-extrabold text-zinc-900 mt-1">4 Lokasi Strategis Data Center NeutraDC</h2>
-                    <p class="text-xs sm:text-sm text-zinc-600 mt-1">Pilih salah satu lokasi untuk membuka deck presentasi teknis atau mengunggah file PowerPoint (.pptx) terbaru.</p>
-                </div>
-                <button type="button" onclick="switchMainView('datacenter')" class="cursor-pointer text-xs sm:text-sm font-bold text-[#C40000] hover:underline flex items-center gap-1 self-start sm:self-auto">
-                    <span>Kelola Semua 4 PPT Deck</span>
-                    <span>&rarr;</span>
-                </button>
-            </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-                <!-- Card 1: Sentul 2N -->
-                <div onclick="openDcDeck('sentul')" class="cursor-pointer group bg-white rounded-2xl border border-zinc-200 hover:border-[#C40000] p-5 shadow-xs hover:shadow-md transition-all flex flex-col justify-between">
-                    <div>
-                        <div class="flex items-center justify-between mb-3">
-                            <span class="px-2.5 py-1 text-[10px] font-bold uppercase rounded-full bg-[#FEF2F2] text-[#C40000] border border-[#FECACA]">3SDC &bull; Tier III</span>
-                            <span id="home-badge-sentul" class="text-[11px] font-semibold text-zinc-400">Default Deck</span>
-                        </div>
-                        <h3 class="text-lg font-extrabold text-zinc-900 group-hover:text-[#C40000] transition-colors">NeutraDC Sentul 2N</h3>
-                        <p class="text-xs text-zinc-600 mt-2 leading-relaxed">Fasilitas enterprise dengan redundansi daya 2N penuh untuk perbankan, institusi keuangan, dan disaster recovery.</p>
-                    </div>
-                    <div class="mt-5 pt-3 border-t border-zinc-100 flex items-center justify-between text-xs font-bold text-[#C40000]">
-                        <span>Buka Slide Presentasi</span>
-                        <span class="group-hover:translate-x-1 transition-transform">&rarr;</span>
-                    </div>
-                </div>
-
-                <!-- Card 2: Serpong -->
-                <div onclick="openDcDeck('serpong')" class="cursor-pointer group bg-white rounded-2xl border border-zinc-200 hover:border-[#C40000] p-5 shadow-xs hover:shadow-md transition-all flex flex-col justify-between">
-                    <div>
-                        <div class="flex items-center justify-between mb-3">
-                            <span class="px-2.5 py-1 text-[10px] font-bold uppercase rounded-full bg-[#FEF2F2] text-[#C40000] border border-[#FECACA]">3SDC &bull; N+1 / 2N</span>
-                            <span id="home-badge-serpong" class="text-[11px] font-semibold text-zinc-400">Default Deck</span>
-                        </div>
-                        <h3 class="text-lg font-extrabold text-zinc-900 group-hover:text-[#C40000] transition-colors">NeutraDC Serpong</h3>
-                        <p class="text-xs text-zinc-600 mt-2 leading-relaxed">Lokasi strategis Jabodetabek dengan opsi konfigurasi N+1 maupun 2N serta interkoneksi latensi rendah ke Jakarta.</p>
-                    </div>
-                    <div class="mt-5 pt-3 border-t border-zinc-100 flex items-center justify-between text-xs font-bold text-[#C40000]">
-                        <span>Buka Slide Presentasi</span>
-                        <span class="group-hover:translate-x-1 transition-transform">&rarr;</span>
-                    </div>
-                </div>
-
-                <!-- Card 3: Surabaya -->
-                <div onclick="openDcDeck('surabaya')" class="cursor-pointer group bg-white rounded-2xl border border-zinc-200 hover:border-[#C40000] p-5 shadow-xs hover:shadow-md transition-all flex flex-col justify-between">
-                    <div>
-                        <div class="flex items-center justify-between mb-3">
-                            <span class="px-2.5 py-1 text-[10px] font-bold uppercase rounded-full bg-[#FEF2F2] text-[#C40000] border border-[#FECACA]">3SDC &bull; Tier III / IV</span>
-                            <span id="home-badge-surabaya" class="text-[11px] font-semibold text-zinc-400">Default Deck</span>
-                        </div>
-                        <h3 class="text-lg font-extrabold text-zinc-900 group-hover:text-[#C40000] transition-colors">NeutraDC Surabaya</h3>
-                        <p class="text-xs text-zinc-600 mt-2 leading-relaxed">Hub digital Indonesia Timur dengan ketersediaan opsi N+1, 2N, hingga standar keandalan tertinggi Tier 4.</p>
-                    </div>
-                    <div class="mt-5 pt-3 border-t border-zinc-100 flex items-center justify-between text-xs font-bold text-[#C40000]">
-                        <span>Buka Slide Presentasi</span>
-                        <span class="group-hover:translate-x-1 transition-transform">&rarr;</span>
-                    </div>
-                </div>
-
-                <!-- Card 4: HDC Cikarang -->
-                <div onclick="openDcDeck('cikarang')" class="cursor-pointer group bg-white rounded-2xl border border-zinc-200 hover:border-[#C40000] p-5 shadow-xs hover:shadow-md transition-all flex flex-col justify-between">
-                    <div>
-                        <div class="flex items-center justify-between mb-3">
-                            <span class="px-2.5 py-1 text-[10px] font-bold uppercase rounded-full bg-[#DCFCE7] text-[#15803D]">Hyperscale &bull; AI-Ready</span>
-                            <span id="home-badge-cikarang" class="text-[11px] font-semibold text-zinc-400">Default Deck</span>
-                        </div>
-                        <h3 class="text-lg font-extrabold text-zinc-900 group-hover:text-[#C40000] transition-colors">HDC Cikarang</h3>
-                        <p class="text-xs text-zinc-600 mt-2 leading-relaxed">Hyperscale Data Center berkapasitas tinggi (High Density / Per-kW) untuk Cloud Provider, AI Workload &amp; Green Energy.</p>
-                    </div>
-                    <div class="mt-5 pt-3 border-t border-zinc-100 flex items-center justify-between text-xs font-bold text-[#C40000]">
-                        <span>Buka Slide Presentasi</span>
-                        <span class="group-hover:translate-x-1 transition-transform">&rarr;</span>
                     </div>
                 </div>
             </div>
@@ -520,7 +371,7 @@
     </div>
 
     <!-- ========================================================================= -->
-    <!-- VIEW 2: DATA CENTER PPT DECK & .PPTX CONVERTER (4 LOKASI)                 -->
+    <!-- VIEW 2: DATA CENTER DECK VIEWER (.PDF & .PPTX APA ADANYA - 4 LOKASI)      -->
     <!-- ========================================================================= -->
     <div id="view-datacenter" class="main-view hidden flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
         
@@ -529,21 +380,28 @@
             <div>
                 <div class="inline-flex items-center gap-2 mb-1">
                     <span class="w-2 h-2 rounded-full bg-[#C40000]"></span>
-                    <span class="text-xs font-bold uppercase tracking-wider text-[#C40000]">Data Center Technical Deck &amp; PPTX Converter</span>
+                    <span class="text-xs font-bold uppercase tracking-wider text-[#C40000]">Data Center Technical Deck &amp; Document Viewer</span>
                 </div>
                 <h2 class="text-xl sm:text-2xl font-extrabold text-zinc-900">Presentasi 4 Lokasi Data Center NeutraDC</h2>
-                <p class="text-xs sm:text-sm text-zinc-600 mt-0.5">Pilih lokasi di bawah, lalu unggah file <strong>PowerPoint (.pptx)</strong> untuk mengonversi slide secara otomatis ke tampilan web interaktif.</p>
+                <p class="text-xs sm:text-sm text-zinc-600 mt-0.5">Pilih lokasi di bawah, lalu unggah file <strong>PDF (.pdf)</strong> atau <strong>PowerPoint (.pptx)</strong> untuk ditampilkan apa adanya sesuai file aslinya.</p>
             </div>
 
-            <!-- Tombol Upload .PPTX & Simulasi Pricing Lokasi Ini -->
+            <!-- Tombol Upload .PDF / .PPTX & Simulasi Pricing Lokasi Ini -->
             <div class="flex flex-wrap items-center gap-2.5">
-                <label for="pptxFileUpload" class="cursor-pointer px-4 py-2.5 bg-[#C40000] hover:bg-[#990000] text-white rounded-full text-xs font-semibold shadow-sm transition-all flex items-center gap-2">
+                <label for="deckFileUpload" class="cursor-pointer px-4 py-2.5 bg-[#C40000] hover:bg-[#990000] text-white rounded-full text-xs font-semibold shadow-sm transition-all flex items-center gap-2">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
                     </svg>
-                    <span>Upload &amp; Convert PPT (.pptx)</span>
+                    <span>Upload PDF / PPTX</span>
                 </label>
-                <input type="file" id="pptxFileUpload" accept=".pptx" onchange="handlePptxUpload(event)" class="hidden">
+                <input type="file" id="deckFileUpload" accept=".pdf,.pptx" onchange="handleDeckFileUpload(event)" class="hidden">
+
+                <button type="button" id="downloadOriginalDeckBtn" onclick="downloadOriginalDeckFile()" class="hidden cursor-pointer px-3.5 py-2.5 bg-zinc-900 hover:bg-zinc-800 text-white rounded-full text-xs font-semibold transition-colors flex items-center gap-1.5">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                    </svg>
+                    <span>Download File Asli</span>
+                </button>
 
                 <button type="button" onclick="resetCurrentDcDeck()" class="cursor-pointer px-3.5 py-2.5 bg-zinc-100 hover:bg-zinc-200 text-zinc-700 border border-zinc-300 rounded-full text-xs font-semibold transition-colors">
                     Reset Deck
@@ -595,31 +453,12 @@
                     </button>
                 </div>
             </div>
-
-            <!-- 16:9 Slide Canvas -->
-            <div id="slideCanvas" class="bg-white rounded-2xl min-h-[380px] sm:min-h-[460px] p-6 sm:p-10 lg:p-12 relative overflow-hidden flex flex-col justify-between border border-zinc-200">
-                <!-- Top Red Bar & NeutraDC Watermark inside Slide -->
-                <div class="flex items-center justify-between border-b border-zinc-100 pb-4 relative z-10">
-                    <div class="flex items-center gap-2">
-                        <span class="w-2.5 h-2.5 rounded-full bg-[#C40000]"></span>
-                        <span class="text-xs font-extrabold tracking-wide text-[#C40000] uppercase" id="slideHeaderCategory">NeutraDC Technical Overview</span>
-                    </div>
-                    <span class="text-xs font-bold text-zinc-400">NeutraDC by Telkom Indonesia</span>
-                </div>
-
-                <!-- Dynamic Slide Body (Title, Bullet Points & Extracted PPT Images) -->
-                <div id="slideContentBody" class="my-auto py-6 relative z-10">
+            <!-- 16:9 Slide Canvas (Tampilan Bersih Apa Adanya Tanpa Template Buatan Web) -->
+            <div id="slideCanvas" class="bg-white rounded-2xl min-h-[420px] sm:min-h-[520px] relative overflow-hidden flex flex-col justify-center border border-zinc-200">
+                <!-- Dynamic Slide Body (Merender halaman PDF asli, gambar/teks PPTX polos, atau deck bawaan) -->
+                <div id="slideContentBody" class="w-full h-full flex items-center justify-center">
                     <!-- Rendered via JS -->
                 </div>
-
-                <!-- Slide Footer -->
-                <div class="flex items-center justify-between border-t border-zinc-100 pt-3 text-[11px] text-zinc-400 relative z-10">
-                    <span>Confidential &bull; Presales Solution Architecture</span>
-                    <span id="slideFooterNumber" class="font-bold text-zinc-600">01</span>
-                </div>
-
-                <!-- Decorative Subtle Corner Mesh -->
-                <div class="absolute -bottom-12 -right-12 w-48 h-48 rounded-full bg-[#FEF2F2] pointer-events-none"></div>
             </div>
 
             <!-- Bottom Slide Navigation Controls & Thumbnail Strip -->
@@ -1412,11 +1251,10 @@
                 "HDC Cikarang": {
                     group: "HDC Cikarang",
                     unit: "kW",
-                    // Benchmark USD/kW/bln * Kurs 18.000 (PCLB Cost $185 = Rp 3.330.000, RSP $240 = Rp 4.320.000)
-                    pclbCost: 3330000,
-                    pclbRsp: 4320000,
-                    pcptCost: 2250000,
-                    pcptRsp: 2970000
+                    pclbCost: 2340000,
+                    pclbRsp: 3900000,
+                    pcptCost: 3978000,
+                    pcptRsp: 6215625
                 }
             }
         };
@@ -1888,20 +1726,36 @@
                             'Gunakan tombol "Hitung Pricing Lokasi Ini" untuk langsung menyusun penawaran HDC Cikarang.'
                         ],
                         metrics: [
-                            { label: 'Billing Unit', value: 'Per-kW / Month' },
-                            { label: 'Service Types', value: 'Open Rack / Cage / Suite' },
-                            { label: 'Contract Horizon', value: 'Up to 10 Years' }
-                        ],
-                        images: []
-                    }
-                ]
-            }
-        };
+                        { label: 'Billing Unit', value: 'Per-kW / Month' },
+                        { label: 'Service Types', value: 'Open Rack / Cage / Suite' },
+                        { label: 'Contract Horizon', value: 'Up to 10 Years' }
+                    ],
+                    images: []
+                }
+            ]
+        }
+    };
 
-        const DC_DECK_STORAGE_KEY = 'neutradc_dc_decks_v1';
+        const DC_DECK_STORAGE_KEY = 'neutradc_dc_decks_v2';
         let dcDecks = loadDcDecks();
         let activeDeckKey = 'sentul';
         let activeSlideIndex = 0;
+        const uploadedOriginalFiles = {};
+
+        if (typeof pdfjsLib !== 'undefined') {
+            pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+        }
+
+        function jumpToPricingFromDeck() {
+            const deck = dcDecks[activeDeckKey] || dcDecks.sentul;
+            switchMainView('pricing');
+            const locSelect = document.getElementById('dcLocation');
+            if (locSelect && deck.pricingLocation) {
+                locSelect.value = deck.pricingLocation;
+            }
+            recalculateAll(true);
+            showToast(`Lokasi "${deck.pricingLocation}" otomatis dipilih di Pricing Calculator!`);
+        }
 
         function loadDcDecks() {
             try {
@@ -1944,13 +1798,14 @@
             ['sentul', 'serpong', 'surabaya', 'cikarang'].forEach(k => {
                 const deck = dcDecks[k];
                 const isCustom = !deck.sourceFile.startsWith('Default');
+                const fileExt = deck.fileType ? deck.fileType.toUpperCase() : 'FILE';
                 const countEl = document.getElementById(`deck-count-${k}`);
                 if (countEl) {
-                    countEl.textContent = `${deck.slides.length} Slides (${isCustom ? 'Uploaded PPTX' : 'Built-in'})`;
+                    countEl.textContent = `${deck.slides.length} Halaman (${isCustom ? fileExt : 'Built-in'})`;
                 }
                 const homeBadge = document.getElementById(`home-badge-${k}`);
                 if (homeBadge) {
-                    homeBadge.textContent = isCustom ? `${deck.slides.length} Slides (PPTX)` : '4 Slides Deck';
+                    homeBadge.textContent = isCustom ? `${deck.slides.length} Hal (${fileExt})` : '4 Slides Deck';
                     homeBadge.className = isCustom ? 'text-[11px] font-bold text-[#15803D]' : 'text-[11px] font-semibold text-zinc-400';
                 }
             });
@@ -1986,67 +1841,112 @@
             if (activeSlideIndex < 0) activeSlideIndex = deck.slides.length - 1;
 
             const slide = deck.slides[activeSlideIndex];
+            const isUploadedRaw = Boolean(slide.rawMode);
 
             document.getElementById('slideDeckBadge').textContent = deck.name;
             document.getElementById('slideSourceFile').textContent = deck.sourceFile;
-            document.getElementById('slideCounterBadge').textContent = `Slide ${activeSlideIndex + 1} / ${deck.slides.length}`;
-            document.getElementById('slideHeaderCategory').textContent = slide.category || `${deck.name} — Presentation`;
-            document.getElementById('slideFooterNumber').textContent = String(activeSlideIndex + 1).padStart(2, '0');
+            document.getElementById('slideCounterBadge').textContent = `Halaman ${activeSlideIndex + 1} / ${deck.slides.length}`;
 
-            // Render konten slide (Title, Subtitle, Bullet Points, Metrics, dan Gambar hasil ekstrak PPTX jika ada)
-            const hasImages = slide.images && slide.images.length > 0;
-            const bulletsHtml = (slide.bullets || []).map(b => `
-                <li class="flex items-start gap-3 text-xs sm:text-sm lg:text-base text-zinc-700 leading-relaxed">
-                    <span class="w-2 h-2 rounded-full bg-[#C40000] mt-2 shrink-0"></span>
-                    <span>${b}</span>
-                </li>
-            `).join('');
+            // Tampilkan tombol Download File Asli jika ada file yang diunggah pada sesi ini
+            const dlBtn = document.getElementById('downloadOriginalDeckBtn');
+            if (dlBtn) {
+                if (uploadedOriginalFiles[activeDeckKey]) {
+                    dlBtn.classList.remove('hidden');
+                } else {
+                    dlBtn.classList.add('hidden');
+                }
+            }
 
-            const metricsHtml = (slide.metrics && slide.metrics.length > 0) ? `
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-6 pt-5 border-t border-zinc-100">
-                    ${slide.metrics.map(m => `
-                        <div class="p-3 rounded-xl bg-zinc-50 border border-zinc-200/80">
-                            <span class="block text-[10px] font-bold uppercase tracking-wider text-zinc-400">${m.label}</span>
-                            <span class="block text-xs sm:text-sm font-extrabold text-zinc-900 mt-0.5">${m.value}</span>
+            const bodyContainer = document.getElementById('slideContentBody');
+
+            // MODE 1: TAMPILAN APA ADANYA (Untuk file PDF maupun PPTX yang diunggah user, TANPA template)
+            if (isUploadedRaw) {
+                if (slide.pageImage) {
+                    // Render 1 halaman penuh persis seperti file PDF asli
+                    bodyContainer.innerHTML = `
+                        <div class="w-full bg-zinc-100 flex items-center justify-center p-2 sm:p-4">
+                            <img src="${slide.pageImage}" alt="Halaman ${activeSlideIndex + 1}" class="max-h-[75vh] w-auto max-w-full object-contain rounded-lg shadow-sm bg-white">
                         </div>
-                    `).join('')}
-                </div>
-            ` : '';
+                    `;
+                } else {
+                    // Render konten PPTX apa adanya (gambar asli slide & paragraf polos tanpa header/footer/badge template)
+                    const rawTexts = (slide.rawParagraphs || []).map(txt => `
+                        <p class="text-sm sm:text-base text-zinc-800 leading-relaxed whitespace-pre-line">${txt}</p>
+                    `).join('');
 
-            const imagesHtml = hasImages ? `
-                <div class="grid grid-cols-1 ${slide.images.length > 1 ? 'sm:grid-cols-2' : ''} gap-3 items-center justify-center bg-zinc-50 p-3 rounded-2xl border border-zinc-200">
-                    ${slide.images.slice(0, 2).map(imgSrc => `
-                        <img src="${imgSrc}" alt="Slide Visual" class="max-h-64 w-auto mx-auto rounded-xl object-contain shadow-xs">
-                    `).join('')}
-                </div>
-            ` : '';
+                    const rawImgs = (slide.images && slide.images.length > 0) ? `
+                        <div class="grid grid-cols-1 ${slide.images.length > 1 ? 'sm:grid-cols-2' : ''} gap-4 items-center justify-center">
+                            ${slide.images.map(src => `
+                                <img src="${src}" alt="Visual Slide" class="max-h-[60vh] w-auto max-w-full mx-auto object-contain rounded-lg">
+                            `).join('')}
+                        </div>
+                    ` : '';
 
-            document.getElementById('slideContentBody').innerHTML = `
-                <div class="grid grid-cols-1 ${hasImages ? 'lg:grid-cols-12 gap-6 items-center' : ''}">
-                    <div class="${hasImages ? 'lg:col-span-7' : ''}">
-                        <h3 class="text-xl sm:text-2xl lg:text-3xl font-extrabold text-zinc-900 tracking-tight leading-snug">
-                            ${slide.title || `Slide ${activeSlideIndex + 1}`}
-                        </h3>
-                        ${slide.subtitle ? `<p class="text-xs sm:text-sm font-semibold text-[#C40000] mt-1.5">${slide.subtitle}</p>` : ''}
-                        <ul class="space-y-3 mt-5">
-                            ${bulletsHtml || '<li class="text-sm text-zinc-500 italic">Slide visual tanpa teks tambahan.</li>'}
-                        </ul>
-                        ${metricsHtml}
+                    bodyContainer.innerHTML = `
+                        <div class="w-full p-6 sm:p-10 space-y-5 bg-white">
+                            ${rawImgs}
+                            ${rawTexts ? `<div class="space-y-2.5 max-w-4xl mx-auto">${rawTexts}</div>` : (!rawImgs ? '<p class="text-center text-sm text-zinc-400">Slide kosong.</p>' : '')}
+                        </div>
+                    `;
+                }
+            } else {
+                // MODE 2: DEFAULT BUILT-IN DECK (Jika user belum mengunggah file sendiri)
+                const bulletsHtml = (slide.bullets || []).map(b => `
+                    <li class="flex items-start gap-3 text-xs sm:text-sm lg:text-base text-zinc-700 leading-relaxed">
+                        <span class="w-2 h-2 rounded-full bg-[#C40000] mt-2 shrink-0"></span>
+                        <span>${b}</span>
+                    </li>
+                `).join('');
+
+                const metricsHtml = (slide.metrics && slide.metrics.length > 0) ? `
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-6 pt-5 border-t border-zinc-100">
+                        ${slide.metrics.map(m => `
+                            <div class="p-3 rounded-xl bg-zinc-50 border border-zinc-200/80">
+                                <span class="block text-[10px] font-bold uppercase tracking-wider text-zinc-400">${m.label}</span>
+                                <span class="block text-xs sm:text-sm font-extrabold text-zinc-900 mt-0.5">${m.value}</span>
+                            </div>
+                        `).join('')}
                     </div>
-                    ${hasImages ? `<div class="lg:col-span-5">${imagesHtml}</div>` : ''}
-                </div>
-            `;
+                ` : '';
+
+                bodyContainer.innerHTML = `
+                    <div class="w-full p-6 sm:p-10 lg:p-12 flex flex-col justify-between min-h-[420px]">
+                        <div class="flex items-center justify-between border-b border-zinc-100 pb-4">
+                            <div class="flex items-center gap-2">
+                                <span class="w-2.5 h-2.5 rounded-full bg-[#C40000]"></span>
+                                <span class="text-xs font-extrabold tracking-wide text-[#C40000] uppercase">${slide.category || deck.name}</span>
+                            </div>
+                            <span class="text-xs font-bold text-zinc-400">NeutraDC by Telkom Indonesia</span>
+                        </div>
+                        <div class="my-auto py-6">
+                            <h3 class="text-xl sm:text-2xl lg:text-3xl font-extrabold text-zinc-900 tracking-tight leading-snug">
+                                ${slide.title || `Slide ${activeSlideIndex + 1}`}
+                            </h3>
+                            ${slide.subtitle ? `<p class="text-xs sm:text-sm font-semibold text-[#C40000] mt-1.5">${slide.subtitle}</p>` : ''}
+                            <ul class="space-y-3 mt-5">${bulletsHtml}</ul>
+                            ${metricsHtml}
+                        </div>
+                        <div class="flex items-center justify-between border-t border-zinc-100 pt-3 text-[11px] text-zinc-400">
+                            <span>Confidential &bull; Presales Solution Architecture</span>
+                            <span class="font-bold text-zinc-600">${String(activeSlideIndex + 1).padStart(2, '0')}</span>
+                        </div>
+                    </div>
+                `;
+            }
 
             // Render Thumbnail Pills
             document.getElementById('slideThumbnails').innerHTML = deck.slides.map((s, idx) => {
                 const isActive = idx === activeSlideIndex;
+                const label = s.rawMode
+                    ? `Hal ${idx + 1}`
+                    : `${idx + 1}. ${(s.title || `Slide ${idx + 1}`).slice(0, 20)}${(s.title || '').length > 20 ? '...' : ''}`;
                 return `
                     <button type="button" onclick="goToSlide(${idx})" class="cursor-pointer px-3 py-1.5 rounded-full text-[11px] font-semibold whitespace-nowrap transition-all ${
                         isActive
                             ? 'bg-[#C40000] text-white shadow-xs'
                             : 'bg-zinc-800 text-zinc-400 hover:bg-zinc-700 hover:text-white'
                     }">
-                        ${idx + 1}. ${(s.title || `Slide ${idx + 1}`).slice(0, 22)}${(s.title || '').length > 22 ? '...' : ''}
+                        ${label}
                     </button>
                 `;
             }).join('');
@@ -2080,46 +1980,114 @@
 
         function resetCurrentDcDeck() {
             dcDecks[activeDeckKey] = JSON.parse(JSON.stringify(DEFAULT_DC_DECKS[activeDeckKey]));
+            delete uploadedOriginalFiles[activeDeckKey];
             activeSlideIndex = 0;
             persistDcDecks();
             renderSlideViewer();
             showToast(`Deck ${dcDecks[activeDeckKey].name} dikembalikan ke presentasi bawaan.`);
         }
 
-        function jumpToPricingFromDeck() {
-            const deck = dcDecks[activeDeckKey];
-            switchMainView('pricing');
-            switchTab('request');
-            if (deck && deck.pricingLocation) {
-                const locSelect = document.getElementById('dcLocation');
-                if (locSelect) {
-                    locSelect.value = deck.pricingLocation;
-                    recalculateAll(true);
-                    showToast(`Lokasi Pricing otomatis diset ke ${deck.pricingLocation}!`);
+        function downloadOriginalDeckFile() {
+            const fileObj = uploadedOriginalFiles[activeDeckKey];
+            if (!fileObj) {
+                showToast('File asli tidak tersedia di sesi ini.');
+                return;
+            }
+            const url = URL.createObjectURL(fileObj);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = fileObj.name;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        /**
+         * Handler Unggah File PDF (.pdf) atau PowerPoint (.pptx) untuk ditampilkan APA ADANYA
+         */
+        async function handleDeckFileUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const fileNameLower = file.name.toLowerCase();
+            uploadedOriginalFiles[activeDeckKey] = file;
+
+            if (fileNameLower.endsWith('.pdf')) {
+                await renderUploadedPdf(file);
+            } else if (fileNameLower.endsWith('.pptx')) {
+                await renderUploadedPptxRaw(file);
+            } else {
+                showToast('Format tidak didukung. Harap unggah file .pdf atau .pptx.');
+            }
+            event.target.value = '';
+        }
+
+        /**
+         * Render file PDF (.pdf) per halaman menjadi gambar resolusi tinggi (100% persis seperti file aslinya)
+         */
+        async function renderUploadedPdf(file) {
+            if (typeof pdfjsLib === 'undefined') {
+                showToast('Library pembaca PDF sedang dimuat, silakan coba beberapa detik lagi.');
+                return;
+            }
+
+            showToast(`Memuat file PDF "${file.name}"...`);
+
+            try {
+                const arrayBuffer = await file.arrayBuffer();
+                const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+                const totalPages = pdf.numPages;
+                const pdfSlides = [];
+
+                for (let pageNum = 1; pageNum <= totalPages; pageNum++) {
+                    const page = await pdf.getPage(pageNum);
+                    const viewport = page.getViewport({ scale: 1.6 });
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    canvas.width = viewport.width;
+                    canvas.height = viewport.height;
+
+                    await page.render({ canvasContext: ctx, viewport }).promise;
+                    const dataUrl = canvas.toDataURL('image/jpeg', 0.88);
+
+                    pdfSlides.push({
+                        rawMode: true,
+                        pageImage: dataUrl,
+                        rawParagraphs: [],
+                        images: []
+                    });
                 }
+
+                dcDecks[activeDeckKey].slides = pdfSlides;
+                dcDecks[activeDeckKey].fileType = 'pdf';
+                dcDecks[activeDeckKey].sourceFile = `${file.name} (${totalPages} Halaman PDF)`;
+                activeSlideIndex = 0;
+
+                updateDeckBadges();
+                renderSlideViewer();
+                showToast(`Berhasil menampilkan ${totalPages} halaman dari "${file.name}"!`);
+            } catch (err) {
+                console.error('Error rendering PDF:', err);
+                showToast('Gagal membaca file PDF. Pastikan file PDF tidak rusak atau terkunci.');
             }
         }
 
         /**
-         * Konverter Otomatis File PowerPoint (.pptx) menjadi Web Slides menggunakan JSZip
-         * Mengekstrak teks paragraf (<a:t>) & gambar media yang tertanam di setiap slide XML
+         * Menampilkan isi file PowerPoint (.pptx) apa adanya tanpa dibungkus template web
          */
-        async function handlePptxUpload(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-
+        async function renderUploadedPptxRaw(file) {
             if (typeof JSZip === 'undefined') {
-                showToast('Library konverter PPTX sedang dimuat, coba sesaat lagi.');
+                showToast('Library pembaca PPTX sedang dimuat, coba sesaat lagi.');
                 return;
             }
 
-            showToast(`Mengonversi "${file.name}" menjadi slide web...`);
+            showToast(`Memuat file PowerPoint "${file.name}"...`);
 
             try {
                 const arrayBuffer = await file.arrayBuffer();
                 const zip = await JSZip.loadAsync(arrayBuffer);
 
-                // Cari seluruh file slide: ppt/slides/slide1.xml, slide2.xml, dst.
                 const slidePaths = Object.keys(zip.files)
                     .filter(path => /^ppt\/slides\/slide\d+\.xml$/i.test(path))
                     .sort((a, b) => {
@@ -2130,11 +2098,10 @@
 
                 if (slidePaths.length === 0) {
                     showToast('Tidak ditemukan slide di dalam file .pptx tersebut.');
-                    event.target.value = '';
                     return;
                 }
 
-                const convertedSlides = [];
+                const rawSlides = [];
                 const parser = new DOMParser();
 
                 for (let i = 0; i < slidePaths.length; i++) {
@@ -2143,18 +2110,16 @@
                     const xmlText = await zip.file(slidePath).async('text');
                     const xmlDoc = parser.parseFromString(xmlText, 'application/xml');
 
-                    // Ekstrak paragraf (<a:p>) agar struktur judul & poin bullet tetap terjaga
                     const pNodes = Array.from(xmlDoc.getElementsByTagNameNS('*', 'p'));
                     const paragraphs = [];
                     pNodes.forEach(p => {
                         const tNodes = Array.from(p.getElementsByTagNameNS('*', 't'));
                         const lineText = tNodes.map(t => t.textContent).join('').trim();
-                        if (lineText && !paragraphs.includes(lineText)) {
+                        if (lineText) {
                             paragraphs.push(lineText);
                         }
                     });
 
-                    // Ekstrak gambar terkait slide dari ppt/slides/_rels/slideX.xml.rels
                     const slideImages = [];
                     const relsPath = `ppt/slides/_rels/slide${slideNum}.xml.rels`;
                     if (zip.file(relsPath)) {
@@ -2171,8 +2136,7 @@
                                     const ext = normalizedMediaPath.split('.').pop().toLowerCase();
                                     const mime = ext === 'png' ? 'image/png' : (ext === 'gif' ? 'image/gif' : 'image/jpeg');
                                     const b64 = await mediaFile.async('base64');
-                                    // Batasi ukuran gambar agar ringan di browser (< 800 KB per gambar)
-                                    if (b64.length < 1100000) {
+                                    if (b64.length < 1500000) {
                                         slideImages.push(`data:${mime};base64,${b64}`);
                                     }
                                 }
@@ -2180,32 +2144,25 @@
                         }
                     }
 
-                    const title = paragraphs[0] || `${dcDecks[activeDeckKey].name} — Slide ${i + 1}`;
-                    const subtitle = paragraphs.length > 2 ? paragraphs[1] : '';
-                    const bullets = paragraphs.length > 2 ? paragraphs.slice(2, 9) : paragraphs.slice(1, 8);
-
-                    convertedSlides.push({
-                        category: `${dcDecks[activeDeckKey].name} • Converted from PPTX`,
-                        title,
-                        subtitle,
-                        bullets,
-                        metrics: [],
+                    rawSlides.push({
+                        rawMode: true,
+                        pageImage: null,
+                        rawParagraphs: paragraphs,
                         images: slideImages
                     });
                 }
 
-                dcDecks[activeDeckKey].slides = convertedSlides;
-                dcDecks[activeDeckKey].sourceFile = `${file.name} (${convertedSlides.length} Slides)`;
+                dcDecks[activeDeckKey].slides = rawSlides;
+                dcDecks[activeDeckKey].fileType = 'pptx';
+                dcDecks[activeDeckKey].sourceFile = `${file.name} (${rawSlides.length} Slide PPTX)`;
                 activeSlideIndex = 0;
 
-                persistDcDecks();
+                updateDeckBadges();
                 renderSlideViewer();
-                showToast(`Berhasil mengonversi ${convertedSlides.length} slide dari "${file.name}"!`);
+                showToast(`Berhasil menampilkan ${rawSlides.length} slide dari "${file.name}"! (Tip: Export PPT ke PDF jika ingin layout 100% identik)`);
             } catch (err) {
-                console.error('Error converting PPTX:', err);
+                console.error('Error reading PPTX:', err);
                 showToast('Gagal membaca file .pptx. Pastikan file berformat PowerPoint modern (.pptx).');
-            } finally {
-                event.target.value = '';
             }
         }
 
